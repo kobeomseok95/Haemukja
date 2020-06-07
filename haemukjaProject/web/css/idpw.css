@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap');
+
+ * {
+   font-family: 'Nanum Gothic', sans-serif;
+   font-size: 15px;
+ }
+body{
+    margin: 0;
+    font-size: .9rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #212529;
+    text-align: left;
+    background-color: #f5f8fa;
+  }
+  .my-form
+  {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .my-form .row
+  {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .login-form
+  {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .login-form .row
+  {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  button
+  {
+    width: 100px;
+  }
+
+  #idFind-name, #idFind-email, #pwdFind-email, #id, #password,
+  #join-id, #join-pwd1, #join-pwd2, #join-name, #join-nickname,
+  #join-residenceDetail, #join-email
+  {
+    width: 250px;
+  }
+  

@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap');
+
+ * {
+   font-family: 'Nanum Gothic', sans-serif;
+   font-size: 15px;
+ }
+
+.logo {
+  height: 80px;
+}
+.list-group a {
+  font-size: 18px;
+  font-weight: bold;
+}
+.list-group-item {
+  border-style: none;
+}
+.panel-heading {
+  background-color: orange;
+  text-align: center;
+  line-height: 50px;
+  vertical-align: middle;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+#login {
+  background-color: orange;
+  text-align: center;
+  width: 150px;
+  height: 200px;
+  border-radius: 15px;
+  position: fixed;
+}
+#loginBtn {
+  background-color: rgb(50, 50, 50);
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+  color: white;
+}
+a {
+  color: black;
+  text-decoration: none
+}
+a:hover {
+  color: orange;
+  text-decoration: none;
+}
+button {
+  background-color: rgb(50, 50, 50);
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+  color: white;
+}
+footer {
+  background-color: rgb(230, 230, 230);
+  height: 200px;
+}
+.notice {
+  background-color: rgb(255, 191, 221);
+}
+#write {
+  text-align: right;
+}
+.btn {
+  float: right;
+  background-color: rgb(50, 50, 50);
+  color: white;
+}
+.shipInfoBox {
+  display: none;
+}
+.form-control{
+  display: inline;
+}
+.result{
+  border-style: none;
+}
