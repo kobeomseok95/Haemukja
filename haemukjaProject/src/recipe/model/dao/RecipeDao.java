@@ -325,56 +325,6 @@ public class RecipeDao {
 		
 		return list;
 	}
-	
-	public ArrayList<Recipe> selectRList(int currentPage, int limit, String recipeSearchOption,
-			Connection conn, String recipeSearchContent) {
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		ArrayList<Recipe> list = new ArrayList<>();
-		String sql = "";
-		
-		if(recipeSearchOption.equals("recipeNickname")) {
-			sql = "SELECT * FROM \r\n" + 
-					"(SELECT ROWNUM AS \"RNUM\", F.BNO AS \"BNO\", F.BTITLE AS \"BTITLE\", F.BDATE AS \"BDATE\", F.BCONTENT AS \"BCONTENT\", F.BUP AS \"BUP\", F.BDOWN AS \"BDOWN\", F.BVIEWS AS \"BVIEWS\", F.MID AS \"MID\", F.NCODE AS \"NCODE\"\r\n" + 
-					"FROM RLIST F JOIN MEMBER M ON F.MID = M.MID\r\n" + 
-					"WHERE M.MNICKNAME LIKE '%' || ? || '%')\r\n" + 
-					"WHERE ROWNUM BETWEEN ? AND ?";
-		} else {
-			sql = "SELECT * FROM \r\n" + 
-					"(SELECT ROWNUM AS \"RNUM\", F.BNO AS \"BNO\", F.BTITLE AS \"BTITLE\", F.BDATE AS \"BDATE\", F.BCONTENT AS \"BCONTENT\", F.BUP AS \"BUP\", F.BDOWN AS \"BDOWN\", F.BVIEWS AS \"BVIEWS\", F.MID AS \"MID\", F.NCODE AS \"NCODE\"\r\n" + 
-					"FROM RLIST F WHERE BTITLE LIKE '%' || ? || '%')\r\n" + 
-					"WHERE ROWNUM BETWEEN ? AND ?";
-		}
-		
-		int endRow = 9 * currentPage;
-		int startRow = endRow - 8;
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, recipeSearchContent);
-			pstmt.setInt(2, startRow);
-			pstmt.setInt(3, endRow);
-			rset = pstmt.executeQuery();
-			
-			while(rset.next()) {
-				Recipe r = new Recipe(rset.getInt("BNO"),
-						rset.getString("BTITLE"),
-						rset.getDate("BDATE"),
-						rset.getInt("BUP"),
-						rset.getInt("BDOWN"),
-						rset.getInt("BVIEWS"),
-						rset.getString("MID"),
-						rset.getString("NCODE"));
-				list.add(r);
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(pstmt);
-			close(rset);
-		}
-		return list;
-	}
 
 	public int selectBNo(Connection conn, Recipe r) {
 		PreparedStatement pstmt = null;
@@ -651,27 +601,6 @@ public class RecipeDao {
 		return rlist;
 	}
 	
-	public int getListCount(Connection conn, String recipeSearchOption, String recipeSearchContent) {
-		PreparedStatement pstmt = null;
-		int result = 0;
-		String sql = "";
-		if(recipeSearchOption.equals("recipeNickname")) {
-			sql = "SELECT COUNT(*) FROM RECIPE R JOIN MEMBER M ON (R.MID = M.MID) WHERE M.MNICKNAME LIKE '%' || ? || '%'";
-		} else {	//�젣紐⑹쑝濡� 李얘린
-			sql = "SELECT COUNT(*) FROM RECIPE WHERE BTITLE LIKE '%' || ? || '%';CKNAME LIKE '%' || ? || '%'";
-		}
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, recipeSearchContent);
-			result = pstmt.executeUpdate();
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(pstmt);
-		}
-		return result;
-	}
-	
 	public ArrayList<String> selectContents(Connection conn, int bNo) {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
@@ -726,6 +655,85 @@ public class RecipeDao {
 		}
 		
 		return tags;
+	}
+	
+	public int getListCount(Connection conn, String searchOption, String searchContent) {
+		Statement stmt = null;
+		ResultSet rset = null;
+		int listCount = 0;
+		
+		String query = "";
+		if(searchOption.equals("title")) {
+			query = "SELECT COUNT(*) FROM RECIPE WHERE BTITLE LIKE '%" + searchContent + "%'";
+		} else {
+			query = "SELECT COUNT(*) FROM RECIPE R JOIN MEMBER M ON(R.MID=M.MID) WHERE MNICKNAME LIKE '%" + searchContent + "%'";
+		}
+		
+		try {
+			stmt = conn.createStatement();
+			
+			rset = stmt.executeQuery(query);
+			while(rset.next()) {
+				listCount = rset.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(stmt);
+			close(rset);
+		}
+		
+		return listCount;
+	}
+	
+	public ArrayList<Recipe> selectRList(Connection conn, int currentPage, int limit, String searchOption,
+			String searchContent) {
+		
+		Statement stmt = null;
+		ResultSet rset = null;
+		ArrayList<Recipe> rlist = new ArrayList<>();
+		
+		int endRow = 9 * currentPage;
+		int startRow = endRow - 8;
+		
+		String query = "";
+		if(searchOption.equals("title")) {
+			query = "SELECT * "
+					+ "FROM (SELECT ROWNUM AS RNUM1, BNO, BTITLE, BDATE, BUP, BDOWN, BVIEWS, MID, NCODE FROM RLIST WHERE BTITLE LIKE '%" + searchContent + "%')"
+					+ "WHERE RNUM1 BETWEEN " + startRow + " AND " + endRow;			
+		} else {
+			query = "SELECT *\r\n" + 
+					"FROM (SELECT ROWNUM AS RNUM1, BNO, BTITLE, BDATE, BUP, BDOWN, BVIEWS, R.MID, NCODE \r\n" + 
+					"    FROM RLIST R\r\n" + 
+					"    JOIN MEMBER M ON (R.MID=M.MID)\r\n" + 
+					"    WHERE MNICKNAME LIKE '%" + searchContent + "%')\r\n" + 
+					"WHERE RNUM1 BETWEEN " + startRow + " AND " + endRow;
+		}
+	
+		try {
+			stmt = conn.createStatement();
+			
+			rset = stmt.executeQuery(query);
+			while(rset.next()) {
+				Recipe r = new Recipe(rset.getInt("BNO"),
+						rset.getString("BTITLE"),
+						rset.getDate("BDATE"),
+						rset.getInt("BUP"),
+						rset.getInt("BDOWN"),
+						rset.getInt("BVIEWS"),
+						rset.getString("MID"),
+						rset.getString("NCODE"));
+				
+				rlist.add(r);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(stmt);
+			close(rset);
+		}
+		
+		return rlist;
 	}
 
 }

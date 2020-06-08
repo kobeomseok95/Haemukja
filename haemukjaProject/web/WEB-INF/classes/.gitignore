@@ -1,4 +1,5 @@
-/member/
-/mypage/
-/product/
-/recipe/
+*.class
+# Package Files #
+*.jar
+*.war
+*.ear
