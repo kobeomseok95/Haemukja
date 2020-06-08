@@ -213,21 +213,6 @@ public class RecipeService {
 		return rlist;
 	}
 	
-	public int getListCount(String recipeSearchOption, String recipeSearchContent) {
-		Connection conn = getConnection();
-		int listCount = new RecipeDao().getListCount(conn, recipeSearchOption, recipeSearchContent);
-		close(conn);
-		return listCount;
-	}
-
-	public ArrayList<Recipe> selectRList(int currentPage, int limit, String recipeSearchOption,
-			String recipeSearchContent) {
-		Connection conn = getConnection();
-		ArrayList<Recipe> list = new RecipeDao().selectRList(currentPage, limit, recipeSearchOption, conn, recipeSearchContent);
-		close(conn);
-		return list;
-	}
-	
 	public ArrayList<String> selectContents(int bNo) {
 		Connection conn = getConnection();
 		
@@ -246,6 +231,32 @@ public class RecipeService {
 		close(conn);
 		
 		return tags;
+	}
+
+	public int getListCount(String searchOption, String searchContent) {
+		Connection conn = getConnection();
+		int listCount = 0;
+		
+		if(!searchContent.equals("")) {
+			listCount = new RecipeDao().getListCount(conn, searchOption, searchContent);			
+		}
+		
+		close(conn);
+		
+		return listCount;
+	}
+
+	public ArrayList<Recipe> selectRList(int currentPage, int limit, String searchOption, String searchContent) {
+		Connection conn = getConnection();
+		ArrayList<Recipe> rlist = new ArrayList<>();
+		
+		if(!searchContent.equals("")) {
+			rlist = new RecipeDao().selectRList(conn, currentPage, limit, searchOption, searchContent);			
+		}
+		
+		close(conn);
+		
+		return rlist;
 	}
 
 }

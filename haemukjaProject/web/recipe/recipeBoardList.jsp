@@ -6,12 +6,8 @@
 
 	String nCode = request.getParameter("nCode");
 	//범석
-	String recipeSearchOption = "";
-	String recipeSearchContent = "";
-	if(request.getParameter("recipeSearchOption") != null && request.getParameter("recipeSearchContent") != null){
-		recipeSearchOption = request.getParameter("recipeSearchOption");
-		recipeSearchContent = request.getParameter("recipeSearchContent");
-	}
+	String searchOption = (String)request.getAttribute("searchOption");
+	String searchContent = (String)request.getAttribute("searchContent");
 	
 	ArrayList<Recipe> rlist = (ArrayList<Recipe>)request.getAttribute("rlist");
 	ArrayList<Attachment> flist = (ArrayList<Attachment>)request.getAttribute("flist");
@@ -25,6 +21,7 @@
 	int endPage = pi.getEndPage();
 	
 	String panelName = "";
+	int flag = 0;
 	if(nCode != null && nCode.equals("AS")) {
 		panelName = "아시아";
 	} else if(nCode != null && nCode.equals("ASK")) {
@@ -56,7 +53,8 @@
 	} else if(nCode != null && nCode.equals("OC")) {
 		panelName = "그 밖의 국가";
 	} else {
-		panelName = "검색 결과";
+		panelName = "'" + searchContent + "' 검색 결과";
+		flag = 1;
 	}
 	
 	ArrayList<String> nicknames = (ArrayList<String>)request.getAttribute("nicknames");
@@ -227,17 +225,17 @@
     
     <!-- 페이징 처리 시작 -->
     <div class="row">
-    <%if (panelName.equals("검색결과")) { %>
+    <%if (flag == 1) { %>
       <div class="col-sm-12" style="text-align: center; font-size: 25px;">
       	<!-- 처음으로(<<) -->
-        <button onclick="location.href='<%=request.getContextPath()%>/selectRecipe.re?currentPage=1&recipeSearchOption=<%=recipeSearchOption %>&recipeSearchContent=<%=recipeSearchContent %>'"
+        <button onclick="location.href='<%=request.getContextPath()%>/search.re?currentPage=1&searchOption=<%=searchOption %>&searchContent=<%=searchContent %>'"
         		class="paging"> << </button>
         
         <!--  이전 페이지로(<) -->
 		<%if(currentPage == 1) {%>
 			<button disabled class="paging"> < </button>
 		<% } else {%>
-			<button onclick="location.href='<%=request.getContextPath()%>/selectRecipe.re?currentPage=<%=currentPage-1%>&recipeSearchOption=<%=recipeSearchOption %>&recipeSearchContent=<%=recipeSearchContent %>'"
+			<button onclick="location.href='<%=request.getContextPath()%>/search.re?currentPage=<%=currentPage-1%>&searchOption=<%=searchOption %>&searchContent=<%=searchContent %>'"
 					class="paging"> < </button>
 		<% } %>
 		
@@ -246,7 +244,7 @@
 			<% if(currentPage == p){ %>
 				<button disabled class="paging"><%=p %></button>
 			<% } else {%>
-				<button onclick="location.href='<%=request.getContextPath()%>/selectRecipe.re?currentPage=<%=p %>&nCode=<%=nCode %>'"
+				<button onclick="location.href='<%=request.getContextPath()%>/search.re?currentPage=<%=p %>&searchOption=<%=searchOption %>&searchContent=<%=searchContent %>'"
 						class="paging"><%=p %></button>
 			<% } %>
 		<% } %>
@@ -255,12 +253,12 @@
 		<%if(currentPage == maxPage) {%>
 			<button disabled class="paging"> > </button>
 		<% } else {%>
-			<button onclick="location.href='<%=request.getContextPath()%>/selectRecipe.re?currentPage=<%=currentPage+1 %>&recipeSearchOption=<%=recipeSearchOption %>&recipeSearchContent=<%=recipeSearchContent %>'" 
+			<button onclick="location.href='<%=request.getContextPath()%>/search.re?currentPage=<%=currentPage+1 %>&searchOption=<%=searchOption %>&searchContent=<%=searchContent %>'" 
 					class="paging"> > </button>
 		<% } %>
 		
 		<!--  마지막으로(>>) -->
-		<button onclick="location.href='<%=request.getContextPath()%>/selectRecipe.re?currentPage=<%=maxPage %>&recipeSearchOption=<%=recipeSearchOption %>&recipeSearchContent=<%=recipeSearchContent %>'"
+		<button onclick="location.href='<%=request.getContextPath()%>/search.re?currentPage=<%=maxPage %>&searchOption=<%=searchOption %>&searchContent=<%=searchContent %>'"
 				class="paging"> >> </button>
 			
       </div>
