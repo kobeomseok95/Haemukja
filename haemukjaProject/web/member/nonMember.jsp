@@ -321,7 +321,7 @@
             pg : 'kakaopay',
             pay_method : 'card',
             merchant_uid : 'merchant_' + new Date().getTime(),
-            name : '해먹샵'+'('+<%=ptitle%>+')',
+            name : '해먹샵',
             amount : <%=amprice%>,
             buyer_email : email,
             buyer_name : name,
