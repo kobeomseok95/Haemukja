@@ -62,16 +62,14 @@
                                     <input type="text" id="seller-id" class="form-control size" name="seller-id" placeholder="아이디를 입력하세요" required autofocus>
                                     <br><span id="resultId" class="result"></span>
                                 </div>
-                                
-                            </div>
+                          </div>
 
-                              <div class="form-group row" id="sellerJoin" >
+                           <div class="form-group row" id="sellerJoin" >
                                 <label for="seller-pwd1" class="col-md-4 col-form-label text-md-right">비밀번호</label>
                                 <div class="col-md-6">
                                     <input type="password" id="seller-pwd1" class="form-control size" name="seller-pwd" placeholder="비밀번호를 입력하세요" required autofocus><br>
                                     <span id="resultPwd1" class="result"></span>
                                 </div>
-                                 
                             </div>
 
                               <div class="form-group row" id="sellerJoin">
