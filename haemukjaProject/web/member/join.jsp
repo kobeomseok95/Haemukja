@@ -45,22 +45,23 @@
             </div>
 
             <div class="card-body">
-              <form id="joinForm" action="<%= request.getContextPath()%>/join.me" method="post">
-              
+              <!-- 여기! -->
               <div class="form-group row">
-                  <label for="join-type" class="col-md-4 col-form-label text-md-right">회원선택</label>
-                      <div class="col-md-6">
-                      	<div id="memberType">
-	                        <input type="radio" name="joinType" value="member" checked="checked" />일반회원
-	                        <input type="radio" name="joinType" value="seller" />판매회원
-                        </div>
-                          <!-- <button type="button" id="member" class="form-control size" name="member"  required autofocus checked="checked" value="member-normal" onclick="goMember();">일반회원</button> &nbsp;&nbsp;
-                          <button type="button" id="seller" class="form-control size" name="seller" required autofocus value="member-seller" onclick="goSeller()">판매회원</button>  -->
-                      </div>        
+	              <label for="join-type" class="col-md-4 col-form-label text-md-right">회원선택</label>
+		          <div class="col-md-6">
+		           	  <div id="memberType">
+			              <input type="radio" name="joinType" value="member" checked="checked" />일반회원
+			           	  <input type="radio" name="joinType" value="seller" />판매회원
+		              </div>    
+				  </div>        
               </div>
               
               <!-- ***********해먹자 회원가입***********-->
                <div id="joinMember">
+               
+               <form action="<%= request.getContextPath()%>/join.me" method="post">
+               <input type="hidden" name="joinTypeValue" value="1" />	<!-- 1번일때 일반회원가입 -->
+               	
                	<!-- 아이디 -->
                 <div class="form-group row">
                   <label for="join-id" class="col-md-4 col-form-label text-md-right">아이디</label>
@@ -137,7 +138,7 @@
                   <label for="join-residence" class="col-md-4 col-form-label text-md-right">주소</label>
                   <div class="col-md-6">
                     <input type="text" id="join-residence" class="form-control" name="join-residence" required placeholder="우편번호" style="width: 120px">&nbsp;&nbsp;
-                    <button class="btn btn-primary" style="background-color: orange; width: 100px; border: none" onclick="execDaumPostcode();">우편번호</button><br>
+                    <button id="memaddr" class="btn btn-primary" style="background-color: orange; width: 100px; border: none" >우편번호</button><br>
                     <input type="text" id="join-residence2" class="form-control" name="join-residence2" width="180px"; required placeholder="주소 "><br>
                     <input type="text" id="join-residence3" class="form-control" name="join-residence3" required placeholder="상세주소 "><br>
                   </div>
@@ -150,78 +151,119 @@
                     <input type="email_address" id="join-email" class="form-control" name="join-email" placeholder="abc1234@hamukja.com" required>
                   </div>
                 </div>
-               </div>
+                
+                <div class="col-md-6 offset-md-4">               
+                     <button type="button" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
+                         		취소
+                     </button>&nbsp;&nbsp;
+                     <button type="submit" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
+                         		가입하기
+                     </button><br>                              
+                </div>
+                 
+              </form>
+               </div><!-- End of joinMember -->
                
                <!-- ***********판매자 회원가입***********-->
-               <div id="joinSeller">
-               	<div class="form-group row">
-                                <label for="seller-id" class="col-md-4 col-form-label text-md-right">아이디</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="seller-id" class="form-control size" name="seller-id" placeholder="아이디를 입력하세요" required autofocus>
-                                    <br><span id="resultSellerId" class="result"></span>
-                                </div>
-                          </div>
-
-                           <div class="form-group row">
-                                <label for="seller-pwd1" class="col-md-4 col-form-label text-md-right">비밀번호</label>
-                                <div class="col-md-6">
-                                    <input type="password" id="seller-pwd1" class="form-control size" name="seller-pwd" placeholder="비밀번호를 입력하세요" required autofocus><br>
-                                    <span id="resultSellerPwd1" class="result"></span>
-                                </div>
-                            </div>
-
-                              <div class="form-group row">
-                                <label for="join-pwd2" class="col-md-4 col-form-label text-md-right">비밀번호 확인</label>
-                                <div class="col-md-6">
-                                    <input type="password" id="seller-pwd2" class="form-control size" name="seller-pwd" placeholder="비밀번호를 입력하세요" required autofocus><br>
-                                    <span id="resultSellerPwd2" class="result"></span>
-                                </div>
-                            </div>
-
-
-                            <div class="form-group row">
-                                <label for="seller-name" class="col-md-4 col-form-label text-md-right">사업자명</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="seller-name" class="form-control size" name="seller-name" placeholder="이름을 입력하세요" required autofocus>
-                                   <br>
-                             <span id="resultSellerName" class="result"></span>
-                              </div>
-                         </div>
-                         
-                              <div class="form-group row">
-                                <label for="join-address1" class="col-md-4 col-form-label text-md-right">사업자번호</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="seller-address1" class="form-control" name="seller-address1" placeholder="앞6자리" required autofocus style="width: 100px"> - 
-                                    <input type="password" id="seller-address2" class="form-control" name="seller-address2" placeholder="뒤7자리" required autofocus style="width: 100px">
-                                </div>
-                            </div>
-
-                             <div class="form-group row">
-                                <label for="join-phone1" class="col-md-4 col-form-label text-md-right">전화번호</label>
-                                <div class="col-md-6">
-                                    <select id="seller-phone1" class="form-control" name="seller-phone" required autofocus style="width: 72px">
-                      <option value="010">010</option>
-                      <option value="011">011</option>
-                      <option value="016">016</option>
-                      <option value="019">019</option>
-                    </select> -
-                    <input type="text" id="seller-phone2" class="form-control" name="seller-phone2"  required autofocus style="width: 72px"> - 
-                    <input type="text" id="seller-phone3" class="form-control" name="seller-phone3"  required autofocus style="width: 72px">
-                                </div>
-                            </div>
-
-               <div class="form-group row">
-                  <label for="join-residence" class="col-md-4 col-form-label text-md-right">주소</label>
-                  <div class="col-md-6">
-                    <input type="text" id="join-residence" class="form-control" name="join-seller-residence" required placeholder="우편번호" style="width: 120px">&nbsp;&nbsp;
-                    <button class="btn btn-primary" style="background-color: orange; width: 100px; border: none" onclick="execDaumPostcode();">우편번호</button><br>
-                    <input type="text" id="join-residence2" class="form-control" name="join-seller-residence2" width="180px;" required placeholder="주소 "><br>
-                    <input type="text" id="join-residence3" class="form-control" name="join-seller-residence3" required placeholder="상세주소 "><br>
-                  </div>
+				<div id="joinSeller">
+				<form action="<%= request.getContextPath()%>/join.me" method="post">
+               	<input type="hidden" name="joinTypeValue" value="2" />	<!-- 2번일때 일반회원가입 -->
+					
+					<div class="form-group row">
+						<label for="seller-id" class="col-md-4 col-form-label text-md-right">아이디</label>
+						<div class="col-md-6">
+						<input type="text" id="seller-id" class="form-control size" name="seller-id" placeholder="아이디를 입력하세요" required autofocus>
+						<br><span id="resultSellerId" class="result"></span>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label for="seller-pwd1" class="col-md-4 col-form-label text-md-right">비밀번호</label>
+					<div class="col-md-6">
+						<input type="password" id="seller-pwd1" class="form-control size" name="seller-pwd" placeholder="비밀번호를 입력하세요" required autofocus><br>
+						<span id="resultSellerPwd1" class="result"></span>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label for="join-pwd2" class="col-md-4 col-form-label text-md-right">비밀번호 확인</label>
+					<div class="col-md-6">
+						<input type="password" id="seller-pwd2" class="form-control size" name="seller-pwd" placeholder="비밀번호를 입력하세요" required autofocus><br>
+						<span id="resultSellerPwd2" class="result"></span>
+					</div>
+				</div>
+				
+				
+				<div class="form-group row">
+					<label for="seller-name" class="col-md-4 col-form-label text-md-right">사업자명</label>
+					<div class="col-md-6">
+						<input type="text" id="seller-name" class="form-control size" name="seller-name" placeholder="이름을 입력하세요" required autofocus>
+						<br><span id="resultSellerName" class="result"></span>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label for="join-address1" class="col-md-4 col-form-label text-md-right">사업자번호</label>
+					<div class="col-md-6">
+						<input type="text" id="seller-address1" class="form-control" name="seller-address1" placeholder="앞6자리" required autofocus style="width: 100px"> - 
+						<input type="password" id="seller-address2" class="form-control" name="seller-address2" placeholder="뒤7자리" required autofocus style="width: 100px">
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label for="join-phone1" class="col-md-4 col-form-label text-md-right">전화번호</label>
+					<div class="col-md-6">
+						<select id="seller-phone1" class="form-control" name="seller-phone" required autofocus style="width: 72px">
+						<option value="02">02</option>
+						<option value="031">031</option>
+						<option value="032">032</option>
+						<option value="033">033</option>
+						<option value="041">041</option>
+						<option value="042">042</option>
+						<option value="043">043</option>
+						<option value="051">051</option>
+						<option value="051">051</option>
+						<option value="052">052</option>
+						<option value="053">053</option>
+						<option value="054">054</option>			
+						<option value="055">055</option>
+						<option value="061">061</option>
+						<option value="062">062</option>
+						<option value="063">063</option>			
+						<option value="064">064</option>
+						<option value="010">010</option>
+						<option value="011">011</option>
+						<option value="016">016</option>
+						<option value="019">019</option>
+						</select> -
+						<input type="text" id="seller-phone2" class="form-control" name="seller-phone2"  required autofocus style="width: 72px"> - 
+						<input type="text" id="seller-phone3" class="form-control" name="seller-phone3"  required autofocus style="width: 72px">
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label for="join-residence" class="col-md-4 col-form-label text-md-right">주소</label>
+					<div class="col-md-6">
+						<input type="text" id="join-residence-sell" class="form-control" name="join-residence" required placeholder="우편번호" style="width: 120px">&nbsp;&nbsp;
+						<button id="selladdr" class="btn btn-primary" style="background-color: orange; width: 100px; border: none" >우편번호</button><br>
+						<input type="text" id="join-residence2-sell" class="form-control" name="join-residence2" width="180px;" required placeholder="주소 "><br>
+						<input type="text" id="join-residence3-sell" class="form-control" name="join-residence3" required placeholder="상세주소 "><br>
+					</div>
+				</div>
+				<div class="col-md-6 offset-md-4">               
+                     <button type="button" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
+                         		취소
+                     </button>&nbsp;&nbsp;
+                     <button type="submit" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
+                         		가입하기
+                     </button><br>                              
                 </div>
-               </div>
+                 
+              	</form>
+				</div><!-- End of joinSeller -->	
                
-
+				<!--
+				여기 잘볼것 
    				<div class="col-md-6 offset-md-4">               
                      <button type="button" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
                          		취소
@@ -232,6 +274,7 @@
                 </div>
                  
               </form>
+               -->
             </div> <!-- card-body -->
             
             
@@ -256,7 +299,7 @@
     	location.href="<%=request.getContextPath()%>/member/sellerJoin.jsp";
     }
     
-    function execDaumPostcode() {
+    function execDaumPostcode(x) { 
         new daum.Postcode({
             oncomplete: function(data) {
 
@@ -288,19 +331,28 @@
                 } else {
                   
                 }
-				
-                document.getElementById('join-residence').value = data.zonecode;
-                document.getElementById("join-residence2").value = addr;
-                document.getElementById("join-residence3").focus();
+				if(x === 1){
+	                document.getElementById("join-residence").value = data.zonecode;
+	                document.getElementById("join-residence2").value = addr;
+	                document.getElementById("join-residence3").focus();					
+				} else if( x === 2 ){
+					document.getElementById("join-residence-sell").value = data.zonecode;
+	                document.getElementById("join-residence2-sell").value = addr;
+	                document.getElementById("join-residence3-sell").focus();				
+				}
             }
         }).open();
     }
     
     
     $(function(){
-      $("#joinForm").submit(function(){
-    	  
-      });
+	  $('#memaddr').click(function(){
+	  	execDaumPostcode(1);
+	  });
+	  $('#selladdr').click(function(){
+		execDaumPostcode(2);  
+	  });
+   	
       var mType = $('input[name="joinType"]:checked').val();
       
       if(mType === "member"){
@@ -436,7 +488,7 @@
         }      
       });
 
-      // 이름 유효성 검사
+      /* // 이름 유효성 검사
       $('#seller-name').blur(function() {
 
         var value = $('#seller-name').val().trim();
@@ -451,7 +503,7 @@
         } else {
           $('#resultSellerName').text("");
         }
-      });
+      }); */
 
     });
   </script>
