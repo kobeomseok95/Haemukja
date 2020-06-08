@@ -318,7 +318,6 @@ public class MemberDao {
 			pstmt.setString(9, member.getMcode());
 			
 			result = pstmt.executeUpdate();
-			System.out.println("회원가입 결과 확인 : " + result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -345,7 +344,6 @@ public class MemberDao {
 			pstmt.setString(7, seller.getScode());
 			
 			result = pstmt.executeUpdate();
-			System.out.println("회원가입 결과 확인 : " + result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
