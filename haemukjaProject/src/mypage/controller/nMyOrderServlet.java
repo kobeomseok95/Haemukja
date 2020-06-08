@@ -33,9 +33,9 @@ public class nMyOrderServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		
-		String nmno = request.getParameter("nmno");
+		String oid = request.getParameter("oid");
 		
-		NMOrder no = new MypageService().selectNmOrder(nmno);
+		NMOrder no = new MypageService().selectNmOrder(oid);
 		
 		RequestDispatcher view = null;
 		if(no!=null) {

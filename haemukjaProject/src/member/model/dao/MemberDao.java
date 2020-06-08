@@ -162,26 +162,7 @@ public class MemberDao {
 		return pwd;
 	}
 
-	public int nonMember(Connection conn ,String name, String phone, String address) {
-		PreparedStatement pstmt = null;
-		int result =0;
-		
-		String query = "INSERT INTO NONMEMBER VALUES(NMNO_SEQ.NEXTVAL, ?,?,?)";
-		
-		try {
-			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, name);
-			pstmt.setString(2, phone);
-			pstmt.setString(3, address);
-			
-			result = pstmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
+	
 
 	public int nMOrderList(Connection conn, String payment) {
 		PreparedStatement pstmt = null;
@@ -418,39 +399,20 @@ public class MemberDao {
 		return result;
 	}
 
-	    public int selectNmno(Connection conn) {
-			PreparedStatement pstmt = null;
-			ResultSet rset = null;
-			String query = "SELECT * FROM NMNO_VIEW WHERE ROWNUM=1";
-			int nmno=0;
-			try {
-				pstmt = conn.prepareStatement(query);
-				
-				rset = pstmt.executeQuery();
-				while(rset.next()) {
-					nmno=rset.getInt("nmno");
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}finally {
-				close(pstmt);
-			}
-			
-			
-			return nmno;
-		}
+	  
 
-	    public int nMemOrder2(Connection conn, int oid, String payment, String count, int pid,int nmno) {
+	    public int nMemOrder2(Connection conn, int oid, int payment, String count, int pid, int osid) {
 			PreparedStatement pstmt = null;
 			int result =0;
-			String query ="INSERT INTO NMORDERLIST VALUES(?,SYSDATE,?,SYSDATE,DEFAULT,DEFAULT,?,1,?,?)";
+			String query ="INSERT INTO NMORDERLIST VALUES(?,SYSDATE,?,SYSDATE,DEFAULT,DEFAULT,?,?,?)";
 			try {
 				pstmt = conn.prepareStatement(query);
 				pstmt.setInt(1, oid);
-				pstmt.setString(2, payment);
-				pstmt.setInt(3, nmno);
+				pstmt.setInt(2, payment);
+				pstmt.setInt(3, osid);
 				pstmt.setInt(4, pid);
 				pstmt.setString(5, count);
+				
 			
 			
 				
