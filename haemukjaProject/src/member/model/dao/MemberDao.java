@@ -423,6 +423,37 @@ public class MemberDao {
 			
 			return result;
 		}
+
+		public int checkMemberId(Connection conn, int joinType, String userId) {
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql = "";
+			if(joinType == 1) {
+				sql = "SELECT COUNT(*) FROM MEMBER WHERE MID = ?";
+			}
+			else {
+				sql = "SELECT COUNT(*) FROM SELLER WHERE SID = ?";
+			}
+			int result = 0;
+			
+			try {
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, userId);
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					if(rs.getInt(1) > 0) {
+						result = 1;
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}finally {
+				close(pstmt);
+			}
+
+			return result;
+		}
 }
 
 

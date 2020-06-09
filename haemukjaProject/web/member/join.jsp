@@ -375,21 +375,37 @@
     	 }
       });
 	  
-      // 아이디 유효성 검사
+      // 아이디 유효성 및 중복검사
       $('#join-id').blur(function() {
 
         var value = $('#join-id').val().trim();
-        var reg = /^[a-z0-9]{4,}$/;
+        var reg = /^[a-z0-9]{8,}$/;
+        
+		$.ajax({
+			url: "${pageContext.request.contextPath}/checkId.me?userId="+ value +"&joinType=1",
+			type:"get",
+			success : function(data){
+				if (!reg.test(value)) { //일단 유효성 검사 먼저
+		          $('#resultMemberId').text("8자 이상 및 소영문자,숫자만 가능합니다.");
+		          $('#resultMemberId').css({ 'color': 'red', 'font-weight': 'bolder' });
 
-        if (!reg.test(value)) {
-          $('#resultMemberId').text("4글자이상, 영문자 숫자만 가능");
-          $('#resultMemberId').css({ 'color': 'red', 'font-weight': 'bolder' });
-
-          $('#join-id').val('');
-          $('#join-id').focus();
-        } else {
-          $('#resultMemberId').text("");
-        }
+		          $('#join-id').val('');
+		          $('#join-id').focus();
+		        } else {	//유효성 검사가 끝났다면
+		        	if(data == 1){	//아이디가 중복일 경우
+		        		$('#resultMemberId').text("아이디가 중복되었습니다.");
+		        		$('#resultMemberId').css({ 'color': 'red', 'font-weight': 'bolder' });
+					}
+					else{		//중복되지 않을 경우
+						$('#resultMemberId').text("사용 가능합니다.");
+		        		$('#resultMemberId').css({ 'color': 'green', 'font-weight': 'bolder' });
+					}	
+		        }
+			},
+			error : function(data){
+				console.log("*****ERROR join.jsp line 391*****");
+			}
+		}); 
       });
       
       //패스워드 유효성 검사
@@ -440,21 +456,36 @@
         }
       });
       
-   	// ------------------------------------------------판매회원 유효성검사
+   	// --------------------------------------------------------------------------------------------판매회원 유효성검사
       $('#seller-id').blur(function() {
+    	  var value = $('#seller-id').val().trim();
+          var reg = /^[a-z0-9]{8,}$/;
+    	  
+        $.ajax({
+  			url: "${pageContext.request.contextPath}/checkId.me?userId="+ value +"&joinType=2",
+  			type:"get",
+  			success : function(data){
+  				if (!reg.test(value)) { //일단 유효성 검사 먼저
+  		          $('#resultSellerId').text("8자 이상 및 소영문자,숫자만 가능합니다.");
+  		          $('#resultSellerId').css({ 'color': 'red', 'font-weight': 'bolder' });
 
-        var value = $('#seller-id').val().trim();
-        var reg = /^[a-z0-9]{4,}$/;
-
-        if (!reg.test(value)) {
-          $('#resultSellerId').text("4글자이상, 영문자 숫자만 가능");
-          $('#resultSellerId').css({ 'color': 'red', 'font-weight': 'bolder' });
-
-          $('#seller-id').val('');
-          $('#seller-id').focus();
-        } else {
-          $('#resultSellerId').text("");
-        }
+  		          $('#seller-id').val('');
+  		          $('#seller-id').focus();
+  		        } else {	//유효성 검사가 끝났다면
+  		        	if(data == 1){	//아이디가 중복일 경우
+  		        		$('#resultSellerId').text("아이디가 중복되었습니다.");
+  		        		$('#resultSellerId').css({ 'color': 'red', 'font-weight': 'bolder' });
+  					}
+  					else{		//중복되지 않을 경우
+  						$('#resultSellerId').text("사용 가능합니다.");
+  		        		$('#resultSellerId').css({ 'color': 'green', 'font-weight': 'bolder' });
+  					}	
+  		        }
+  			},
+  			error : function(data){
+  				console.log("*****ERROR join.jsp line 486*****");
+  			}
+  		}); 
       });
       
       //패스워드 유효성 검사
@@ -487,24 +518,6 @@
           $('#resultSellerPwd2').css({ 'color': 'red', 'font-weight': 'bolder' });
         }      
       });
-
-      /* // 이름 유효성 검사
-      $('#seller-name').blur(function() {
-
-        var value = $('#seller-name').val().trim();
-        var reg = /^[가-힣]{2,}$/;
-
-        if (!reg.test(value)) {
-          $('#resultSellerName').text("두글자 이상 한글만 가능");
-          $('#resultSellerName').css({ 'color': 'red', 'font-weight': 'bolder' });
-
-          $('#seller-name').val('');
-          $('#seller-name').focus();
-        } else {
-          $('#resultSellerName').text("");
-        }
-      }); */
-
     });
   </script>
 
