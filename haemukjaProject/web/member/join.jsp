@@ -205,8 +205,9 @@
 				<div class="form-group row">
 					<label for="join-address1" class="col-md-4 col-form-label text-md-right">사업자번호</label>
 					<div class="col-md-6">
-						<input type="text" id="seller-address1" class="form-control" name="seller-address1" placeholder="앞6자리" required autofocus style="width: 100px"> - 
-						<input type="password" id="seller-address2" class="form-control" name="seller-address2" placeholder="뒤7자리" required autofocus style="width: 100px">
+						<input type="text" id="seller-address1" class="form-control" name="seller-address1" required autofocus style="width: 72px"> - 
+						<input type="text" id="seller-address2" class="form-control" name="seller-address2" required autofocus style="width: 60px"> -
+						<input type="text" id="seller-address3" class="form-control" name="seller-address3" required autofocus style="width: 110px">
 					</div>
 				</div>
 				
@@ -244,10 +245,10 @@
 				<div class="form-group row">
 					<label for="join-residence" class="col-md-4 col-form-label text-md-right">주소</label>
 					<div class="col-md-6">
-						<input type="text" id="join-residence-sell" class="form-control" name="join-residence" required placeholder="우편번호" style="width: 120px">&nbsp;&nbsp;
+						<input type="text" id="join-residence-sell" class="form-control" name="seller-residence" required placeholder="우편번호" style="width: 120px">&nbsp;&nbsp;
 						<button id="selladdr" class="btn btn-primary" style="background-color: orange; width: 100px; border: none" >우편번호</button><br>
-						<input type="text" id="join-residence2-sell" class="form-control" name="join-residence2" width="180px;" required placeholder="주소 "><br>
-						<input type="text" id="join-residence3-sell" class="form-control" name="join-residence3" required placeholder="상세주소 "><br>
+						<input type="text" id="join-residence2-sell" class="form-control" name="seller-residence2" width="180px;" required placeholder="주소 "><br>
+						<input type="text" id="join-residence3-sell" class="form-control" name="seller-residence3" required placeholder="상세주소 "><br>
 					</div>
 				</div>
 				<div class="col-md-6 offset-md-4">               
@@ -262,19 +263,6 @@
               	</form>
 				</div><!-- End of joinSeller -->	
                
-				<!--
-				여기 잘볼것 
-   				<div class="col-md-6 offset-md-4">               
-                     <button type="button" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
-                         		취소
-                     </button>&nbsp;&nbsp;
-                     <button type="submit" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
-                         		가입하기
-                     </button><br>                              
-                </div>
-                 
-              </form>
-               -->
             </div> <!-- card-body -->
             
             
@@ -475,8 +463,8 @@
   		        	if(data == 1){	//아이디가 중복일 경우
   		        		$('#resultSellerId').text("아이디가 중복되었습니다.");
   		        		$('#resultSellerId').css({ 'color': 'red', 'font-weight': 'bolder' });
-  					}
-  					else{		//중복되지 않을 경우
+  					}		
+  					else{	//중복되지 않을 경우
   						$('#resultSellerId').text("사용 가능합니다.");
   		        		$('#resultSellerId').css({ 'color': 'green', 'font-weight': 'bolder' });
   					}	

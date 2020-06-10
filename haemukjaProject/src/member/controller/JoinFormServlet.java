@@ -72,13 +72,14 @@ public class JoinFormServlet extends HttpServlet {
 	    		String tel3= request.getParameter("seller-phone3");
 	    		String addr = request.getParameter("seller-residence2");
 	    		String addr2 = request.getParameter("seller-residence3");
-	    		String no = request.getParameter("seller-address");  
+	    		String no = request.getParameter("seller-address1");  
 	    		String no2 = request.getParameter("seller-address2");
+	    		String no3 = request.getParameter("seller-address3");
 	    		String scode = request.getParameter("seller-residence");
 	    		
 	    		String stel = tel + "-" + tel2 + "-" + tel3;
 	    		String caddr = addr + addr2;
-	    		String cno =  no + "-" + no2;
+	    		String cno =  no + "-" + no2 + "-" + no3;
 	    		
 	    		Seller seller = new Seller(sid, spw, company, stel, caddr, cno, scode);
 	    		
