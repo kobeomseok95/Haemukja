@@ -91,7 +91,7 @@ public class JoinFormServlet extends HttpServlet {
 	  		    }
 	    		
 	    	}
-		
+	      
 		  RequestDispatcher view = request.getRequestDispatcher("/main.re");
 		  view.forward(request, response);
 	}
