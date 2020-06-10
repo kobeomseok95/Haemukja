@@ -59,7 +59,7 @@
               <!-- ***********해먹자 회원가입***********-->
                <div id="joinMember">
                
-               <form action="<%= request.getContextPath()%>/join.me" method="post">
+               <form id="joinMemberForm" action="<%= request.getContextPath()%>/join.me" method="post">
                <input type="hidden" name="joinTypeValue" value="1" />	<!-- 1번일때 일반회원가입 -->
                	
                	<!-- 아이디 -->
@@ -97,7 +97,7 @@
                   <div class="col-md-6">
                     <input type="text" id="join-name" class="form-control" name="join-name" placeholder="이름을 입력하세요" required autofocus>
                     <br>
-                    <span id="resultMemberName" class="result"></span>
+                    <span id="resultMemberName"></span>
                   </div>
                 </div>
 
@@ -156,7 +156,7 @@
                      <button type="button" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
                          		취소
                      </button>&nbsp;&nbsp;
-                     <button type="submit" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
+                     <button type="button" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;" onclick="joinCheck(1);">
                          		가입하기
                      </button><br>                              
                 </div>
@@ -166,7 +166,7 @@
                
                <!-- ***********판매자 회원가입***********-->
 				<div id="joinSeller">
-				<form action="<%= request.getContextPath()%>/join.me" method="post">
+				<form id="joinSellerForm" action="<%= request.getContextPath()%>/join.me" method="post">
                	<input type="hidden" name="joinTypeValue" value="2" />	<!-- 2번일때 일반회원가입 -->
 					
 					<div class="form-group row">
@@ -198,7 +198,7 @@
 					<label for="seller-name" class="col-md-4 col-form-label text-md-right">사업자명</label>
 					<div class="col-md-6">
 						<input type="text" id="seller-name" class="form-control size" name="seller-name" placeholder="이름을 입력하세요" required autofocus>
-						<br><span id="resultSellerName" class="result"></span>
+						<br><span id="resultSellerName"></span>
 					</div>
 				</div>
 				
@@ -255,7 +255,7 @@
                      <button type="button" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
                          		취소
                      </button>&nbsp;&nbsp;
-                     <button type="submit" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;">
+                     <button type="button" class="btn btn-primary" style="background-color: orange; margin: 5px; border:none;" onclick="joinCheck(2);">
                          		가입하기
                      </button><br>                              
                 </div>
@@ -285,6 +285,33 @@
     }
     function goSeller(){
     	location.href="<%=request.getContextPath()%>/member/sellerJoin.jsp";
+    }
+    function joinCheck(x){
+	    var type = x;
+    	var flag = confirm("회원가입하시겠습니까?");
+    	var x = $('.result');
+    	var texts = "";
+    	for(var i = 0; i < x.length; i++){
+    		texts += x[i].getAttribute('style');
+    	}
+    	
+    	if(flag && type === 1){
+    		if( texts.match(/red/) ){
+    			alert('회원가입 양식을 지키지 않았습니다.');
+    		}
+    		else{
+    			$('#joinMemberForm').submit();
+    		}
+    	}
+    	else if(flag && type === 2){
+    		if( texts.match(/red/) ){
+    			alert('회원가입 양식을 지키지 않았습니다.');
+    		}
+    		else{
+    			$('#joinSellerForm').submit();
+    		}
+    	}
+    	else{/*회원가입 취소*/}
     }
     
     function execDaumPostcode(x) { 
@@ -405,9 +432,9 @@
         if (!regex.test(pw1)) {
           $('#resultMemberPwd1').text("8자이상 20자 이하, 영대소문자/숫자/특수기호만 가능합니다.");
           $('#resultMemberPwd1').css({ 'color': 'red', 'font-weight': 'bolder' });
-          $('#join-pwd1').val('');
         } else {
-          $('#resultMemberPwd1').text("");
+        	$('#resultMemberPwd2').html("사용 가능합니다");
+            $('#resultMemberPwd2').css({ 'color': 'green', 'font-weight': 'bolder' });
         }
       });
 
@@ -418,7 +445,7 @@
         var pw2 = $('#join-pwd2').val().trim();
 
         if (pw1 == pw2) {
-          $('#resultMemberPwd2').html("비밀번호가 일치합니다");
+          $('#resultMemberPwd2').html("비밀번호가 일치합니다 (사용가능)");
           $('#resultMemberPwd2').css({ 'color': 'green', 'font-weight': 'bolder' });
         } else {
           $('#resultMemberPwd2').html("비밀번호가 일치하지 않습니다");
@@ -469,9 +496,9 @@
         if (!regex.test(pw1)) {
           $('#resultSellerPwd1').text("8자이상 20자 이하, 영대소문자/숫자/특수기호만 가능합니다.");
           $('#resultSellerPwd1').css({ 'color': 'red', 'font-weight': 'bolder' });
-          $('#seller-pwd1').val('');
         } else {
-          $('#resultSellerPwd1').text("");
+        	$('#resultMemberPwd2').html("사용 가능합니다");
+            $('#resultMemberPwd2').css({ 'color': 'green', 'font-weight': 'bolder' });
         }
       });
 
@@ -482,7 +509,7 @@
         var pw2 = $('#seller-pwd2').val().trim();
 
         if (pw1 == pw2) {
-          $('#resultSellerPwd2').html("비밀번호가 일치합니다");
+          $('#resultSellerPwd2').html("비밀번호가 일치합니다 (사용가능)");
           $('#resultSellerPwd2').css({ 'color': 'green', 'font-weight': 'bolder' });
         } else {
           $('#resultSellerPwd2').html("비밀번호가 일치하지 않습니다");
