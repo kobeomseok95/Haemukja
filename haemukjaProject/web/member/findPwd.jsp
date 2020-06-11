@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <% 
-	String pw = (String)request.getAttribute("changePwd");
 	String msg = (String)request.getAttribute("msg");
 %>
 <!DOCTYPE html>
@@ -73,12 +72,16 @@
                   </div>
                 </div>
                 <br>
-                <%if(pw!=null){ %>
-                <div align="center"><h4>임시로 발급된 비밀번호는 '<%=pw %>' 입니다.<br>
-                마이페이지에서 수정해주세요.</h4></div>
-                <%}else if(pw == null && msg != null){ %>
+                
+                <% if(msg != null){ %>
                 <div align="center"><h3><%=msg %></h3></div>
+                <%} else { %>
+                <div align="center"><h3></h3></div>
                 <%} %>
+                <script>
+                	//ajax처리
+                </script>
+                
                 <br>
                 <div class="col-md-6 offset-md-4">
                   <button type="submit" class="btn btn-primary" style="background-color: orange; border: none; width: 120px;">
