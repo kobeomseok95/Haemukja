@@ -34,39 +34,35 @@ public class nonMemberServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
-		String name = request.getParameter("orderer");
+	
 		
-		String phone1= request.getParameter("phone1");
-		String phone2= request.getParameter("phone2");
-		String phone3= request.getParameter("phone3");
-		String phone = phone1 + "-"+ phone2 + "-" + phone3;
-		
-		String address1 = request.getParameter("receiverAddress1");
-		String address2 =request.getParameter("receiverAddress2");
-		String address3 = request.getParameter("receiverAddress3");
-		String address = address1 +""+ address2+""+ address3;
+	
 		
 		
-		String payment = request.getParameter("payment");
+		int payment = Integer.valueOf(request.getParameter("payment"));
+		int osid = 0;
+		if(payment==3 || payment==4) {
+			osid=1;
+		}else if(payment==1||payment==2) {
+			osid=2;
+		}
+		
 		int amprice = Integer.valueOf(request.getParameter("allamprice"));
 		String count = request.getParameter("count");
 		int pid = Integer.valueOf(request.getParameter("pid"));
 		MemberService mservice = new MemberService();
 		
-		
 	
-		
-		
 		int result1 = mservice.oIdInsert(amprice);
 		int oid = mservice.selectOid();
-		int result2= mservice.nMemOrder(name,phone,address,payment);
-		int nmno = mservice.selectNmno();
-		int result3 = mservice.nMemOrder2(oid, payment, count, pid,nmno);
+	
+		
+		int result3 = mservice.nMemOrder2(oid, payment, count, pid, osid);
 		
 		RequestDispatcher view = null;
 		
-		request.setAttribute("nmno", nmno);
-		request.setAttribute("msg", "결제가 완료되었습니다");
+		request.setAttribute("oid", oid);
+		request.setAttribute("msg", "주문이 완료되었습니다");
 		view = request.getRequestDispatcher("member/orderResult.jsp");
 		
 		view.forward(request, response);

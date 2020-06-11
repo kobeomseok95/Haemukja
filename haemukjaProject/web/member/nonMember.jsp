@@ -33,6 +33,8 @@
     integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c"
     crossorigin="anonymous"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 </head>
 
 <style>
@@ -132,11 +134,11 @@
                         <div class="form-group row">
                             <label for="ordermail" class="col-md-1 col-form-label text-md-right">이메일</label>
                             <div class="col-md-9">
-                                <input type="text" id="email" name="email" required
+                                <input type="text" id="email" class="form-control"  name="email" required
                                     style="width: 100px" >&nbsp;&nbsp;@
-                                <select name="email2">
-                                    <option selected></option>
-                                    <option value="naver.com">naver.com</option>
+                                <select name="email2" class="form-control"  style="width: 150px" >
+                              		
+                              		<option value="naver.com">naver.com</option>
                                     <option value="daum.net">daum.net</option>
                                     <option value="google.com">google.com</option>
                                 </select>
@@ -159,11 +161,11 @@
                             <div class="form-group row">
                                 <label for="receiverPhone" class="col-md-1 col-form-label text-md-right">전화번호</label>
                                 <div class="col-md-3">
-                                    <input type="text" id="receiverPhone" class="form-control" name="receiverPhone"
-                                        required autofocus style="width: 63px"> - <input type="text" id="receiverPhone"
-                                        class="form-control" name="receiverPhone" required autofocus
-                                        style="width: 63px"> - <input type="text" id="receiverPhone"
-                                        class="form-control" name="receiverPhone" required autofocus
+                                    <input type="text" id="receiverPhone1" class="form-control" name="receiverPhone1"
+                                        required autofocus style="width: 63px"> - <input type="text" id="receiverPhone2"
+                                        class="form-control" name="receiverPhone2" required autofocus
+                                        style="width: 63px"> - <input type="text" id="receiverPhone3"
+                                        class="form-control" name="receiverPhone3" required autofocus
                                         style="width: 63px">
                                 </div>
                             </div>
@@ -197,28 +199,28 @@
                         <div class="form-group row">
                             <label for="credit" class="col-xs-1 col-form-label text-md-right">신용카드</label>
                             <div class="col-lg-4">
-                                <input type="radio" id="credit" name="payment" value="credit" checked>
+                                <input type="radio" id="credit" name="payment" value="1" checked>
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label for="phonePay" class="col-xs-1 col-form-label text-md-right">휴대폰결제</label>
                             <div class="col-lg-4">
-                                <input type="radio" id="phonePay" name="payment" value="phonePay">
+                                <input type="radio" id="phonePay" name="payment" value="2">
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label for="deposit" class="col-xs-1 col-form-label text-md-right">무통장입금</label>
                             <div class="col-lg-4">
-                                <input type="radio" id="deposit" name="payment" value="deposit" >
+                                <input type="radio" id="deposit" name="payment" value="3">
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label for="bankTrans" class="col-xs-1 col-form-label text-md-right">계좌이체</label>
                             <div class="col-lg-4">
-                                <input type="radio" id="bankTrans" name="payment" value="bankTrans">
+                                <input type="radio" id="bankTrans" name="payment" value="4">
                             </div>
                         </div>
                         
@@ -226,8 +228,20 @@
                             <div class="row">
                             
                                 <div class="col text-center">
-                                    <button class="btn btn-success btn-lg" onclick="payment();">결제하기</button>
+                                    <button class="btn btn-success btn-lg" id="payBtn" type="button" onclick="pay()">결제하기</button>
                                 </div>
+                                
+                                <script>
+	                                // 결제수단이 무통장과 계좌이체일 경우 결제api x -> 바로 주문리스트에 쌓임(미결제)
+	                                $("#payBtn").click(function(){
+	                                var payment = $('input[name="payment"]:checked').val();
+	                                if(payment =='3' || payment=='4'){
+	                                	$('#payBtn' ).attr('type','submit' );
+	                                	
+	                                	}
+	                                });
+                                </script>
+                                
                             </div>
                         </div>
                     
@@ -280,6 +294,79 @@
             }
         }).open();
     }
+    
+    
+    
+    function pay(){
+        var IMP = window.IMP; // 생략가능
+        IMP.init('iamport'); // 'iamport' 대신 부여받은 "가맹점 식별코드"를 사용
+        var msg;
+        // 결제api에 필요한 값들
+        var email = $("#email").val()+'@'+$("#email2 option:selected").val();
+        
+ 		var name = $("#orderer").val();
+        var phone = $("#receiverPhone1").val()+'-'+ $("#receiverPhone2").val()+'-'+ $("#receiverPhone3").val();
+        var address=$("#receiverAddress1").val() + $("#receiverAddress2").val() + $("#receiverAddress3").val();
+        
+        
+        // nonMemberServlet에 보낼 값들
+    
+        var payment = $('input[name="payment"]:checked').val();
+      
+        var amprice = $("#allamprice").val();
+        var count = $("#count").val();
+       
+        
+        IMP.request_pay({
+            pg : 'kakaopay',
+            pay_method : 'card',
+            merchant_uid : 'merchant_' + new Date().getTime(),
+            name : '해먹샵',
+            amount : <%=amprice%>,
+            buyer_email : email,
+            buyer_name : name,
+            buyer_tel : phone,
+            buyer_addr : address,
+            buyer_postcode : '123-456',
+            //m_redirect_url : 'http://www.naver.com'
+        }, function(rsp) {
+            if ( rsp.success ) {
+                //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
+                jQuery.ajax({
+                    url: "/payments/complete", //cross-domain error가 발생하지 않도록 주의해주세요
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        imp_uid : rsp.imp_uid
+                        //기타 필요한 데이터가 있으면 추가 전달
+                    }
+                }).done(function(data) {
+                    //[2] 서버에서 REST API로 결제정보확인 및 서비스루틴이 정상적인 경우
+                    if ( everythings_fine ) {
+                        msg = '결제가 완료되었습니다.';
+                        msg += '\n고유ID : ' + rsp.imp_uid;
+                        msg += '\n상점 거래ID : ' + rsp.merchant_uid;
+                        msg += '\결제 금액 : ' + rsp.paid_amount;
+                        msg += '카드 승인번호 : ' + rsp.apply_num;
+                        
+                        alert(msg);
+                    } else {
+                        //[3] 아직 제대로 결제가 되지 않았습니다.
+                        //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
+                    }
+                });
+                //성공시 이동할 페이지
+                location.href='<%=request.getContextPath()%>/nonorder.me?payment='+payment+'&allamprice='+amprice+'&count='+count+'&pid='+<%=pid%>;
+            } else {
+                msg = '결제에 실패하였습니다.';
+                msg += '에러내용 : ' + rsp.error_msg;
+                //실패시 이동할 페이지
+                location.href="<%=request.getContextPath()%>/detail.sh?sbno="+<%=thumbnail.getSbNo()%>;
+                alert(msg);
+            }
+        });
+        
+    };
     
     </script>
   </body>

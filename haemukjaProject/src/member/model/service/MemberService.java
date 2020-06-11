@@ -62,25 +62,7 @@ public class MemberService {
 		return changePwd;
 	}
 
-	public int nMemOrder(String name, String phone, String address, String payment) {
-		Connection conn = getConnection();
-		
-		MemberDao mdao = new MemberDao();
-		
-		int result1 = mdao.nonMember(conn,name,phone,address);
-		
-		if(result1>0) {
-			commit(conn);
-			
-		}else {
-			rollback(conn);
-		}
-		
-		close(conn);
-		
-		return result1;
-	}
-	
+
 
 	public int selectPid(String ptitle) {
 		Connection conn = getConnection();
@@ -209,16 +191,11 @@ public class MemberService {
 		return result;
 	}
 
-	public int selectNmno() {
-		Connection conn = getConnection();
-		int nmno = new MemberDao().selectNmno(conn);
-		close(conn);
-		return nmno;
-	}
+	
 
-	public int nMemOrder2(int oid, String payment, String count, int pid,int nmno) {
+	public int nMemOrder2(int oid, int payment, String count, int pid, int osid) {
 		Connection conn = getConnection();
-		int result = new MemberDao().nMemOrder2(conn,oid,payment,count,pid,nmno);
+		int result = new MemberDao().nMemOrder2(conn,oid,payment,count,pid,osid);
 		if(result>0) {
 			commit(conn);
 		}else {
@@ -227,5 +204,13 @@ public class MemberService {
 		close(conn);
 		return result;
 	}
+
+	public int checkMemberId(int joinType, String userId) {
+		Connection conn = getConnection();
+		int result = new MemberDao().checkMemberId(conn, joinType, userId);
+		close(conn);
+		return result;
+	}
+
 	
 }

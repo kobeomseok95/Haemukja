@@ -297,14 +297,14 @@ public class MypageDao {
 	      return result;
 	   }
 
-	public NMOrder selectNmOrder(Connection conn ,String nmno) {
+	public NMOrder selectNmOrder(Connection conn ,String oid) {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
-		String query ="SELECT * FROM PRODUCT P JOIN NMORDERLIST N ON P.PID = N.PID JOIN OSTATE O ON N.OSID=O.OSID WHERE NMNO = ?";
+		String query ="SELECT * FROM PRODUCT P JOIN NMORDERLIST N ON P.PID = N.PID JOIN OSTATE O ON N.OSID=O.OSID WHERE OID = ?";
 		NMOrder no=null;
 		try {
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, nmno);
+			pstmt.setString(1, oid);
 			rset = pstmt.executeQuery();
 			
 			while(rset.next()) {

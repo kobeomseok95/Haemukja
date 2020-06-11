@@ -132,10 +132,10 @@ public class MypageService {
 
 
 
-	public NMOrder selectNmOrder(String nmno) {
+	public NMOrder selectNmOrder(String oid) {
 		Connection conn = getConnection();
 		
-		NMOrder no = new MypageDao().selectNmOrder(conn,nmno);
+		NMOrder no = new MypageDao().selectNmOrder(conn,oid);
 		close(conn);
 		return no;
 	}

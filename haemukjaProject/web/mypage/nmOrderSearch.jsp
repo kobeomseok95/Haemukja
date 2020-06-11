@@ -56,7 +56,7 @@
               	<div class="form-group row">
                   <label for="password" class="col-md-4 col-form-label text-md-right">주문번호</label>
                   <div class="col-md-6">
-                    <input type="text" id="nmno" class="form-control" name="nmno" required style="width:270px">
+                    <input type="text" id="oid" class="form-control" name="oid" required style="width:270px">
                   </div>
                 </div> <!-- form-group row -->
                 <div class="col-md-6 offset-md-4">

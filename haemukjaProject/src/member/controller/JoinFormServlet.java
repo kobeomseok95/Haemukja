@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javafx.scene.control.Alert;
 import member.model.service.MemberService;
 import member.model.vo.Member;
+import member.model.vo.Seller;
 /**
  * Servlet implementation class JoinFormServlet
  */
@@ -31,40 +32,66 @@ public class JoinFormServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		request.setCharacterEncoding("UTF-8");
-		
-		String mid = request.getParameter("join-id"); 	
-		String mpw = request.getParameter("join-pwd");  			
-		String mname = request.getParameter("join-name");    		 		
-		String tel= request.getParameter("join-phone");	
-		String tel2= request.getParameter("join-phone2");
-		String tel3= request.getParameter("join-phone3");
-		String maddr = request.getParameter("join-residence2");
-		String maddr2 = request.getParameter("join-residence3");
-		String email = request.getParameter("join-email");
-		String no = request.getParameter("join-address");  
-		String no2 = request.getParameter("join-address2");
-		String mnickname = request.getParameter("join-nickname");
-		String mcode = request.getParameter("join-residence");
-		
-		String mtel = tel + "-" + tel2 + "-" + tel3;
-		String addr = maddr + maddr2;
-		String mno = no + "-" + no2;
-		
-		
-		Member member = new Member(mid, mpw, mname, mtel, maddr, email, mno, mnickname, mcode);
-		
-		
-		  int result = new MemberService().insertMember(member);
-		 
-		  if(result >0 ) {
-			  
-			 
-		  }else {
-			  System.out.println("회원가입 실패");
-		  }
-		  
+	    	request.setCharacterEncoding("UTF-8");
+	    
+	    	String type = request.getParameter("joinTypeValue");
+	    	
+	    	if(type.equals("1")) {	//일반회원일 경우
+	    		String mid = request.getParameter("join-id");
+	    		String mpw = request.getParameter("join-pwd");		
+	    		String mname = request.getParameter("join-name");	 		
+	    		String tel= request.getParameter("join-phone");
+	    		String tel2= request.getParameter("join-phone2");
+	    		String tel3= request.getParameter("join-phone3");
+	    		String maddr = request.getParameter("join-residence2");
+	    		String maddr2 = request.getParameter("join-residence3");
+	    		String email = request.getParameter("join-email");
+	    		String no = request.getParameter("join-address");
+	    		String no2 = request.getParameter("join-address2");
+	    		String mnickname = request.getParameter("join-nickname");
+	    		String mcode = request.getParameter("join-residence");
+	    		
+	    		String mtel = tel + "-" + tel2 + "-" + tel3;
+	    		String addr = maddr + maddr2;
+	    		String mno = no + "-" + no2;
+	    		
+	    		Member member = new Member(mid, mpw, mname, mtel, maddr, email, mno, mnickname, mcode);
+	    		int result = new MemberService().insertMember(member);
+	   		 
+	    		if(result <= 0){
+	  		    	System.out.println("*****joinFormServlet line 62*****");
+	  		    	System.out.println("일반회원가입 에러");
+	  		    }
+	    	}
+	    	else {	//판매회원일 경우
+	    		String sid = request.getParameter("seller-id");
+	    		String spw = request.getParameter("seller-pwd");
+	    		String company = request.getParameter("seller-name");
+	    		String tel= request.getParameter("seller-phone");
+	    		String tel2= request.getParameter("seller-phone2");
+	    		String tel3= request.getParameter("seller-phone3");
+	    		String addr = request.getParameter("seller-residence2");
+	    		String addr2 = request.getParameter("seller-residence3");
+	    		String no = request.getParameter("seller-address1");  
+	    		String no2 = request.getParameter("seller-address2");
+	    		String no3 = request.getParameter("seller-address3");
+	    		String scode = request.getParameter("seller-residence");
+	    		
+	    		String stel = tel + "-" + tel2 + "-" + tel3;
+	    		String caddr = addr + addr2;
+	    		String cno =  no + "-" + no2 + "-" + no3;
+	    		
+	    		Seller seller = new Seller(sid, spw, company, stel, caddr, cno, scode);
+	    		
+	    		int result = new MemberService().insertMember(seller);
+	    		
+	    		if(result <= 0){
+	  		    	System.out.println("*****joinFormServlet line 88*****");
+	  		    	System.out.println("판매회원가입 에러");
+	  		    }
+	    		
+	    	}
+	      
 		  RequestDispatcher view = request.getRequestDispatcher("/main.re");
 		  view.forward(request, response);
 	}
