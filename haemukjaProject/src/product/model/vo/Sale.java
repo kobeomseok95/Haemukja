@@ -17,6 +17,7 @@ public class Sale implements Serializable {
 	private String sbKind;
 	private String sId;
 	private int pId;
+	private String company;
 	
 	public Sale() {
 		super();
@@ -33,6 +34,13 @@ public class Sale implements Serializable {
 		this.pId = pId;
 	}
 	
+	public Sale(int sbNo, String sbTitle, String company) {
+		super();
+		this.sbNo = sbNo;
+		this.sbTitle = sbTitle;
+		this.company = company;
+	}
+
 	public int getSbNo() {
 		return sbNo;
 	}
@@ -79,11 +87,18 @@ public class Sale implements Serializable {
 		return serialVersionUID;
 	}
 	
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
 	@Override
 	public String toString() {
 		return "Sale [sbNo=" + sbNo + ", sbTitle=" + sbTitle + ", sbDate=" + sbDate + ", sbContent=" + sbContent
-				+ ", sbKind=" + sbKind + ", sId=" + sId + ", pId=" + pId + "]";
+				+ ", sbKind=" + sbKind + ", sId=" + sId + ", pId=" + pId + ", company=" + company + "]";
 	}
-	
 
 }
