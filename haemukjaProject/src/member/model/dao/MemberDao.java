@@ -184,26 +184,7 @@ public class MemberDao {
 		return result;
 	}
 
-	public int selectPid(Connection conn, String ptitle) {
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		String query = "SELECT PID FROM PRODUCT WHERE PTITLE = ?";
-		int pid=0;
-		
-		try {
-			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, ptitle);
-			
-			rset = pstmt.executeQuery();
-			
-			while(rset.next()) {
-				pid = rset.getInt("pid");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return pid;
-	}
+	
 
 	public int oIdInsert(Connection conn,int allPrice) {
 		PreparedStatement pstmt = null;
@@ -247,17 +228,18 @@ public class MemberDao {
 		return oid;
 	}
 
-	public int memOrder(Connection conn, int oid, String payment, String count, String userId, Integer pid) {
+	public int memOrder(Connection conn, int oid, int payment, String count, String userId, String pid, int osid) {
 		PreparedStatement pstmt = null;
 		int result =0;
-		String query ="INSERT INTO MORDERLIST VALUES(?,SYSDATE,?,SYSDATE,DEFAULT,DEFAULT,?,?,?,1,DEFAULT)";
+		String query ="INSERT INTO MORDERLIST VALUES(?,SYSDATE,?,SYSDATE,DEFAULT,DEFAULT,?,?,?,?,DEFAULT)";
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, oid);
-			pstmt.setString(2, payment);
+			pstmt.setInt(2, payment);
 			pstmt.setString(3, count);
 			pstmt.setString(4, userId);
-			pstmt.setInt(5, pid);
+			pstmt.setString(5, pid);
+			pstmt.setInt(6, osid);
 			
 			result=pstmt.executeUpdate();
 		} catch (SQLException e) {

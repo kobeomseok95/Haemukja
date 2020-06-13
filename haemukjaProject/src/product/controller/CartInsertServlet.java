@@ -35,13 +35,15 @@ public class CartInsertServlet extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		
 		int pid=Integer.valueOf(request.getParameter("pid"));
-		System.out.println("pid넘어오니"+pid);
+	
 		String count=request.getParameter("count");
-		System.out.println("count 넘어오니:"+count);
+	
 		
 		HttpSession session = request.getSession();
 		Member member = (Member)(session.getAttribute("loginMember"));
 		String userId = member.getMid();
+		
+		
 		
 		int result = new ProductService().cartInsert(userId,pid,count);
 		RequestDispatcher view = null;

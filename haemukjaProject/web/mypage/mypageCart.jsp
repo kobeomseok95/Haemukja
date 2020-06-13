@@ -103,9 +103,10 @@
                 <%for(int i =0; i<list.size(); i++){ 
                 MCart m = list.get(i);%>
                 <input type="hidden" name="price" value="<%=list.get(i).getPprice() %>">
-                <input type="hidden" name="product" value=" <%=list.get(i).getPtitle() %>" >
+                <input type="hidden" name="pid" value=" <%=list.get(i).getPid() %>" >
                 <input type="hidden" name="cid" value="<%=list.get(i).getCid()%>">
                 <input type="hidden" name="sbno" value="<%=list.get(i).getSbno()%>">
+                <input type="hidden" name="ptitle" value="<%=list.get(i).getPtitle()%>">
                   <tr style="height: 90px;">
                 
                     <td style="border-left: none; border-right: none;">
@@ -123,7 +124,7 @@
                       <input type="number" name="pcount" style="text-align: right; width: 43px; margin-bottom: 5px;" min="1" max="99" step="1" value="<%=list.get(i).getCamount()%>">
                     </td>
                     <td>
-                      <button type="button" onclick="location.href='<%=request.getContextPath()%>/member.me?product=<%=list.get(i).getPtitle()%>&pcount=<%=list.get(i).getCamount()%>&price=<%=list.get(i).getPprice()%>&cid=<%=list.get(i).getCid()%>&sbno=<%=list.get(i).getSbno()%>'">주문</button>
+                      <button type="button" onclick="location.href='<%=request.getContextPath()%>/member.me?pid=<%=list.get(i).getPid()%>&pcount=<%=list.get(i).getCamount()%>&price=<%=list.get(i).getPprice()%>&cid=<%=list.get(i).getCid()%>&sbno=<%=list.get(i).getSbno()%>&ptitle=<%=list.get(i).getPtitle()%>'">주문</button>
                       
                     </td>
                   </tr>
