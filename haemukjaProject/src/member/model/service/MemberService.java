@@ -110,13 +110,9 @@ public class MemberService {
 		}
 	}
 
-	public int selectPid(String ptitle) {
-		Connection conn = getConnection();
 
-		int pid = new MemberDao().selectPid(conn, ptitle);
-		close(conn);
-		return pid;
-	}
+	
+
 
 	public int oIdInsert(int allPrice) {
 		Connection conn = getConnection();
@@ -185,10 +181,12 @@ public class MemberService {
 		return oid;
 	}
 
-	public int memOrder(int oid, String payment, String count, String userId, Integer pid) {
+	public int memOrder(int oid, int payment, String count, String userId, String pid, int osid) {
 		Connection conn = getConnection();
-		int result = new MemberDao().memOrder(conn, oid, payment, count, userId, pid);
-		if (result > 0) {
+
+		int result = new MemberDao().memOrder(conn,oid,payment,count,userId,pid,osid);
+		if(result>0) {
+		
 			commit(conn);
 		} else {
 			rollback(conn);

@@ -66,6 +66,7 @@ public class MypageOrderServlet extends HttpServlet {
 			
 			currentPage = Integer.valueOf(request.getParameter("currentPage"));
 //			String -> Int
+		
 			
 		
 		}else {
