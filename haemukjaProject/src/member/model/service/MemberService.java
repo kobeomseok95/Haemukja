@@ -196,5 +196,13 @@ public class MemberService {
 		close(conn);
 		return result;
 	}
+
+	public int checkMemberId(int joinType, String userId) {
+		Connection conn = getConnection();
+		int result = new MemberDao().checkMemberId(conn, joinType, userId);
+		close(conn);
+		return result;
+	}
+
 	
 }

@@ -300,7 +300,6 @@ public class MemberDao {
 			pstmt.setString(9, member.getMcode());
 			
 			result = pstmt.executeUpdate();
-			System.out.println("회원가입 결과 확인 : " + result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -327,7 +326,6 @@ public class MemberDao {
 			pstmt.setString(7, seller.getScode());
 			
 			result = pstmt.executeUpdate();
-			System.out.println("회원가입 결과 확인 : " + result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -405,6 +403,37 @@ public class MemberDao {
 				close(pstmt);
 			}
 			
+			return result;
+		}
+
+		public int checkMemberId(Connection conn, int joinType, String userId) {
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql = "";
+			if(joinType == 1) {
+				sql = "SELECT COUNT(*) FROM MEMBER WHERE MID = ?";
+			}
+			else {
+				sql = "SELECT COUNT(*) FROM SELLER WHERE SID = ?";
+			}
+			int result = 0;
+			
+			try {
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, userId);
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					if(rs.getInt(1) > 0) {
+						result = 1;
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}finally {
+				close(pstmt);
+			}
+
 			return result;
 		}
 }

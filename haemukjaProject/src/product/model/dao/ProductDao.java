@@ -875,6 +875,7 @@ public class ProductDao {
 	      return result;
 	 }
 
+
 	public int selectMcart(Connection conn, String userId, int pid) {
 		PreparedStatement pstmt = null; 
 		ResultSet rset = null;
@@ -921,9 +922,36 @@ public class ProductDao {
 			close(pstmt);
 		}
 		
-		
-		
 		return result;
+	}
+
+	public ArrayList<Sale> selectSList(Connection conn, String searchContent) {
+		Statement stmt = null;
+		ResultSet rset = null;
+		ArrayList<Sale> slist = new ArrayList<>();
+		
+		String query = "SELECT SBNO, SBTITLE, COMPANY FROM SELL S1 JOIN SELLER S2 ON(S1.SID=S2.SID) WHERE SBTITLE LIKE '%" + searchContent + "%' ORDER BY SBNO ASC";
+		
+		try {
+			stmt = conn.createStatement();
+			
+			rset = stmt.executeQuery(query);
+			while(rset.next()) {
+				Sale s = new Sale(rset.getInt("SBNO"),
+								rset.getString("SBTITLE"),
+								rset.getString("COMPANY"));
+				
+				slist.add(s);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(stmt);
+			close(rset);
+		}
+		
+		return slist;
+
 	}
 
 }

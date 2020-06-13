@@ -373,4 +373,14 @@ public class ProductService {
 	      return result;
 	 }
 
+	public ArrayList<Sale> selectSList(String searchContent) {
+		Connection conn = getConnection();
+		
+		ArrayList<Sale> slist = new ProductDao().selectSList(conn, searchContent);
+		
+		close(conn);
+		
+		return slist;
+	}
+
 }

@@ -68,11 +68,20 @@
   @import url(https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap);*{font-family:'Nanum Gothic',sans-serif;font-size:15px}.logo{height:80px}.list-group a{font-size:18px;font-weight:700}.list-group-item{border-style:none}.panel-heading{background-color:orange;text-align:center;line-height:50px;vertical-align:middle;color:#fff;font-size:20px;font-weight:700}#login{background-color:orange;text-align:center;width:150px;height:200px;border-radius:15px;position:fixed}#loginBtn{background-color:#323232;text-align:center;border:none;border-radius:3px;color:#fff}a{color:#000;text-decoration:none}a:hover{color:orange;text-decoration:none}button{background-color:#323232;text-align:center;border:none;border-radius:3px;color:#fff}footer{background-color:#e6e6e6;height:200px}.notice{background-color:#ffbfdd}#write{text-align:right}.btn{float:right;background-color:#323232;color:#fff}.shipInfoBox{display:none}.form-control{display:inline}.result{border-style:none}
 
     .tag {
-      text-align: center;
+      /* text-align: center; */
       background-color: rgb(230, 230, 230);
-      width: 550px;
+      width: 620px;
       padding: 5px;
       display: none;
+    }
+    
+    .tagResultTable{
+    	text-align: center;
+    }
+    
+    .searchResultRow:hover{
+    	cursor: pointer;
+    	font-weight: bold;
     }
   </style>
   
@@ -114,90 +123,430 @@
               <h5>1.</h5>
               <input type="file" id="image1" name="b"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
+                <input type="text" class="tag1" name="tag">
+                <input type="text" class="tag2" name="tag">
+                <input type="text" class="tag3" name="tag">
+                <button type="button" class="modalBtn" data-target="#layerpop1" data-toggle="modal">태그검색</button>
+                <div class="modal fade" id="layerpop1" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        태그 검색
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <input type="text" class="searchTagContent" name="searchTagContent">
+				            <button type="button" class="searchTagBtn">검색</button>
+				            <hr>
+				            <div class="searchResult">
+				    			<table class="tagResultTable">
+				    				<thead class="tagResultTableHead">
+				    					<tr>
+				    						<th width="100px">번호</th>
+				    						<th width="400px">제목</th>
+				    						<th width="200px">판매처</th>
+				    					</tr>
+				    				</thead>
+				    				<tbody class="tagResultTableBody">
+				    					<!-- ajax 실행 후 추가 -->
+				    				</tbody>
+				    			</table>
+				    		</div>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
               </div>
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>2.</h5>
               <input type="file" id="image2" name="c"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
+                <input type="text" class="tag1" name="tag">
+                <input type="text" class="tag2" name="tag">
+                <input type="text" class="tag3" name="tag">
+                <button type="button" class="modalBtn" data-target="#layerpop2" data-toggle="modal">태그검색</button>
+                <div class="modal fade" id="layerpop2" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        태그 검색
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <input type="text" class="searchTagContent" name="searchTagContent">
+				            <button type="button" class="searchTagBtn">검색</button>
+				            <hr>
+				            <div class="searchResult">
+				    			<table class="tagResultTable">
+				    				<thead class="tagResultTableHead">
+				    					<tr>
+				    						<th width="100px">번호</th>
+				    						<th width="400px">제목</th>
+				    						<th width="200px">판매처</th>
+				    					</tr>
+				    				</thead>
+				    				<tbody class="tagResultTableBody">
+				    					<!-- ajax 실행 후 추가 -->
+				    				</tbody>
+				    			</table>
+				    		</div>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
               </div>
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>3.</h5>
               <input type="file" id="image3" name="d"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
+                <input type="text" class="tag1" name="tag">
+                <input type="text" class="tag2" name="tag">
+                <input type="text" class="tag3" name="tag">
+                <button type="button" class="modalBtn" data-target="#layerpop3" data-toggle="modal">태그검색</button>
+                <div class="modal fade" id="layerpop3" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        태그 검색
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <input type="text" class="searchTagContent" name="searchTagContent">
+				            <button type="button" class="searchTagBtn">검색</button>
+				            <hr>
+				            <div class="searchResult">
+				    			<table class="tagResultTable">
+				    				<thead class="tagResultTableHead">
+				    					<tr>
+				    						<th width="100px">번호</th>
+				    						<th width="400px">제목</th>
+				    						<th width="200px">판매처</th>
+				    					</tr>
+				    				</thead>
+				    				<tbody class="tagResultTableBody">
+				    					<!-- ajax 실행 후 추가 -->
+				    				</tbody>
+				    			</table>
+				    		</div>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
               </div>
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>4.</h5>
               <input type="file" id="image4" name="e"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
+                <input type="text" class="tag1" name="tag">
+                <input type="text" class="tag2" name="tag">
+                <input type="text" class="tag3" name="tag">
+                <button type="button" class="modalBtn" data-target="#layerpop4" data-toggle="modal">태그검색</button>
+                <div class="modal fade" id="layerpop4" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        태그 검색
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <input type="text" class="searchTagContent" name="searchTagContent">
+				            <button type="button" class="searchTagBtn">검색</button>
+				            <hr>
+				            <div class="searchResult">
+				    			<table class="tagResultTable">
+				    				<thead class="tagResultTableHead">
+				    					<tr>
+				    						<th width="100px">번호</th>
+				    						<th width="400px">제목</th>
+				    						<th width="200px">판매처</th>
+				    					</tr>
+				    				</thead>
+				    				<tbody class="tagResultTableBody">
+				    					<!-- ajax 실행 후 추가 -->
+				    				</tbody>
+				    			</table>
+				    		</div>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
               </div>
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>5.</h5>
               <input type="file" id="image5" name="f"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
+                <input type="text" class="tag1" name="tag">
+                <input type="text" class="tag2" name="tag">
+                <input type="text" class="tag3" name="tag">
+                <button type="button" class="modalBtn" data-target="#layerpop5" data-toggle="modal">태그검색</button>
+                <div class="modal fade" id="layerpop5" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        태그 검색
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <input type="text" class="searchTagContent" name="searchTagContent">
+				            <button type="button" class="searchTagBtn">검색</button>
+				            <hr>
+				            <div class="searchResult">
+				    			<table class="tagResultTable">
+				    				<thead class="tagResultTableHead">
+				    					<tr>
+				    						<th width="100px">번호</th>
+				    						<th width="400px">제목</th>
+				    						<th width="200px">판매처</th>
+				    					</tr>
+				    				</thead>
+				    				<tbody class="tagResultTableBody">
+				    					<!-- ajax 실행 후 추가 -->
+				    				</tbody>
+				    			</table>
+				    		</div>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
               </div>
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>6.</h5>
               <input type="file" id="image6" name="g"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
+                <input type="text" class="tag1" name="tag">
+                <input type="text" class="tag2" name="tag">
+                <input type="text" class="tag3" name="tag">
+                <button type="button" class="modalBtn" data-target="#layerpop6" data-toggle="modal">태그검색</button>
+                <div class="modal fade" id="layerpop6" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        태그 검색
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <input type="text" class="searchTagContent" name="searchTagContent">
+				            <button type="button" class="searchTagBtn">검색</button>
+				            <hr>
+				            <div class="searchResult">
+				    			<table class="tagResultTable">
+				    				<thead class="tagResultTableHead">
+				    					<tr>
+				    						<th width="100px">번호</th>
+				    						<th width="400px">제목</th>
+				    						<th width="200px">판매처</th>
+				    					</tr>
+				    				</thead>
+				    				<tbody class="tagResultTableBody">
+				    					<!-- ajax 실행 후 추가 -->
+				    				</tbody>
+				    			</table>
+				    		</div>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
               </div>
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>7.</h5>
               <input type="file" id="image7" name="h"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
+                <input type="text" class="tag1" name="tag">
+                <input type="text" class="tag2" name="tag">
+                <input type="text" class="tag3" name="tag">
+                <button type="button" class="modalBtn" data-target="#layerpop7" data-toggle="modal">태그검색</button>
+                <div class="modal fade" id="layerpop7" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        태그 검색
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <input type="text" class="searchTagContent" name="searchTagContent">
+				            <button type="button" class="searchTagBtn">검색</button>
+				            <hr>
+				            <div class="searchResult">
+				    			<table class="tagResultTable">
+				    				<thead class="tagResultTableHead">
+				    					<tr>
+				    						<th width="100px">번호</th>
+				    						<th width="400px">제목</th>
+				    						<th width="200px">판매처</th>
+				    					</tr>
+				    				</thead>
+				    				<tbody class="tagResultTableBody">
+				    					<!-- ajax 실행 후 추가 -->
+				    				</tbody>
+				    			</table>
+				    		</div>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
               </div>
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>8.</h5>
               <input type="file" id="image8" name="i"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
+                <input type="text" class="tag1" name="tag">
+                <input type="text" class="tag2" name="tag">
+                <input type="text" class="tag3" name="tag">
+                <button type="button" class="modalBtn" data-target="#layerpop8" data-toggle="modal">태그검색</button>
+                <div class="modal fade" id="layerpop8" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        태그 검색
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <input type="text" class="searchTagContent" name="searchTagContent">
+				            <button type="button" class="searchTagBtn">검색</button>
+				            <hr>
+				            <div class="searchResult">
+				    			<table class="tagResultTable">
+				    				<thead class="tagResultTableHead">
+				    					<tr>
+				    						<th width="100px">번호</th>
+				    						<th width="400px">제목</th>
+				    						<th width="200px">판매처</th>
+				    					</tr>
+				    				</thead>
+				    				<tbody class="tagResultTableBody">
+				    					<!-- ajax 실행 후 추가 -->
+				    				</tbody>
+				    			</table>
+				    		</div>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
               </div>
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>9.</h5>
               <input type="file" id="image9" name="j"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
+                <input type="text" class="tag1" name="tag">
+                <input type="text" class="tag2" name="tag">
+                <input type="text" class="tag3" name="tag">
+                <button type="button" class="modalBtn" data-target="#layerpop9" data-toggle="modal">태그검색</button>
+                <div class="modal fade" id="layerpop9" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        태그 검색
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <input type="text" class="searchTagContent" name="searchTagContent">
+				            <button type="button" class="searchTagBtn">검색</button>
+				            <hr>
+				            <div class="searchResult">
+				    			<table class="tagResultTable">
+				    				<thead class="tagResultTableHead">
+				    					<tr>
+				    						<th width="100px">번호</th>
+				    						<th width="400px">제목</th>
+				    						<th width="200px">판매처</th>
+				    					</tr>
+				    				</thead>
+				    				<tbody class="tagResultTableBody">
+				    					<!-- ajax 실행 후 추가 -->
+				    				</tbody>
+				    			</table>
+				    		</div>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
               </div>
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>10.</h5>
               <input type="file" id="image10" name="k"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
-                <input type="text" name="tag">
+                <input type="text" class="tag1" name="tag">
+                <input type="text" class="tag2" name="tag">
+                <input type="text" class="tag3" name="tag">
+                <button type="button" class="modalBtn" data-target="#layerpop10" data-toggle="modal">태그검색</button>
+                <div class="modal fade" id="layerpop10" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        태그 검색
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <input type="text" class="searchTagContent" name="searchTagContent">
+				            <button type="button" class="searchTagBtn">검색</button>
+				            <hr>
+				            <div class="searchResult">
+				    			<table class="tagResultTable">
+				    				<thead class="tagResultTableHead">
+				    					<tr>
+				    						<th width="100px">번호</th>
+				    						<th width="400px">제목</th>
+				    						<th width="200px">판매처</th>
+				    					</tr>
+				    				</thead>
+				    				<tbody class="tagResultTableBody">
+				    					<!-- ajax 실행 후 추가 -->
+				    				</tbody>
+				    			</table>
+				    		</div>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
               </div>
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br><br>
@@ -270,7 +619,57 @@
   <script>
     $(function(){
       $(".tagBtn").click(function(){
-        console.log($(this).next().toggle());
+        $(this).next().toggle();
+      });
+      
+      $(document).on("click",".searchResultRow",function(){
+    	  var tag = $(this).find(".sbNo").html();
+    	  var tag1 = $(this).parents(".tag").find(".tag1").val();
+    	  var tag2 = $(this).parents(".tag").find(".tag2").val();
+    	  var tag3 = $(this).parents(".tag").find(".tag3").val();
+    	  
+    	  if(tag1 == "") {
+    		  $(this).parents(".tag").find(".tag1").val(tag);
+    	  } else if(tag2 == "") {
+    		  $(this).parents(".tag").find(".tag2").val(tag);
+    	  } else {
+    		  $(this).parents(".tag").find(".tag3").val(tag);
+    	  }
+    	  
+    	  $(".tagResultTableBody").html("");
+    	  $('.modal').modal("hide");
+    	  $(".modal-backdrop").remove();
+      });
+      
+      $(".searchTagBtn").click(function(){
+    	  var tag = $(this).parent().find(".searchTagContent").val();
+    	  
+    	  $.ajax({
+    		url:"<%=request.getContextPath()%>/search.sa",
+    		type:"get",
+    		data:{tag:tag},
+      		  success:function(data) {
+      			$tagResultTable = $(".tagResultTableBody");
+      			$tagResultTable.html("");
+      			
+      			for(var key in data) {
+      				var $tr = $("<tr class='searchResultRow'>");
+      				var $noTd = $("<td class='sbNo'>").text(data[key].sbNo).css("width","100px");
+      				var $titleTd = $("<td class='sbTitle'>").text(data[key].sbTitle).css("width","400px");
+      				var $writerTd = $("<td class='company'>").text(data[key].company).css("width","200px");
+
+      				$tr.append($noTd);
+      				$tr.append($titleTd);
+      				$tr.append($writerTd);
+      				$tagResultTable.append($tr);
+      			}
+      			
+      			$(".searchTagContent").val("");
+      		},
+      		error:function(data) {
+      			console.log("ajax 실패");
+      		}
+    	  })
       });
     });
     
@@ -280,6 +679,7 @@
   	function logout(){
   		location.href="<%=request.getContextPath()%>/logout.me";
   	}
+  	
   </script>
 
 </body>
