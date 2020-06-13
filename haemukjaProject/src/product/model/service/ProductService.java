@@ -247,11 +247,21 @@ public class ProductService {
 	public int cartInsert(String userId, int pid, String count) {
 		Connection conn = getConnection();
 		
-		int result = new ProductDao().cartInsert(conn,userId,pid,count);
+		ProductDao pDao = new ProductDao();
+		int mcart = pDao.selectMcart(conn,userId,pid);
+	
+		int result=0;
 
-		if(result > 0) {
+		if(mcart>0) {
+			result=pDao.updateMcartCount(conn,userId,pid,count);
+			
+		}else {
+			result = pDao.cartInsert(conn,userId,pid,count);
+		
+		}
+		if(result>0) {
 			commit(conn);
-		} else {
+		}else {
 			rollback(conn);
 		}
 		

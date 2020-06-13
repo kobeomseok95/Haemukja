@@ -49,24 +49,29 @@ public class MypageDao {
 		
 		ArrayList<MCart> list = new ArrayList<MCart>();
 		
-		String query = "SELECT * FROM MCART_VIEW WHERE ROWNUM BETWEEN ? AND ? AND MID =? ";
+		String query = "SELECT * FROM (SELECT ROWNUM AS RNUM, CID, MID, PTITLE, CAMOUNT, PPRICE, SBNO,PID\r\n" + 
+				"FROM MCART_VIEW WHERE MID=?)\r\n" + 
+				"WHERE RNUM BETWEEN ? AND ?";
 		int startRow = (currentPage-1)*limit+1;
 		int endRow = startRow + (limit -1);
 		try {
 			pstmt =conn.prepareStatement(query);
-			pstmt.setInt(1, startRow);
-			pstmt.setInt(2, endRow);
-			pstmt.setString(3, userId);
+			pstmt.setString(1, userId);
+			pstmt.setInt(2, startRow);
+			pstmt.setInt(3, endRow);
+			
 			
 			rset = pstmt.executeQuery();
 			while(rset.next()) {
 			
 				MCart mcart = new MCart(rset.getInt("cid"),
 						rset.getString("mid"),
-						rset.getString("ptitle"),
+						rset.getInt("pid"),
 						rset.getInt("camount"),
+						rset.getString("ptitle"),
 						rset.getInt("pprice"),
-						rset.getInt("sbno"));
+						rset.getInt("sbno")
+						);
 				list.add(mcart);
 			}
 			
@@ -113,15 +118,18 @@ public class MypageDao {
 	      
 	      ArrayList<MyOrder> list = new ArrayList<MyOrder>();
 	      
-	      String query = "SELECT * FROM MORDERLIST_VIEW WHERE ROWNUM BETWEEN ? AND ? AND MID =? ";
+	      String query = "SELECT * FROM (SELECT ROWNUM AS RNUM, ODATE, SHIPCOM, SHIPNO, MID, O_NAME, OSID,OID,PAMOUNT,PID,SBNO,PTITLE \r\n" + 
+	      		"FROM MORDERLIST_VIEW WHERE MID=?)\r\n" + 
+	      		"WHERE RNUM BETWEEN ? AND ?";
 	      int startRow = (currentPage-1)*limit+1;
 	      int endRow = startRow + (limit -1);
 	      
 	      try {
 	         pstmt = conn.prepareStatement(query);
-	         pstmt.setInt(1, startRow);
-	         pstmt.setInt(2, endRow);
-	         pstmt.setString(3, userId);
+	         pstmt.setString(1, userId);
+	         pstmt.setInt(2, startRow);
+	         pstmt.setInt(3, endRow);
+	         
 	         
 	         rset = pstmt.executeQuery();
 	         while(rset.next()) {
@@ -187,15 +195,18 @@ public class MypageDao {
 	      
 	      ArrayList<MyOrder> list = new ArrayList<MyOrder>();
 	      
-	      String query = "SELECT * FROM REFUNDLIST_VIEW WHERE ROWNUM BETWEEN ? AND ? AND MID =? ";
+	      String query = "SELECT * FROM (SELECT ROWNUM AS RNUM, ODATE, REFDATE, O_NAME, MID, SBNO, PTITLE\r\n" + 
+	      		"FROM REFUNDLIST_VIEW WHERE MID=?)\r\n" + 
+	      		"WHERE RNUM BETWEEN ? AND ?";
 	      int startRow = (currentPage-1)*limit+1;
 	      int endRow = startRow + (limit -1);
 	      
 	      try {
 	         pstmt = conn.prepareStatement(query);
-	         pstmt.setInt(1, startRow);
-	         pstmt.setInt(2, endRow);
-	         pstmt.setString(3, userId);
+	         pstmt.setString(1, userId);
+	         pstmt.setInt(2, startRow);
+	         pstmt.setInt(3, endRow);
+	        
 	         
 	         rset= pstmt.executeQuery();
 	         while(rset.next()) {
