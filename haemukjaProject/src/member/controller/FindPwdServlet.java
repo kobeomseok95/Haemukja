@@ -1,8 +1,8 @@
 package member.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import member.model.service.MemberService;
-import member.model.vo.Member;
 
 /**
  * Servlet implementation class FindPwdServlet
@@ -33,23 +32,24 @@ public class FindPwdServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		
+		MemberService ms = new MemberService();
 		String id = request.getParameter("id");
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
 		
-		
-		String changePwd = new MemberService().findPwd(id,name,email);
-	
-		RequestDispatcher view = null;
-		
-		if(changePwd != null) {
-			view = request.getRequestDispatcher("member/findPwd.jsp");
-			request.setAttribute("changePwd", changePwd);
+		int findResult = ms.findPwd(id, name, email);
+		String changedPwd = ms.selectPwd(id);
+
+		if(findResult > 0) {	//새 비밀번호까지 주어진 경우
+			try {
+				ms.sendEmail(email, changedPwd);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	//이메일 전송 완료
+			response.getWriter().println("회원님의 이메일로 임시 비밀번호가 발급되었습니다.");
 		}else {
-			view = request.getRequestDispatcher("member/findPwd.jsp");
-			request.setAttribute("msg", "입력하신 회원 정보가 없습니다.");
+			response.getWriter().println("회원 정보를 찾지 못했습니다.");
 		}
-		view.forward(request, response);
 	}
 
 	/**

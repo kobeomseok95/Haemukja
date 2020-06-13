@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 
 import member.model.vo.Member;
 import member.model.vo.Seller;
@@ -109,60 +110,66 @@ public class MemberDao {
 		
 		return id;
 	}
-
 	public int findPwd(Connection conn, String id, String name, String email) {
+		ResultSet rs = null;
 		PreparedStatement pstmt = null;
+		String sql = "SELECT MID, MNAME, MEMAIL\r\n" + 
+				"FROM MEMBER\r\n" + 
+				"WHERE MID = ?\r\n" + 
+				"AND MNAME = ?\r\n" + 
+				"AND MEMAIL = ?";
 		int result = 0;
-		String pwd = String.valueOf((int)(Math.random() * 10000 + 1));
-	
-		String query = "UPDATE MEMBER SET MPW=? WHERE MID = ? AND MNAME=? AND MEMAIL=?";
 		
 		try {
-			pstmt= conn.prepareStatement(query);
-			pstmt.setString(1, pwd);
-			pstmt.setString(2, id);
-		
-			pstmt.setString(3, name);
-			pstmt.setString(4, email);
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.setString(2, name);
+			pstmt.setString(3, email);
+			rs = pstmt.executeQuery();
 			
-			result = pstmt.executeUpdate();
+			if(rs.next()) {
+				++result;
+			}
 			
-			
-		} catch (SQLException e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		
 		return result;
 	}
-
-	public String selectPwd(Connection conn, String id, String name, String email) {
+	
+	public int updatePwd(Connection conn, String id) {
+		int result = 0;
 		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		String pwd = null;
+		//새로운 비밀번호 조합
+		String changePwd = "";
+		int maxLength = (int)(Math.random() * 8) + 8;
 		
-		String query = "SELECT * FROM MEMBER WHERE MID=? AND MNAME=? AND MEMAIL=?";
+		for(int i = 0; i < maxLength; i++) {
+			boolean type = new Random().nextBoolean();
+			if(type) {   //문자추가
+				int asciiRanNum = 97 + (int)(Math.random() * 26);
+				changePwd +=  (char)(asciiRanNum);
+			}
+			else {		//숫자추가
+				changePwd += String.valueOf((int)(Math.random() * 9) + 1);
+			}
+		}
+		String sql = "UPDATE MEMBER\r\n" + 
+							"SET MPW = ?\r\n" + 
+							"WHERE MID = ?";
 		
 		try {
-			pstmt= conn.prepareStatement(query);
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, changePwd);
+			pstmt.setString(2, id);
+			result = pstmt.executeUpdate();
 			
-			pstmt.setString(1, id);
-			pstmt.setString(2, name);
-			pstmt.setString(3, email);
-			
-			rset = pstmt.executeQuery();
-			
-			while(rset.next()) {
-				pwd = rset.getString("mpw");
-			}
-		} catch (SQLException e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
-		
-		return pwd;
+		return result;
 	}
-
-	
 
 	public int nMOrderList(Connection conn, String payment) {
 		PreparedStatement pstmt = null;
@@ -435,6 +442,26 @@ public class MemberDao {
 			}
 
 			return result;
+		}
+
+		public String selectPwd(Connection conn, String id) {
+			String pwd = "";
+			ResultSet rs = null;
+			PreparedStatement pstmt = null;
+			String sql = "SELECT MPW FROM MEMBER WHERE MID = ?";
+			
+			try {
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, id);
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					pwd = rs.getString(1);
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			return pwd;
 		}
 }
 
