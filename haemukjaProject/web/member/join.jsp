@@ -410,7 +410,6 @@
 						  else{
 					          $('#resultMemberId').text("8자 이상 15자이하 소영문자,숫자만 가능합니다.");
 					          $('#resultMemberId').css({ 'color': 'red', 'font-weight': 'bolder' });
-					          $('#join-id').val('');					  							  
 						  }
 			        } else {	//유효성 검사가 끝났다면
 			        	if(data == 1){	//아이디가 중복일 경우
@@ -492,7 +491,6 @@
 	  				  else{
 		  		          $('#resultSellerId').text("8자 이상 15자이하 소영문자,숫자만 가능합니다.");
 		  		          $('#resultSellerId').css({ 'color': 'red', 'font-weight': 'bolder' });
-		  		          $('#seller-id').val('');	  					  
 	  				  }
 	  		        } else {	//유효성 검사가 끝났다면
 	  		        	if(data == 1){	//아이디가 중복일 경우
