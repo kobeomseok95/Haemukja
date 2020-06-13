@@ -88,7 +88,7 @@ public class MemberService {
 	public void sendEmail(String email, String changedPwd) {
 		String host = "smtp.naver.com";
 		String user = "kobumssh@naver.com";
-		String password = "rhqjatjrWkd";
+		String password = "****";		//연결할때는 비밀번호 수정해주기
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
 		props.put("mail.smtp.port", 587);

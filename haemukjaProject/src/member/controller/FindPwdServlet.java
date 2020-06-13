@@ -1,10 +1,8 @@
 package member.controller;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.PrintWriter;
 
-import javax.mail.MessagingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import member.model.service.MemberService;
-import member.model.vo.Member;
 
 /**
  * Servlet implementation class FindPwdServlet
@@ -42,19 +39,17 @@ public class FindPwdServlet extends HttpServlet {
 		
 		int findResult = ms.findPwd(id, name, email);
 		String changedPwd = ms.selectPwd(id);
-		
-		RequestDispatcher view = request.getRequestDispatcher("member/findPwd.jsp");
+
 		if(findResult > 0) {	//새 비밀번호까지 주어진 경우
 			try {
 				ms.sendEmail(email, changedPwd);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}	//이메일 전송 완료
-			request.setAttribute("msg", "회원님의 이메일로 임시 비밀번호가 발급되었습니다.");
+			response.getWriter().println("회원님의 이메일로 임시 비밀번호가 발급되었습니다.");
 		}else {
-			request.setAttribute("msg", "회원 정보를 찾지 못했습니다.");
+			response.getWriter().println("회원 정보를 찾지 못했습니다.");
 		}
-		view.forward(request, response);
 	}
 
 	/**
