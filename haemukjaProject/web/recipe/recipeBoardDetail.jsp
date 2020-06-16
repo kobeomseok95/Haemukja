@@ -177,8 +177,8 @@
         <div class="row">
           <div class="col-md-12" align="right">
           	<% if(loginMember != null && loginId.equals(recipe.getmId())) { %>
-		      <!-- <button type="button">수정</button> -->
-		      <button onclick="deleteRecipe()">삭제</button>
+		      <button type="button" onclick="updateRecipe()">수정</button>
+		      <button type="button" onclick="deleteRecipe()">삭제</button>
           	<% } %>
           </div>
         </div>
@@ -323,15 +323,15 @@
   <script>
     $(function(){
       $(".replyText").hide();
-      $(".image").click(function(){
-        $(this).next().toggle();
-      });
+      
       $(".replyBtn").click(function(){
         $(this).parent().parent().next().toggle();
       });
+      
       $(".image").click(function(){
     	 $(this).parent().next().toggle(); 
       });
+      
       $("#addReply").click(function(){	//데이터를 집어 넣은 다음, 쿼리문이 실행되어 여기 실행되게 끔 한다.
 			<%if(loginMember != null){ %>
 				var writer = "<%=loginMember.getMid()%>";
@@ -394,12 +394,18 @@
   		location.href="<%=request.getContextPath()%>/logout.me";
   	}
   	
+  	function updateRecipe() {
+  		location.href="<%=request.getContextPath()%>/select.re?bNo=<%=recipe.getbNo()%>&nCode=<%=recipe.getnCode()%>";
+  	}
+  	
   	function deleteRecipe() {
   		location.href="<%=request.getContextPath()%>/delete.re?bNo=<%=recipe.getbNo()%>&nCode=<%=recipe.getnCode()%>";
   	}
+  	
   	function goBack(){
    	 	history.back();
     }
+  	
   	function pleaseLogin(){
   		<%if(loginMember == null){%>
   			alert("일반회원에게만 권한이 있습니다.");
