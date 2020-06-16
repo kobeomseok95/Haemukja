@@ -430,6 +430,24 @@ public class QnaDao {
 		close(pstmt);
 		return result;
 	}
+
+	public int deleteComment(Connection conn, int qcno) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = "DELETE FROM QNACOM\r\n" + 
+				"WHERE QCNO = ? OR PARENTNO = ?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, qcno);
+			pstmt.setInt(2, qcno);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
 }
 
 

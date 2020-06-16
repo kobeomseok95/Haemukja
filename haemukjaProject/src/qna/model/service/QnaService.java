@@ -159,6 +159,18 @@ public class QnaService {
 		return result;
 	}
 
+	public int deleteComment(int qcno) {
+		Connection conn = getConnection();
+		int result = new QnaDao().deleteComment(conn, qcno);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		return result;
+	}
+
 	
 	
 }

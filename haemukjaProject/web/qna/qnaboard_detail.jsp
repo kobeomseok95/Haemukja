@@ -8,7 +8,6 @@
 	Member loginMember = (Member)session.getAttribute("loginMember");
 	Qna qna = (Qna)request.getAttribute("qna");
 	ArrayList<Comment> replys = (ArrayList<Comment>)request.getAttribute("comment");
-	int commentCount = 0;
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -122,7 +121,6 @@
                 		<%if(c.getDepth() == 0) {%>
                 	<t	r>
                 		<td class="groupNo">
-	                		<%-- <input name="qcno" type="hidden" value="<%=c.getQcno()%>" /> --%>
 	                		<p style="display:none;"><%=c.getQcno()%></p>		
 	                		<p><%=c.getGroupNo() %></p>
                 		</td>
@@ -144,9 +142,8 @@
                 		<%} else{ %>
 					<tr class="hideReplys group<%=c.getGroupNo() %>" style="display:none;">
 						<td>
-						<input name="qcno" type="hidden" value="<%=c.getQcno() %>" />
-						<input name="parentNo" type="hidden" value="<%=c.getParentNo() %>" />
-						
+	                		<p style="display:none;"><%=c.getQcno()%></p>		
+	                		<p style="display:none;"><%=c.getParentNo() %></p>
 						</td>
                 		<td class="commentArea"><%=c.getqComment() %></td>
                 		<td><%=c.getmNickname() %></td>
@@ -231,6 +228,7 @@
 		//udpate는 좀 더 고민 여기부터!
 		$(document).on('click', '.changeReply', function(){
 			<%if(loginMember.getMnickname().equals(qna.getMnickname()) || loginMember.getMid().equals("admin")){ %>
+				var qcno = 0;
 				var actionType= $(this).attr("class").split(" ")[1];
 				var writer = "<%=loginMember.getMid()%>";
 				var qid = <%=qna.getQid()%>;
@@ -246,31 +244,25 @@
 				}
 				else if(actionType === "addReply"){
 					content = $(this).parent().prev().children().val();
-					parentNo = $(this).parent().parent().prev().children('td.groupNo').children().val();
-					console.log("qnaboardDetail line 249 parentNo : " + parentNo);
-					//orderNo 갯수 구하기
+					var temp = $(this).parent().parent().prev().children('td.groupNo').children()[0];
+					parentNo = temp.textContent;
 					var orderNoClass = $(this).parent().parent().attr("class").split(" ")[1];
 					orderNo = $("tr." + orderNoClass).length + 1;
 					groupNo = orderNoClass.substring(5);
 					depth = 1;
 				}
-				//delete작업은 qcno를 불러서 삭제시킨다.
-				else if(actionType === "deleteComment"){
-					var flag = confirm("해당 댓글을 삭제하시겠습니까?");
-					if(flag){
-						
+				else if(actionType === "deleteComment" || actionType === "deleteReply"){
+					if(confirm("해당 댓글을 삭제하시겠습니까?")){
+						var y = $(this).parent().siblings()[0].children[0];
+						qcno = y.textContent;
 					}
 				}
-				else if(actionType === "deleteReply"){
-					var flag = confirm("해당 댓글을 삭제하시겠습니까?");
-					if(flag){
-						
-					}
-				}
+
 				$.ajax({
 					url:"changeComment.qn",
 					type:"post",
-					data:{qid:qid,
+					data:{qcno:qcno,
+							qid:qid,
 							qComment:content, 
 							mid:writer,
 							parentNo:parentNo,
@@ -291,7 +283,6 @@
 						else{
 							for(var i in data){
 								if(data[i].depth == 0){	//댓글일 경우
-									<%=++commentCount%>;
 									var $firstTr = $("<tr>");
 									
 									var $firstTd = $("<td>");
@@ -301,11 +292,6 @@
 									$firstTd.append($p1);
 									$firstTd.append($p2);
 									
-									/* 
-									$firstTd.html("<p style='display:none;'>" + data[i].qcno + "</p>");
-									$firstTd.text(data[i].groupNo);
-									$firstTd.addClass("groupNo");
-									 */
 									var $secondTd = $("<td>");
 									$secondTd.addClass("commentArea").text(data[i].qComment);
 									
@@ -340,29 +326,35 @@
 									$commentTable.append($secondTr);
 								}	
 								else{//답글일 경우
-									/*
 									var $tr = $("<tr>");
 									$tr.addClass("hideReplys");
 									$tr.addClass("group" + data[i].groupNo);
 									$tr.css("display", "none");
+									
 									var $firstTd = $("<td>");
-									$firstTd.html("<input name='qcno' type='hidden' value=" + data[i].qcno + "/><input name='parentNo' type='hidden' value=" + data[i].parentNo + " />");
+									$firstTd.addClass("groupNo")
+									var $p1 = $("<p>").css("display", "none").text(data[i].qcno);
+									var $p2 = $("<p>").css("display", "none").text(data[i].parentNo);
+									$firstTd.append($p1);
+									$firstTd.append($p2);
+									
 									var $secondTd = $("<td>");
 									$secondTd.addClass("commentArea");
 									$secondTd.text(data[i].qComment);
+									
 									var $thirdTd = $("<td>").text(data[i].mNickname);
+									
 									var $fourthTd = $("<td>").text(data[i].qDate);
+									
 									var $fifthTd = $("<td>");
-									$fifthTd.append($("<button>").text("수정"));
-									$fifthTd.html("&nbsp;");
-									$fifthTd.append($("<button>").addClass("changeReply").addClass("deleteReply").text("삭제"));
+									$fifthTd.html("<button>수정</button>&nbsp;<button class='changeReply deleteReply'>삭제</button>");
 									$tr.append($firstTd);
 									$tr.append($secondTd);
 									$tr.append($thirdTd);
 									$tr.append($fourthTd);
 									$tr.append($fifthTd);
+									
 									$commentTable.append($tr);
-									*/
 								}	
 							}
 						}
