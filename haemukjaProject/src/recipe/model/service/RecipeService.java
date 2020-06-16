@@ -259,6 +259,101 @@ public class RecipeService {
 		return rlist;
 	}
 
+	public int updateRecipe(int bNo, String title, String[] contentArr, ArrayList<Attachment> fileList, ArrayList<String> tlist,
+			ArrayList<String> talist, ArrayList<String> alist) {
+		
+		Connection conn = getConnection();
+		RecipeDao rd = new RecipeDao();
+		
+		int result1 = 0;										// 제목 수정한 결과
+		if(!title.equals("")) {
+			result1 = rd.updateRecipe(conn,bNo,title);			
+		}
+		
+		int result2 = rd.deleteContent(conn, bNo);				// 게시글 내용 전부 삭제한 결과
+		int result3 = 0;										// 게시글 내용 다시 추가한 결과
+		if(result2 > 0) {
+			result3 = rd.insertContent(conn, bNo, contentArr);
+		}
+		
+		int result4 = 0;										// 사진 수정한 결과
+		
+		int checkThumbnail = 9;									// checkThumbnail이 1일 경우 섬네일 포함(0일 경우 미포함)
+		if(alist.size() > 0) {
+			checkThumbnail = rd.selectFileLevel(conn, alist.get(0));			
+		}
+		
+		int updateAtCount = 0;
+		int insertAtCount = 0;
+		int start = 0;
+		if(fileList.size() > alist.size() && checkThumbnail == 1) {				// 섬네일 수정과 다른 사진 수정, 사진 추가가 동시에 일어난 경우
+			// 섬네일 먼저 업데이트 하기
+			updateAtCount += rd.updateAttachment(conn, alist.get(0), fileList.get(0).getFileName());
+			
+			for(int i = 1; i < fileList.size(); i++) {
+				if(i < alist.size()) {
+					updateAtCount += rd.updateAttachment(conn, alist.get(i), fileList.get(i).getFileName());
+				} else {
+					insertAtCount += rd.insertAttachment(conn, bNo, fileList.get(i));
+				}
+			}
+			
+		} else if(fileList.size() > alist.size() && checkThumbnail == 0) {		// 섬네일 수정 없이 다른 사진 수정, 사진 추가가 일어난 경우
+			for(int i = 0; i < fileList.size(); i++) {
+				if(i < alist.size()) {
+					updateAtCount += rd.updateAttachment(conn, alist.get(i), fileList.get(i).getFileName());
+				} else {
+					insertAtCount += rd.insertAttachment(conn, bNo, fileList.get(i));
+				}
+			}
+		} else if(fileList.size() == alist.size() && checkThumbnail == 1) {		// 섬네일 수정과 다른 사진 수정이 일어난 경우
+			// 섬네일 먼저 업데이트 하기
+			updateAtCount += rd.updateAttachment(conn, alist.get(0), fileList.get(0).getFileName());
+			
+			for(int i = 1; i < fileList.size(); i++) {
+				updateAtCount += rd.updateAttachment(conn, alist.get(i), fileList.get(i).getFileName());
+			}
+		} else if(fileList.size() == alist.size() && checkThumbnail == 0){
+			for(int i = 0; i < fileList.size(); i++) {							// 섬네일 수정 없이 다른 사진 수정만 일어난 경우
+				updateAtCount += rd.updateAttachment(conn, alist.get(i), fileList.get(i).getFileName());
+			}
+		} else {																// 사진 추가만 일어난 경우
+			for(int i = 0; i < fileList.size(); i++) {
+				insertAtCount += rd.insertAttachment(conn, bNo, fileList.get(i));
+			}
+		}
+		
+		result4 = updateAtCount + insertAtCount;
+		
+		int result5 = rd.deleteTag(conn, fileList);				// 태그 삭제
+		int result6 = 0;										// 태그 다시 추가한 결과
+		if(!tlist.isEmpty()) {
+			for(int i = 0; i < tlist.size(); i++) {
+				int aId = Integer.parseInt(talist.get(i));
+				
+				int countTag = rd.getTagCount(conn, aId);
+				
+				if(countTag == 0) {
+					result6 += rd.insertTag(conn, aId, 0, tlist.get(i));				
+				} else if(countTag == 1) {
+					result6 += rd.insertTag(conn, aId, 1, tlist.get(i));
+				} else {
+					result6 += rd.insertTag(conn, aId, 2, tlist.get(i));
+				}
+			}
+		}
+		
+		if(result3 > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		
+		close(conn);
+		
+		return result3;
+	}
+
 }
 
 

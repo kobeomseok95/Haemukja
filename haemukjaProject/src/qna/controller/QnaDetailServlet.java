@@ -22,17 +22,13 @@ public class QnaDetailServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int qid = Integer.valueOf(request.getParameter("qid"));
-//		System.out.println(qid);
 		Qna qna = new QnaService().selectQna(qid);
-		ArrayList<Comment> list = new QnaService().selectReplyList(qid);
-		//댓글
+		ArrayList<Comment> commentList = new QnaService().selectReplyList(qid);
 		
 		if(qna != null) {
 			request.setAttribute("qna", qna);
-			// 댓글
-			request.setAttribute("comment", list);
+			request.setAttribute("comment", commentList);
 			request.getRequestDispatcher("qna/qnaboard_detail.jsp").forward(request, response);
-//			request.getRequestDispatcher("detail.qn?qid="+qid).forward(request, response);
 		} else {
 			//404
 		}

@@ -89,11 +89,11 @@ public class QnaService {
 		return list;
 	}
 
+	/*여기 수정
 	public ArrayList<Comment> insertReply(Comment c) {
 		Connection conn = getConnection();
 		QnaDao qd = new QnaDao();
-		int result = qd.insertReply(conn, c);
-		//insert 완료
+		int result = qd.insertReply(conn, c);	
 		ArrayList<Comment> list = new ArrayList<Comment>();
 		
 		if(result > 0) {
@@ -105,7 +105,8 @@ public class QnaService {
 		close(conn);
 		return list;
 	}
-
+	*/
+	
 	public ArrayList<Comment> selectReplyList(int qid) {
 		Connection conn = getConnection();
 		ArrayList<Comment> list = new QnaDao().selectReplyList(conn, qid);
@@ -145,6 +146,20 @@ public class QnaService {
 		close(conn);
 		return result;
 	}
+
+	public int insertComment(Comment c) {
+		Connection conn = getConnection();
+		int result = new QnaDao().insertComment(conn, c);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		return result;
+	}
+
+	
 	
 }
 
