@@ -6,17 +6,9 @@
 %>
 <%
 	Member loginMember = (Member)session.getAttribute("loginMember");
-	/* Seller loginSeller = (Seller)session.getAttribute("loginSeller"); */
-	
 	Qna qna = (Qna)request.getAttribute("qna");
-	/* int qid = qna.getQid();
-	String title = qna.getQtitle();
-	String nickname = qna.getMnickname();
-	Date qdate = qna.getQdate();
-	String content = qna.getQcontent(); */
-	
-	ArrayList<Comment> replys = (ArrayList<Comment>)request.getAttribute("comment");	//댓글
-	
+	ArrayList<Comment> replys = (ArrayList<Comment>)request.getAttribute("comment");
+	int commentCount = 0;
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +25,9 @@
    <script src='//unpkg.com/bootstrap@4/dist/js/bootstrap.min.js'></script>
    <style>
    @import url(https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap);*{font-family:'Nanum Gothic',sans-serif;font-size:15px}.logo{height:80px}.list-group a{font-size:18px;font-weight:700}.list-group-item{border-style:none}.panel-heading{background-color:orange;text-align:center;line-height:50px;vertical-align:middle;color:#fff;font-size:20px;font-weight:700}#login{background-color:orange;text-align:center;width:150px;height:200px;border-radius:15px;position:fixed}#loginBtn{background-color:#323232;text-align:center;border:none;border-radius:3px;color:#fff}a{color:#000;text-decoration:none}a:hover{color:orange;text-decoration:none}button{background-color:#323232;text-align:center;border:none;border-radius:3px;color:#fff}footer{background-color:#e6e6e6;height:200px}.notice{background-color:#ffbfdd}#write{text-align:right}.btn{float:right;background-color:#323232;color:#fff}.shipInfoBox{display:none}.form-control{display:inline}.result{border-style:none}
+	td:nth-child(2) {
+		width: 300px;
+	}
    </style>
   <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js"
     integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l"
@@ -112,23 +107,53 @@
                   <th>댓글내용</th>
                   <th>작성자</th>
                   <th>작성날짜</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody id="commentTable">
                 <%if(replys.isEmpty()) {%>
 	                <tr>
-		                <td colspan='4'>
+		                <td colspan='5'>
 		                	댓글이 없습니다.
 		                </td>
 		            </tr>
-                <%} else {%>
-                	<%for(int i = 0; i < replys.size(); i++) {%>
-                		<tr>
-                			<td><%=replys.get(i).getRnum() %></td>
-                			<td><%=replys.get(i).getComment() %></td>
-                			<td><%=replys.get(i).getWriter() %></td>
-                			<td><%=replys.get(i).getCdate() %></td>
-                		</tr>
+                <%} else { %>
+                	<%for(Comment c : replys) {%>
+                		<%if(c.getDepth() == 0) {%>
+                	<t	r>
+                		<td class="groupNo">
+	                		<%-- <input name="qcno" type="hidden" value="<%=c.getQcno()%>" /> --%>
+	                		<p style="display:none;"><%=c.getQcno()%></p>		
+	                		<p><%=c.getGroupNo() %></p>
+                		</td>
+                		<td class="commentArea"><%=c.getqComment() %></td>
+                		<td><%=c.getmNickname() %></td>
+                		<td><%=c.getqDate() %></td>
+                		<td><button class="lookReplys group<%=c.getGroupNo() %>">답글</button>&nbsp;
+                		<button>수정</button>&nbsp;
+                		<button class="changeReply deleteComment">삭제</button></td>
+                	</tr>
+                	<tr class="hideReplys group<%=c.getGroupNo() %>" style="display:none;">
+						<td colspan="4">
+							<textarea class="replyContent" cols="77px"></textarea>
+						</td>
+						<td>
+							<button class="changeReply addReply">답글작성</button>
+						</td>
+					</tr>
+                		<%} else{ %>
+					<tr class="hideReplys group<%=c.getGroupNo() %>" style="display:none;">
+						<td>
+						<input name="qcno" type="hidden" value="<%=c.getQcno() %>" />
+						<input name="parentNo" type="hidden" value="<%=c.getParentNo() %>" />
+						
+						</td>
+                		<td class="commentArea"><%=c.getqComment() %></td>
+                		<td><%=c.getmNickname() %></td>
+                		<td><%=c.getqDate() %></td>
+                		<td><button>수정</button>&nbsp;<button class="changeReply deleteReply">삭제</button></td>
+					</tr>
+						<%} %>
                 	<%} %>
                 <%} %>
               </tbody>
@@ -137,10 +162,10 @@
 	            	<!-- 여기는 댓글 작성하는 곳 -->
 	                <div class="writeGroup">
 	                  <label>댓글</label>
-	                  <textarea class="form-control" rows="2" id="commentContent"></textarea>
+	                  <textarea id="commentContent" class="form-control" rows="2"></textarea>
 	                </div>
-	                <div align="right">
-	                  <button id="addReply">등록</button>
+	                <div id="addComDiv" align="right">
+	                  <button class="changeReply addComment">등록</button>
 	                </div>
 	            </div> 
           </div>
@@ -185,56 +210,173 @@
 		location.href="<%=request.getContextPath()%>/logout.me";
 	}
 	function deleteQna(){
-		location.href="<%=request.getContextPath()%>/del.qn?qid="+qid;
+		location.href="<%=request.getContextPath()%>/del.qn?qid=" + qid;
+	}
+	function makeTarea(){
+		if($(this).parent().parent().attr("class") === "hideReplys"){
+			$(this).addClass("updateReply");			
+		}
+		else{
+			$(this).addClass("updateComment");			
+		}
+		
 	}
 	$(function(){
-		$("#addReply").click(function(){	//데이터를 집어 넣은 다음, 쿼리문이 실행되어 여기 실행되게 끔 한다.
+		$("table").on("click", ".lookReplys", function(){	//대댓글 보여주거나 숨기기
+			var lookReplys = $(this).attr("class").split(" ")[1];
+			$(".hideReplys." + lookReplys).toggle();
+		});
+		
+	
+		//udpate는 좀 더 고민 여기부터!
+		$(document).on('click', '.changeReply', function(){
 			<%if(loginMember.getMnickname().equals(qna.getMnickname()) || loginMember.getMid().equals("admin")){ %>
-				//로그인 유저와 글쓴이가 일치할때
+				var actionType= $(this).attr("class").split(" ")[1];
 				var writer = "<%=loginMember.getMid()%>";
-				var bid = <%=qna.getQid()%>;
-				var content = $("#commentContent").val();
+				var qid = <%=qna.getQid()%>;
+				var content = "";
+				var parentNo = 0;
+				var orderNo = 1;
+				var groupNo = 0;
+				var depth = 0;
 				
+				if(actionType === "addComment"){
+					groupNo = $(".groupNo").length + 1;
+					content = $("#commentContent").val();		
+				}
+				else if(actionType === "addReply"){
+					content = $(this).parent().prev().children().val();
+					parentNo = $(this).parent().parent().prev().children('td.groupNo').children().val();
+					console.log("qnaboardDetail line 249 parentNo : " + parentNo);
+					//orderNo 갯수 구하기
+					var orderNoClass = $(this).parent().parent().attr("class").split(" ")[1];
+					orderNo = $("tr." + orderNoClass).length + 1;
+					groupNo = orderNoClass.substring(5);
+					depth = 1;
+				}
+				//delete작업은 qcno를 불러서 삭제시킨다.
+				else if(actionType === "deleteComment"){
+					var flag = confirm("해당 댓글을 삭제하시겠습니까?");
+					if(flag){
+						
+					}
+				}
+				else if(actionType === "deleteReply"){
+					var flag = confirm("해당 댓글을 삭제하시겠습니까?");
+					if(flag){
+						
+					}
+				}
 				$.ajax({
-					url:"writeComment.qn",
+					url:"changeComment.qn",
 					type:"post",
-					data:{writer:writer, content:content, bid:bid},
-					// InsertReplyServlet 만들러 가자!!!
-					
-					//다 작성후 여기볼것
+					data:{qid:qid,
+							qComment:content, 
+							mid:writer,
+							parentNo:parentNo,
+							orderNo:orderNo,
+							groupNo:groupNo,
+							depth:depth,
+							actionType:actionType},
 					success:function(data){
 						$commentTable = $("#commentTable");
-						$commentTable.html(""); // 기존 테이블 정보 초기화
-						
-						for(var key in data){
-							//rlistArray > rlistObj(comment 객체의 필드값들)
-							
+						$commentTable.html(""); 
+						if(data.length === 0){
 							var $tr = $("<tr>");
-							var $noTd = $("<td>").text(data[key].rnum);
-							var $contentTd = $("<td>").text(data[key].comment);
-							var $writerTd = $("<td>").text(data[key].writer);
-							var $dateTd = $("<td>").text(data[key].cdate);
-							
-							$tr.append($noTd);
-							$tr.append($contentTd);
-							$tr.append($writerTd);
-							$tr.append($dateTd);
+							var $td = $("<td>");
+							$td.attr("colspan", 5);
+							$tr.append($(td));
 							$commentTable.append($tr);
 						}
-						
-						// 댓글 작성 부분 리셋
-						$("#commentContent").val("");
+						else{
+							for(var i in data){
+								if(data[i].depth == 0){	//댓글일 경우
+									<%=++commentCount%>;
+									var $firstTr = $("<tr>");
+									
+									var $firstTd = $("<td>");
+									$firstTd.addClass("groupNo")
+									var $p1 = $("<p>").css("display", "none").text(data[i].qcno);
+									var $p2 = $("<p>").text(data[i].groupNo);
+									$firstTd.append($p1);
+									$firstTd.append($p2);
+									
+									/* 
+									$firstTd.html("<p style='display:none;'>" + data[i].qcno + "</p>");
+									$firstTd.text(data[i].groupNo);
+									$firstTd.addClass("groupNo");
+									 */
+									var $secondTd = $("<td>");
+									$secondTd.addClass("commentArea").text(data[i].qComment);
+									
+									var $thirdTd = $("<td>");
+									$thirdTd.text(data[i].mNickname);
+									
+									var $fourthTd = $("<td>");
+									$fourthTd.text(data[i].qDate);
+									
+									var $fifthTd = $("<td>");
+									$fifthTd.html("<button class='lookReplys group" + data[i].groupNo + "'>답글</button>&nbsp;<button>수정</button>&nbsp;<button class='changeReply deleteComment'>삭제</button>");
+									
+									$firstTr.append($firstTd);
+									$firstTr.append($secondTd);
+									$firstTr.append($thirdTd);
+									$firstTr.append($fourthTd);
+									$firstTr.append($fifthTd);
+									
+									var $secondTr = $("<tr>");
+									$secondTr.addClass("hideReplys group" + data[i].groupNo).css("display", "none");
+									
+									var $firstTd2 = $("<td>");
+									$firstTd2.attr("colspan", 4);
+									$firstTd2.html("<textarea class='replyContent' cols='77px'></textarea>");
+									
+									var $secondTd2 = $("<td>");
+									$secondTd2.html("<button class='changeReply addReply'>답글작성</button>");
+									
+									$secondTr.append($firstTd2);
+									$secondTr.append($secondTd2);
+									$commentTable.append($firstTr);
+									$commentTable.append($secondTr);
+								}	
+								else{//답글일 경우
+									/*
+									var $tr = $("<tr>");
+									$tr.addClass("hideReplys");
+									$tr.addClass("group" + data[i].groupNo);
+									$tr.css("display", "none");
+									var $firstTd = $("<td>");
+									$firstTd.html("<input name='qcno' type='hidden' value=" + data[i].qcno + "/><input name='parentNo' type='hidden' value=" + data[i].parentNo + " />");
+									var $secondTd = $("<td>");
+									$secondTd.addClass("commentArea");
+									$secondTd.text(data[i].qComment);
+									var $thirdTd = $("<td>").text(data[i].mNickname);
+									var $fourthTd = $("<td>").text(data[i].qDate);
+									var $fifthTd = $("<td>");
+									$fifthTd.append($("<button>").text("수정"));
+									$fifthTd.html("&nbsp;");
+									$fifthTd.append($("<button>").addClass("changeReply").addClass("deleteReply").text("삭제"));
+									$tr.append($firstTd);
+									$tr.append($secondTd);
+									$tr.append($thirdTd);
+									$tr.append($fourthTd);
+									$tr.append($fifthTd);
+									$commentTable.append($tr);
+									*/
+								}	
+							}
+						}
+						$("textarea").val("");
 					},
 					error:function(request,status,error){
-					    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-					   }
-				});
+					    console.log("error qnaboard_detail.jsp Comment ajax");
+					}
+				}); 
 				
-			<%} else { %>
+			<%}else { %>
 				//그렇지 않을때
 				alert('해당 게시글의 글쓴이, 관리자만 작성할 수 있습니다.');
-			<%}%>
-			
+			<%} %>
 		});
 	});
   </script>
