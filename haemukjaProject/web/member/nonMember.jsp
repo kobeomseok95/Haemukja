@@ -136,7 +136,7 @@
                             <div class="col-md-9">
                                 <input type="text" id="email" class="form-control"  name="email" required
                                     style="width: 100px" >&nbsp;&nbsp;@
-                                <select name="email2" class="form-control"  style="width: 150px" >
+                                <select id="email2" class="form-control"  style="width: 150px" >
                               		
                               		<option value="naver.com">naver.com</option>
                                     <option value="daum.net">daum.net</option>

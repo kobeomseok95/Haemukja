@@ -24,14 +24,7 @@ public class MCart {
 	}
 
 
-	public MCart(int cid, String mid,  String ptitle,int camount, int pprice, int sbno) {
-		this.cid = cid;
-		this.mid = mid;
-		this.ptitle = ptitle;
-		this.camount = camount;
-		this.pprice = pprice;
-		this.sbno = sbno;
-	}
+
 	
 	
 	public MCart(int cid, String mid, int pid, int camount, String ptitle, int pprice, int sbno) {

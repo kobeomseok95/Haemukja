@@ -36,9 +36,19 @@ public class MemOrderServlet extends HttpServlet {
 		MemberService mservice = new MemberService();
 		
 		int allPrice = Integer.valueOf(request.getParameter("allamprice"));
-		String payment = request.getParameter("payment");
+		int payment = Integer.valueOf(request.getParameter("payment"));
+		int osid = 0;
+		
+		if(payment==3 || payment==4) {
+			osid=1;
+		}else if(payment==1||payment==2) {
+			osid=2;
+		}
+		
+		
 		
 		String[] cid = request.getParameterValues("cid");
+
 		
 		ArrayList<String> cidList=null; // 판매상세피이지에서 넘어올땐 장바구니 번호가 없다.
 		if(cid!=null) {
@@ -46,15 +56,19 @@ public class MemOrderServlet extends HttpServlet {
 			for(int i =0 ; i<cid.length;i++) {
 				cidList.add(cid[i]);
 			}
+			
 		}
 		
 		int resultPoint = 0;
 		try {
 			String point = request.getParameter("resultPoint");
 			resultPoint = Integer.parseInt(point);	
+			
 		} catch(NumberFormatException e) {
 			e.getMessage();
 		}
+		
+	
 		
 		// 수정1.
 	    int plusPoint = resultPoint + (int)(allPrice * 0.01);   // 사용하고 남은 포인트 + 추가될 포인트값
@@ -67,17 +81,15 @@ public class MemOrderServlet extends HttpServlet {
 		}
 		
 		
-		String[] ptitle = request.getParameterValues("ptitle"); 
-		ArrayList<Integer> pidList = new ArrayList<Integer>();
-		for(int i =0; i<ptitle.length ; i++) {
-			pidList.add(mservice.selectPid(ptitle[i]));
-		}
+		String[] pid = request.getParameterValues("pid"); 
+		
 	
 		
-		ArrayList<String> ptitleList = new ArrayList<String>();
-		for(int i =0 ; i<ptitle.length ; i++) {
-			ptitleList.add(ptitle[i]);
+		ArrayList<String> pidList = new ArrayList<String>();
+		for(int i =0; i<pid.length ; i++) {
+			pidList.add(pid[i]);
 		}
+		
 	
 		
 		HttpSession session = request.getSession();
@@ -89,8 +101,9 @@ public class MemOrderServlet extends HttpServlet {
 		if(result>0) {// 주문번호가 생성 성공시실행
 			int oid = mservice.selectOid(); // 주문번호를 갖고온다
 			int result1=0;
-			for(int i =0; i<ptitle.length;i++) {
-				result1 = mservice.memOrder(oid,payment,countList.get(i),userId,pidList.get(i)); // 주문내용 입력
+			
+			for(int i =0; i<pid.length;i++) {
+				result1 = mservice.memOrder(oid,payment,countList.get(i),userId,pidList.get(i),osid); // 주문내용 입력
 			}// 갖고온 주문번호를 포함해서 주문내용(결제) 입력
 			
 			RequestDispatcher view = null;

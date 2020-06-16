@@ -875,6 +875,56 @@ public class ProductDao {
 	      return result;
 	 }
 
+
+	public int selectMcart(Connection conn, String userId, int pid) {
+		PreparedStatement pstmt = null; 
+		ResultSet rset = null;
+		int mcart = 0;
+		String query = "SELECT COUNT(*) FROM MCART WHERE MID=? AND PID=?";
+		
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, userId);
+			pstmt.setInt(2, pid);
+			
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				mcart = rset.getInt(1);
+				
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			close(pstmt);
+			close(rset);
+		}
+		return mcart;
+	}
+
+	public int updateMcartCount(Connection conn, String userId, int pid, String count) {
+		PreparedStatement pstmt =null;
+		int result=0;
+		
+		String query = "UPDATE MCART SET CAMOUNT=CAMOUNT+? WHERE MID=? AND PID=? ";
+		
+		try {
+			pstmt=conn.prepareStatement(query);
+			pstmt.setString(1, count);
+			pstmt.setString(2, userId);
+			pstmt.setInt(3, pid);
+			
+			result=pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+		e.printStackTrace();
+		}finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
 	public ArrayList<Sale> selectSList(Connection conn, String searchContent) {
 		Statement stmt = null;
 		ResultSet rset = null;
@@ -901,6 +951,7 @@ public class ProductDao {
 		}
 		
 		return slist;
+
 	}
 
 }

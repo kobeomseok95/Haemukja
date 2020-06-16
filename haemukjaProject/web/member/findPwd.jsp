@@ -1,9 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<% 
-	String pw = (String)request.getAttribute("changePwd");
-	String msg = (String)request.getAttribute("msg");
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,7 +20,6 @@
   <script src='//unpkg.com/bootstrap@4/dist/js/bootstrap.min.js'></script>
 
   <!-- Custom styles for this template -->
-  <link href="../css/idpw.css" rel="stylesheet">
   <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js"
     integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l"
     crossorigin="anonymous"></script>
@@ -74,20 +70,36 @@
                   </div>
                 </div>
                 <br>
-                <%if(pw!=null){ %>
-                <div align="center"><h4>임시로 발급된 비밀번호는 '<%=pw %>' 입니다.<br>
-                마이페이지에서 수정해주세요.</h4></div>
-                <%}else if(pw == null && msg != null){ %>
-                <div align="center"><h3><%=msg %></h3></div>
-                <%} %>
+                
+                <div align="center"><h3 id="findResult"></h3></div>
+                
                 <br>
                 <div class="col-md-6 offset-md-4">
-                  <button type="submit" class="btn btn-primary" style="background-color: orange; border: none; width: 120px;">
+                  <button type="button" id="findPwd" class="btn btn-primary" style="background-color: orange; border: none; width: 120px;">
                   비밀번호 찾기</button>
                   &nbsp;&nbsp;
                   <button type="button" class="btn btn-primary" style="background-color: orange; border: none;"
                   		onclick="location.href='<%=request.getContextPath()%>/member/loginHaemukja.jsp'">
                   로그인</button><br>
+
+	            <script>
+	          	$("#findPwd").click(function(){
+	          		var id = $("#pwdFind-id").val();
+	          		var name = $("#pwdFind-name").val();
+	          		var email = $("#pwdFind-email").val();
+	
+	          		$.ajax({
+	           			url:"${pageContext.request.contextPath}/pwd.me?id=" + id + "&name=" + name + "&email=" + email,
+	          			type:"get",
+	           			success:function(data){
+	           				$("#findResult").text(data);
+	           			}, 
+	           			error:function(data){
+	           				console.log("***Error FindPwd.jsp line 95***");
+	           			}
+	           		});	               		
+	          	});
+	          </script>
                 </div>
               </form>
             </div> <!-- card-body -->

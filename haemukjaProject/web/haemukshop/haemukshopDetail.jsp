@@ -529,9 +529,9 @@
 		 	alert("일반회원만 이용가능합니다.");
 		 
 		 <%}else{%>
-			location.href="<%=request. getContextPath()%>/member.me?product=<%=p.getpTitle()%>&price=<%=p.getPrice()%>&sbno=<%=s.getSbNo()%>&pcount="+count;
+			location.href="<%=request.getContextPath()%>/member.me?ptitle=<%=p.getpTitle()%>&price=<%=p.getPrice()%>&sbno=<%=s.getSbNo()%>&pid=<%=p.getpId()%>&pcount="+count;
 		 <%}%>
-		
+		 
 		}
 	}
 	
