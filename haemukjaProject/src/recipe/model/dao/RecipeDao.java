@@ -736,4 +736,169 @@ public class RecipeDao {
 		return rlist;
 	}
 
+	public int updateRecipe(Connection conn, int bNo, String title) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		String query = "UPDATE RECIPE SET BTITLE=? WHERE BNO=?";
+		
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, title);
+			pstmt.setInt(2, bNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
+	public int deleteContent(Connection conn, int bNo) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		String query = "DELETE RCONTENT WHERE BNO=?";
+		
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, bNo);
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+	
+	public int selectFileLevel(Connection conn, String checkAId) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		int checkThumbnail = 0;
+		
+		String query = "SELECT COUNT(*) FROM ATTACHMENT WHERE AID=? AND FILELEVEL=0";
+		
+		try {
+			int aId = 0;
+			try {
+				aId = Integer.parseInt(checkAId);				
+			} catch(NumberFormatException e) {
+				e.printStackTrace();
+			}
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, aId);
+			
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				checkThumbnail = rset.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(rset);
+		}
+		
+		return checkThumbnail;
+	}
+
+	public int updateAttachment(Connection conn, String updateAId, String fileName) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		String query = "UPDATE ATTACHMENT SET FILENAME=?, UPLOADDATE=SYSDATE WHERE AID=?";
+		
+		try {
+			int aId = Integer.parseInt(updateAId);
+			
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, fileName);
+			pstmt.setInt(2, aId);
+			
+			result += pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
+	public int insertAttachment(Connection conn, int bNo, Attachment at) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		String query = "INSERT INTO ATTACHMENT VALUES(SEQ_A.NEXTVAL,?,NULL,?,?,SYSDATE,1,'N')";
+		
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, bNo);
+			pstmt.setString(2, at.getFileName());
+			pstmt.setString(3, at.getFilePath());
+				
+			result += pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+	
+	public int deleteTag(Connection conn, ArrayList<Attachment> fileList) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		String query = "DELETE TAG WHERE AID=?";
+		
+		try {
+			for(int i = 0; i < fileList.size(); i++) {
+				pstmt = conn.prepareStatement(query);
+				pstmt.setInt(1, fileList.get(i).getaId());
+				
+				result += pstmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
+	public int getTagCount(Connection conn, int aId) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		int result = 0;
+		
+		String query = "SELECT COUNT(*) FROM TAG WHERE AID=?";
+		
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, aId);
+			
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				result = rset.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(rset);
+		}
+		
+		return result;
+	}
+
 }
