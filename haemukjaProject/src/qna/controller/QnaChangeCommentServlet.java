@@ -47,13 +47,18 @@ public class QnaChangeCommentServlet extends HttpServlet {
 		} 
 		else if(actionType.equals("deleteComment") || actionType.equals("deleteReply")) {
 			int qcno = Integer.valueOf(request.getParameter("qcno"));
-			result = qs.deleteComment(qcno);
+			if(actionType.equals("deleteComment")) {
+				qs.deleteComment(qcno);			
+			}
+			else {	
+				int orderNo = qs.selectReplyGroupNo(qcno);
+				int parentNo = qs.selectReplyParentNo(qcno);
+				qs.deleteComment(qcno);
+				result = qs.updateReplyOrderNo(orderNo, parentNo);
+			}
 		}
 		
-		
-		//댓글들 다시 조회
 		ArrayList<Comment> commentList = qs.selectReplyList(qid);
-		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();

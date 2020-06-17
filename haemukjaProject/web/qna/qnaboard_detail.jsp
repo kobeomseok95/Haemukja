@@ -118,8 +118,8 @@
 		            </tr>
                 <%} else { %>
                 	<%for(Comment c : replys) {%>
-                		<%if(c.getDepth() == 0) {%>
-                	<t	r>
+                		<%if(c.getDepth() == 0) {%>	<!-- 댓글 -->
+                	<tr>
                 		<td class="groupNo">
 	                		<p style="display:none;"><%=c.getQcno()%></p>		
 	                		<p><%=c.getGroupNo() %></p>
@@ -128,8 +128,10 @@
                 		<td><%=c.getmNickname() %></td>
                 		<td><%=c.getqDate() %></td>
                 		<td><button class="lookReplys group<%=c.getGroupNo() %>">답글</button>&nbsp;
-                		<button>수정</button>&nbsp;
+                		<%if(loginMember != null && loginMember.getMnickname().equals(c.getmNickname())) { %>	
+                		<button class="changeTextarea">수정</button>&nbsp;
                 		<button class="changeReply deleteComment">삭제</button></td>
+                		<%} %>
                 	</tr>
                 	<tr class="hideReplys group<%=c.getGroupNo() %>" style="display:none;">
 						<td colspan="4">
@@ -139,7 +141,7 @@
 							<button class="changeReply addReply">답글작성</button>
 						</td>
 					</tr>
-                		<%} else{ %>
+                		<%} else{ %>	<!-- 답글 -->
 					<tr class="hideReplys group<%=c.getGroupNo() %>" style="display:none;">
 						<td>
 	                		<p style="display:none;"><%=c.getQcno()%></p>		
@@ -148,7 +150,12 @@
                 		<td class="commentArea"><%=c.getqComment() %></td>
                 		<td><%=c.getmNickname() %></td>
                 		<td><%=c.getqDate() %></td>
-                		<td><button>수정</button>&nbsp;<button class="changeReply deleteReply">삭제</button></td>
+                		<td>
+                		<%if(loginMember != null && loginMember.getMnickname().equals(c.getmNickname())) { %>	
+                		<button class="changeTextarea">수정</button>&nbsp;
+                		<button class="changeReply deleteReply">삭제</button>
+                		<%} %>
+                		</td>
 					</tr>
 						<%} %>
                 	<%} %>
@@ -209,15 +216,7 @@
 	function deleteQna(){
 		location.href="<%=request.getContextPath()%>/del.qn?qid=" + qid;
 	}
-	function makeTarea(){
-		if($(this).parent().parent().attr("class") === "hideReplys"){
-			$(this).addClass("updateReply");			
-		}
-		else{
-			$(this).addClass("updateComment");			
-		}
-		
-	}
+	
 	$(function(){
 		$("table").on("click", ".lookReplys", function(){	//대댓글 보여주거나 숨기기
 			var lookReplys = $(this).attr("class").split(" ")[1];
@@ -226,7 +225,7 @@
 		
 	
 		//udpate는 좀 더 고민 여기부터!
-		$(document).on('click', '.changeReply', function(){
+		$(document).on('click', '.changeReply', function(){	
 			<%if(loginMember.getMnickname().equals(qna.getMnickname()) || loginMember.getMid().equals("admin")){ %>
 				var qcno = 0;
 				var actionType= $(this).attr("class").split(" ")[1];
@@ -240,7 +239,7 @@
 				
 				if(actionType === "addComment"){
 					groupNo = $(".groupNo").length + 1;
-					content = $("#commentContent").val();		
+					content = $("#commentContent").val();
 				}
 				else if(actionType === "addReply"){
 					content = $(this).parent().prev().children().val();
@@ -252,7 +251,8 @@
 					depth = 1;
 				}
 				else if(actionType === "deleteComment" || actionType === "deleteReply"){
-					if(confirm("해당 댓글을 삭제하시겠습니까?")){
+					var flag = confirm("해당 댓글을 삭제하시겠습니까?");
+					if(flag){
 						var y = $(this).parent().siblings()[0].children[0];
 						qcno = y.textContent;
 					}
@@ -273,14 +273,15 @@
 					success:function(data){
 						$commentTable = $("#commentTable");
 						$commentTable.html(""); 
-						if(data.length === 0){
+						
+						if(data.length == 0){
 							var $tr = $("<tr>");
 							var $td = $("<td>");
 							$td.attr("colspan", 5);
-							$tr.append($(td));
+							$td.text("댓글이 없습니다.");
+							$tr.append($td);
 							$commentTable.append($tr);
-						}
-						else{
+						}else{
 							for(var i in data){
 								if(data[i].depth == 0){	//댓글일 경우
 									var $firstTr = $("<tr>");
@@ -332,7 +333,6 @@
 									$tr.css("display", "none");
 									
 									var $firstTd = $("<td>");
-									$firstTd.addClass("groupNo")
 									var $p1 = $("<p>").css("display", "none").text(data[i].qcno);
 									var $p2 = $("<p>").css("display", "none").text(data[i].parentNo);
 									$firstTd.append($p1);
