@@ -252,7 +252,7 @@ public class QnaDao {
 		}
 		return list;
 	}
-
+	/*
 	public int insertReply(Connection conn, Comment c) {
 		PreparedStatement pstmt = null;
 		int result = 0;
@@ -271,12 +271,30 @@ public class QnaDao {
 		}
 		return result;
 	}
-
+	*/
 	public ArrayList<Comment> selectReplyList(Connection conn, int qid) {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		ArrayList<Comment> list = new ArrayList<Comment>();
-		String sql = "SELECT ROWNUM, F.* FROM (SELECT Q.QID, Q.QCOMMENT, M.MNICKNAME, Q.QDATE FROM QNACOM Q JOIN MEMBER M ON (Q.MID = M.MID) WHERE QID=?) F";
+		String sql = 
+				"SELECT\r\n" + 
+				"    QC.QCNO AS \"QCNO\",\r\n" + 
+				"    QC.QID AS \"QID\",\r\n" + 
+				"    QC.PARENTNO AS \"PARENTNO\",\r\n" + 
+				"    QC.ORDERNO AS \"ORDERNO\",\r\n" + 
+				"    QC.GROUPNO AS \"GROUPNO\",\r\n" + 
+				"    LPAD( '└', (DEPTH) * 2 ) || QC.QCOMMENT AS \"QCOMMENT\",\r\n" + 
+				"    M.MNICKNAME AS \"NICKNAME\",\r\n" + 
+				"    QC.QDATE AS \"QDATE\",\r\n" + 
+				"    QC.DEPTH AS \"DEPTH\"\r\n" + 
+				"FROM \r\n" + 
+				"    QNACOM QC\r\n" + 
+				"    JOIN MEMBER M ON QC.MID = M.MID\r\n" + 
+				"WHERE \r\n" + 
+				"    QID = ?\r\n" + 
+				"ORDER BY \r\n" + 
+				"    GROUPNO ASC, ORDERNO ASC";
+				
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -284,14 +302,18 @@ public class QnaDao {
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				Comment c = new Comment(rs.getInt("ROWNUM"),
-						rs.getInt("QID"),
-						rs.getString("QCOMMENT"),
-						rs.getString("MNICKNAME"),
-						rs.getDate("QDATE"));
+				Comment c = new Comment();
+				c.setQcno(rs.getInt("QCNO"));
+				c.setQid(rs.getInt("QID"));
+				c.setParentNo(rs.getInt("PARENTNO"));
+				c.setGroupNo(rs.getInt("GROUPNO"));
+				c.setOrderNo(rs.getInt("ORDERNO"));
+				c.setqComment(rs.getString("QCOMMENT"));
+				c.setmNickname(rs.getString("NICKNAME"));
+				c.setqDate(rs.getDate("QDATE"));
+				c.setDepth(rs.getInt("DEPTH"));
 				list.add(c);
 			}
-//			System.out.println(list);
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -382,6 +404,48 @@ public class QnaDao {
 		} finally {
 			close(pstmt);
 		}
+		return result;
+	}
+
+	public int insertComment(Connection conn, Comment c) {
+		String sql = 
+				"INSERT INTO QNACOM\r\n" + 
+				"VALUES (SEQ_QNACOM.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?, ?, ?)";
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, c.getQid());
+			pstmt.setString(2, c.getqComment());
+			pstmt.setString(3, c.getmNickname());	//아이디가 들어갔다. 헷갈리지 말긔
+			pstmt.setInt(4, c.getParentNo());
+			pstmt.setInt(5, c.getOrderNo());
+			pstmt.setInt(6, c.getGroupNo());
+			pstmt.setInt(7, c.getDepth());
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
+	public int deleteComment(Connection conn, int qcno) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = "DELETE FROM QNACOM\r\n" + 
+				"WHERE QCNO = ? OR PARENTNO = ?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, qcno);
+			pstmt.setInt(2, qcno);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
 		return result;
 	}
 }
