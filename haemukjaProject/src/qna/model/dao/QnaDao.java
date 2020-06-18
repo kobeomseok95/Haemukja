@@ -252,26 +252,6 @@ public class QnaDao {
 		}
 		return list;
 	}
-	/*
-	public int insertReply(Connection conn, Comment c) {
-		PreparedStatement pstmt = null;
-		int result = 0;
-		//질문글번호, 댓글내용, 날짜, 아이디
-		String sql = "INSERT INTO QNACOM VALUES(SEQ_QC.NEXTVAL, ?, ?, SYSDATE, ?)";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, c.getQid());
-			pstmt.setString(2, c.getComment());
-			pstmt.setString(3, c.getWriter());
-			result = pstmt.executeUpdate();
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(pstmt);
-		}
-		return result;
-	}
-	*/
 	public ArrayList<Comment> selectReplyList(Connection conn, int qid) {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -434,8 +414,7 @@ public class QnaDao {
 	public int deleteComment(Connection conn, int qcno) {
 		PreparedStatement pstmt = null;
 		int result = 0;
-		String sql = "DELETE FROM QNACOM\r\n" + 
-				"WHERE QCNO = ? OR PARENTNO = ?";
+		String sql = "DELETE FROM QNACOM WHERE QCNO = ? OR PARENTNO = ?";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -446,6 +425,65 @@ public class QnaDao {
 			e.printStackTrace();
 		}
 		close(pstmt);
+		return result;
+	}
+
+	public int selectReplyGroupNo(Connection conn, int qcno) {
+		String sql = "SELECT ORDERNO FROM QNACOM WHERE QCNO = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int orderNo = 0;
+		
+		try{
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, qcno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				orderNo = rs.getInt(1);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return orderNo;
+	}
+
+	public int selectReplyParentNo(Connection conn, int qcno) {
+		String sql = "SELECT PARENTNO FROM QNACOM WHERE QCNO = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int parentNo = 0;
+		
+		try{
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, qcno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				parentNo = rs.getInt(1);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return parentNo;
+	}
+
+	public int updateReplyOrderNo(Connection conn, int orderNo, int parentNo) {
+		String sql = "UPDATE QNACOM\r\n" + 
+				"SET ORDERNO = ORDERNO - 1\r\n" + 
+				"WHERE PARENTNO = ?\r\n" + 
+				"    AND ORDERNO > ?";
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, parentNo);
+			pstmt.setInt(2, orderNo);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 }
