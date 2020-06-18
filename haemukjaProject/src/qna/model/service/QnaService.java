@@ -178,6 +178,19 @@ public class QnaService {
 		return parentNo;
 	}
 
+	public int updateComment(int qcno, String qComment) {
+		Connection conn = getConnection();
+		int result = new QnaDao().updateComment(conn, qcno, qComment);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+
 	
 	
 }

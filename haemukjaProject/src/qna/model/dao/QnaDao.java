@@ -486,6 +486,25 @@ public class QnaDao {
 		}
 		return result;
 	}
+
+	public int updateComment(Connection conn, int qcno, String qComment) {
+		String sql = "UPDATE QNACOM\r\n" + 
+				"SET QCOMMENT = ?, QDATE = SYSDATE\r\n" + 
+				"WHERE QCNO = ?";
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, qComment);
+			pstmt.setInt(2, qcno);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
 }
 
 
