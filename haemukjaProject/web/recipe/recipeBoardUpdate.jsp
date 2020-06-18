@@ -178,7 +178,8 @@
 	              <input type="text" name="title" style="width: 740px">
 	              <label for="thumbnail"><h5>썸네일 : </h5></label><br>
 	              <div id="thumbnailArea">
-		              <img src="<%= request.getContextPath() %>/uploadFiles/<%= thumbnail.getFileName() %>" class="image">
+		              <img src="<%= request.getContextPath() %>/uploadFiles/<%= thumbnail.getFileName() %>" 
+		              	class="image" id="thumbnailPre">
 		              <input type="hidden" name="thumbnail" class="aId" value="<%= thumbnail.getaId() %>">
 		              <input type="file" id="thumbnail" name="a" class="insertImage">
 		              <input type="hidden" class="checkChange" value="" name="aId">	              
@@ -187,11 +188,14 @@
 	              
 	              <h5>1.</h5>
 	              <% if(files.size() > 0) { %>
-	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(0).getFileName() %>" class="image">
+	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(0).getFileName() %>" 
+	              		class="image" id="image1Pre">
 	              	<input type="hidden" name="image1" value="<%= files.get(0).getaId() %>">	              
+	              <% } else { %>
+	              	<img src="" class="image" id="image1Pre">
 	              <% } %>
 	              <input type="file" id="image1" name="b" class="insertImage">
-	              <input type="hidden" class="checkChange" value="" name="aId">
+	              <input type="text" class="checkChange" value="" name="aId">
 	              <h6 style="color: red; font-weight: bold">※이미지 변경시 태그를 새로 달아주세요.※</h6>
 	              <div class="tagResult">
 	              <% for(int i = 0; i < tags.size(); i ++) { %>
@@ -252,8 +256,11 @@
 	              
 	              <h5>2.</h5>
 	              <% if(files.size() > 1) { %>
-	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(1).getFileName() %>" class="image">
+	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(1).getFileName() %>" 
+	              		class="image" id="image2Pre">
 	              	<input type="hidden" name="image2" value="<%= files.get(1).getaId() %>">	              
+	              <% } else { %>
+	              	<img src="" class="image" id="image2Pre">
 	              <% } %>
 	              <input type="file" id="image2" name="c" class="insertImage">
 	              <input type="hidden" class="checkChange" value="" name="aId">
@@ -317,8 +324,11 @@
 	              
 	              <h5>3.</h5>
 	              <% if(files.size() > 2) { %>
-	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(2).getFileName() %>" class="image">
+	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(2).getFileName() %>" 
+	              		class="image" id="image3Pre">
 	              	<input type="hidden" name="image3" value="<%= files.get(2).getaId() %>">	              
+	              <% } else { %>
+	              	<img src="" class="image" id="image3Pre">
 	              <% } %>
 	              <input type="file" id="image3" name="d" class="insertImage">
 	              <input type="hidden" class="checkChange" value="" name="aId">
@@ -382,8 +392,11 @@
 	              
 	              <h5>4.</h5>
 	              <% if(files.size() > 3) { %>
-	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(3).getFileName() %>" class="image">
+	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(3).getFileName() %>" 
+	              		class="image" id="image4Pre">
 	              	<input type="hidden" name="image4" value="<%= files.get(3).getaId() %>">	              
+	              <% } else { %>
+	              	<img src="" class="image" id="image4Pre">
 	              <% } %>
 	              <input type="file" id="image4" name="e" class="insertImage">
 	              <input type="hidden" class="checkChange" value="" name="aId">
@@ -447,8 +460,11 @@
 	              
 	              <h5>5.</h5>
 	              <% if(files.size() > 4) { %>
-	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(4).getFileName() %>" class="image">
+	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(4).getFileName() %>" 
+	              		class="image" id="image5Pre">
 	              	<input type="hidden" name="image5" value="<%= files.get(4).getaId() %>">	              
+	              <% } else { %>
+	              	<img src="" class="image" id="image5Pre">
 	              <% } %>
 	              <input type="file" id="image5" name="f" class="insertImage">
 	              <input type="hidden" class="checkChange" value="" name="aId">
@@ -512,8 +528,11 @@
 	              
 	              <h5>6.</h5>
 	              <% if(files.size() > 5) { %>
-	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(5).getFileName() %>" class="image">
+	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(5).getFileName() %>" 
+	              		class="image" id="image6Pre">
 	              	<input type="hidden" name="image6" value="<%= files.get(5).getaId() %>">	              
+	              <% } else { %>
+	              	<img src="" class="image" id="image6Pre">
 	              <% } %>
 	              <input type="file" id="image6" name="g" class="insertImage">
 	              <input type="hidden" class="checkChange" value="" name="aId">
@@ -577,8 +596,11 @@
 	              
 	              <h5>7.</h5>
 	              <% if(files.size() > 6) { %>
-	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(6).getFileName() %>" class="image">
+	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(6).getFileName() %>" 
+	              		class="image" id="image7Pre">
 	              	<input type="hidden" name="image7" value="<%= files.get(6).getaId() %>">	              
+	              <% } else { %>
+	              	<img src="" class="image" id="image7Pre">
 	              <% } %>
 	              <input type="file" id="image7" name="h" class="insertImage">
 	              <input type="hidden" class="checkChange" value="" name="aId">
@@ -642,8 +664,11 @@
 	              
 	              <h5>8.</h5>
 	              <% if(files.size() > 7) { %>
-	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(7).getFileName() %>" class="image">
+	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(7).getFileName() %>" 
+	              		class="image" id="image8Pre">
 	              	<input type="hidden" name="image8" value="<%= files.get(7).getaId() %>">	              
+	              <% } else { %>
+	              	<img src="" class="image" id="image8Pre">
 	              <% } %>
 	              <input type="file" id="image8" name="i" class="insertImage">
 	              <input type="hidden" class="checkChange" value="" name="aId">
@@ -707,8 +732,11 @@
 	              
 	              <h5>9.</h5>
 	              <% if(files.size() > 8) { %>
-	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(8).getFileName() %>" class="image">
+	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(8).getFileName() %>" 
+	              		class="image" id="image9Pre">
 	              	<input type="hidden" name="image9" value="<%= files.get(8).getaId() %>">	              
+	              <% } else { %>
+	              	<img src="" class="image" id="image9Pre">
 	              <% } %>
 	              <input type="file" id="image9" name="j" class="insertImage">
 	              <input type="hidden" class="checkChange" value="" name="aId">
@@ -772,8 +800,11 @@
 	              
 	              <h5>10.</h5>
 	              <% if(files.size() > 9) { %>
-	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(9).getFileName() %>" class="image">
+	              	<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(9).getFileName() %>" 
+	              		class="image" id="image10Pre">
 	              	<input type="hidden" name="image10" value="<%= files.get(9).getaId() %>">	              
+	              <% } else { %>
+	              	<img src="" class="image" id="image10Pre">
 	              <% } %>
 	              <input type="file" id="image10" name="k" class="insertImage">
 	              <input type="hidden" class="checkChange" value="" name="aId">
@@ -926,11 +957,6 @@
     		}
         });
     	
-    	$(".insertImage").change(function(){
-    		var value = $(this).prev().val();
-    		$(this).next().val(value);
-    	});
-    	
     	$(".tag1").focus(function(){
     		var check = $(this).val();
     		if(check != "") {
@@ -1007,6 +1033,57 @@
         		}
       	  })
         });
+        
+        $("#thumbnail").change(function(e){
+        	var files = e.target.files;
+          	var filesArr = Array.prototype.slice.call(files);
+          	var id = $(this).attr("id");
+          	var previewId = id + "Pre";
+          	
+          	filesArr.forEach(function(f) {
+          		if(!f.type.match("image.*")) {
+          			alert("확장자는 이미지 확장자만 가능합니다.");
+          			return;
+          		}
+          		
+          		var sel_file = f;
+          		
+          		var reader = new FileReader();
+          		reader.onload = function(e) {
+          			$("#" + previewId).attr("src", e.target.result);
+          		}
+          		reader.readAsDataURL(f);
+          	});
+          	
+          	$(this).next().css("display","block");
+          })
+          
+          $(".insertImage").change(function(e){
+        	var value = $(this).prev().val();
+      		$(this).next().val(value);
+      		
+        	var files = e.target.files;
+          	var filesArr = Array.prototype.slice.call(files);
+          	var id = $(this).attr("id");
+          	var previewId = id + "Pre";
+          	
+          	filesArr.forEach(function(f) {
+          		if(!f.type.match("image.*")) {
+          			alert("확장자는 이미지 확장자만 가능합니다.");
+          			return;
+          		}
+          		
+          		var sel_file = f;
+          		
+          		var reader = new FileReader();
+          		reader.onload = function(e) {
+          			$("#" + previewId).attr("src", e.target.result);
+          		}
+          		reader.readAsDataURL(f);
+          	});
+          	
+          	$(this).prev().css("display","block");
+          })
     });
     
     function login(){

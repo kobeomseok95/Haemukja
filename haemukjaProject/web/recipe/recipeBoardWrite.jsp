@@ -95,7 +95,6 @@
       max-width: 263px;
       max-height: 150px;
       vertical-align: middle;
-      cursor: pointer;
     }
   </style>
   
