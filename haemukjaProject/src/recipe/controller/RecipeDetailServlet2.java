@@ -46,6 +46,7 @@ public class RecipeDetailServlet2 extends HttpServlet {
 		ArrayList<String> contents = rs.selectContents(bNo);
 		ArrayList<Attachment> files = rs.selectFiles(bNo);
 		ArrayList<Tag> tags = rs.selectTags(files);
+		ArrayList<Tag> upgradeTags = rs.addPTitles(tags);
 		ArrayList<RComment> comments = rs.selectComments(bNo);
 	
 		RequestDispatcher view = null;
@@ -54,6 +55,7 @@ public class RecipeDetailServlet2 extends HttpServlet {
 		request.setAttribute("contents", contents);
 		request.setAttribute("files", files);
 		request.setAttribute("tags", tags);
+		request.setAttribute("upgradeTags", upgradeTags);
 		request.setAttribute("nickname", nickname);
 		request.setAttribute("comments", comments);
 		

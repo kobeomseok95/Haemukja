@@ -354,6 +354,16 @@ public class RecipeService {
 		return result3;
 	}
 
+	public ArrayList<Tag> addPTitles(ArrayList<Tag> tags) {
+		Connection conn = getConnection();
+		
+		ArrayList<Tag> tagsPTitles = new RecipeDao().addPTitles(conn, tags);
+		
+		close(conn);
+		
+		return tagsPTitles;
+	}
+
 }
 
 

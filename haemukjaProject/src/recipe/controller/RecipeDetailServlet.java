@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import common.Attachment;
+import product.model.service.ProductService;
 import qna.model.service.QnaService;
 import recipe.model.service.RecipeService;
 import recipe.model.vo.RComment;
@@ -46,6 +47,7 @@ public class RecipeDetailServlet extends HttpServlet {
 		ArrayList<String> contents = rs.selectContents(bNo);
 		ArrayList<Attachment> files = rs.selectFiles(bNo);
 		ArrayList<Tag> tags = rs.selectTags(files);
+		ArrayList<Tag> upgradeTags = rs.addPTitles(tags);
 		ArrayList<RComment> comments = rs.selectComments(bNo);
 	
 		RequestDispatcher view = null;
@@ -54,6 +56,7 @@ public class RecipeDetailServlet extends HttpServlet {
 		request.setAttribute("contents", contents);
 		request.setAttribute("files", files);
 		request.setAttribute("tags", tags);
+		request.setAttribute("upgradeTags", upgradeTags);
 		request.setAttribute("nickname", nickname);
 		request.setAttribute("comments", comments);
 		
