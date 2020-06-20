@@ -83,6 +83,19 @@
     	cursor: pointer;
     	font-weight: bold;
     }
+    
+    .previewArea {
+      display: none;
+      width: 263px;
+      height: 150px;
+    }
+    
+    .preview {
+      width: 100%;
+      max-width: 263px;
+      max-height: 150px;
+      vertical-align: middle;
+    }
   </style>
   
 </head>
@@ -115,13 +128,19 @@
               <input type="text" name="title" style="width: 740px">
               <label for="thumbnail"><h5>썸네일 : </h5></label>
               <input type="file" id="thumbnail" name="a">
+              <div class="previewArea">
+              	<img src="" class="preview" id="thumbnailPre">
+              </div>
               <br><br>
               <h6 style="color: red; font-weight: bold">
                 ※ 최대 10개까지 업로드 가능<br>태그는 이미지 하나당 최대 3개<br>썸네일은 반드시 등록해주세요 ※<br>
                 (태그 거는 법 : 해당 판매글 번호 입력)
               </h6>
               <h5>1.</h5>
-              <input type="file" id="image1" name="b"><button type="button" class="tagBtn">태그달기</button>
+              <div class="previewArea">
+              	<img src="" class="preview" id="image1Pre">
+              </div>
+              <input type="file" class="image" id="image1" name="b"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
                 <input type="text" class="tag1" name="tag">
                 <input type="text" class="tag2" name="tag">
@@ -164,7 +183,10 @@
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>2.</h5>
-              <input type="file" id="image2" name="c"><button type="button" class="tagBtn">태그달기</button>
+              <div class="previewArea">
+              	<img src="" class="preview" id="image2Pre">
+              </div>
+              <input type="file" class="image" id="image2" name="c"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
                 <input type="text" class="tag1" name="tag">
                 <input type="text" class="tag2" name="tag">
@@ -207,7 +229,10 @@
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>3.</h5>
-              <input type="file" id="image3" name="d"><button type="button" class="tagBtn">태그달기</button>
+              <div class="previewArea">
+              	<img src="" class="preview" id="image3Pre">
+              </div>
+              <input type="file" class="image" id="image3" name="d"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
                 <input type="text" class="tag1" name="tag">
                 <input type="text" class="tag2" name="tag">
@@ -250,7 +275,10 @@
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>4.</h5>
-              <input type="file" id="image4" name="e"><button type="button" class="tagBtn">태그달기</button>
+              <div class="previewArea">
+              	<img src="" class="preview" id="image4Pre">
+              </div>
+              <input type="file" class="image" id="image4" name="e"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
                 <input type="text" class="tag1" name="tag">
                 <input type="text" class="tag2" name="tag">
@@ -293,7 +321,10 @@
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>5.</h5>
-              <input type="file" id="image5" name="f"><button type="button" class="tagBtn">태그달기</button>
+              <div class="previewArea">
+              	<img src="" class="preview" id="image5Pre">
+              </div>
+              <input type="file" class="image" id="image5" name="f"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
                 <input type="text" class="tag1" name="tag">
                 <input type="text" class="tag2" name="tag">
@@ -336,7 +367,10 @@
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>6.</h5>
-              <input type="file" id="image6" name="g"><button type="button" class="tagBtn">태그달기</button>
+              <div class="previewArea">
+              	<img src="" class="preview" id="image6Pre">
+              </div>
+              <input type="file" class="image" id="image6" name="g"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
                 <input type="text" class="tag1" name="tag">
                 <input type="text" class="tag2" name="tag">
@@ -379,7 +413,10 @@
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>7.</h5>
-              <input type="file" id="image7" name="h"><button type="button" class="tagBtn">태그달기</button>
+              <div class="previewArea">
+              	<img src="" class="preview" id="image7Pre">
+              </div>
+              <input type="file" class="image" id="image7" name="h"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
                 <input type="text" class="tag1" name="tag">
                 <input type="text" class="tag2" name="tag">
@@ -422,7 +459,10 @@
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>8.</h5>
-              <input type="file" id="image8" name="i"><button type="button" class="tagBtn">태그달기</button>
+              <div class="previewArea">
+              	<img src="" class="preview" id="image8Pre">
+              </div>
+              <input type="file" class="image" id="image8" name="i"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
                 <input type="text" class="tag1" name="tag">
                 <input type="text" class="tag2" name="tag">
@@ -465,7 +505,10 @@
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>9.</h5>
-              <input type="file" id="image9" name="j"><button type="button" class="tagBtn">태그달기</button>
+              <div class="previewArea">
+              	<img src="" class="preview" id="image9Pre">
+              </div>
+              <input type="file" class="image" id="image9" name="j"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
                 <input type="text" class="tag1" name="tag">
                 <input type="text" class="tag2" name="tag">
@@ -508,7 +551,10 @@
               <textarea name="content" cols="110" rows="3"></textarea>
               <br><br>
               <h5>10.</h5>
-              <input type="file" id="image10" name="k"><button type="button" class="tagBtn">태그달기</button>
+              <div class="previewArea">
+              	<img src="" class="preview" id="image10Pre">
+              </div>
+              <input type="file" class="image" id="image10" name="k"><button type="button" class="tagBtn">태그달기</button>
               <div class="tag">
                 <input type="text" class="tag1" name="tag">
                 <input type="text" class="tag2" name="tag">
@@ -560,12 +606,14 @@
       <!-- /.col-lg-9 -->
       <div class="col-lg-1">
          <%if(loginMember != null && loginSeller == null) { %>
+         <input type="hidden" id="loginStatus" value="1">
         <div id="login">
           <br>
           <i class="fas fa-user" style="font-size: 30px;"></i>
           <br><br>
              <%=loginMember.getMnickname() %><br>반갑습니다!<br><br>
-          <a href="sellerpage_register.html" style="color: white; margin-bottom: 10px;">마이페이지</a>
+          <a href="#" style="color: white; margin-bottom: 10px;"
+          	onclick="location.href='<%=request.getContextPath()%>/mypage/mypageUpdate.jsp'">마이페이지</a>
           <br>
           <button type="button" id="loginBtn" onclick="logout();">로그아웃</button>
         </div>
@@ -585,14 +633,18 @@
           <br>
           <i class="fas fa-user" style="font-size: 30px;"></i>
           <br><br>
-             <button onclick="login();">로그인</button>
+             <button onclick="login();">로그인</button><br><br>
+             <a href="#" style="color: white; margin-bottom: 10px;"
+          	onclick="location.href='<%=request.getContextPath()%>/mypage/nmOrderSearch.jsp'">비회원 주문정보</a>
         </div>
         <%} else { %>
         <div id="login">
           <br>
           <i class="fas fa-user" style="font-size: 30px;"></i>
           <br><br>
-             <button onclick="login();">로그인</button>
+             <button onclick="login();">로그인</button><br><br>
+                <a href="#" style="color: white; margin-bottom: 10px;"
+          	onclick="location.href='<%=request.getContextPath()%>/mypage/nmOrderSearch.jsp'">비회원 주문정보</a>
         </div>   
         <%}%>
         <script> // 두 계정이 혹시나 모두 로그인 되어있다면 로그아웃 시켜주기
@@ -671,15 +723,65 @@
       		}
     	  })
       });
+      
+      $("#thumbnail").change(function(e){
+    	var files = e.target.files;
+      	var filesArr = Array.prototype.slice.call(files);
+      	var id = $(this).attr("id");
+      	var previewId = id + "Pre";
+      	
+      	filesArr.forEach(function(f) {
+      		if(!f.type.match("image.*")) {
+      			alert("확장자는 이미지 확장자만 가능합니다.");
+      			return;
+      		}
+      		
+      		var sel_file = f;
+      		
+      		var reader = new FileReader();
+      		reader.onload = function(e) {
+      			$("#" + previewId).attr("src", e.target.result);
+      		}
+      		reader.readAsDataURL(f);
+      	});
+      	
+      	$(this).next().css("display","block");
+      })
+      
+      $(".image").change(function(e){
+    	var files = e.target.files;
+      	var filesArr = Array.prototype.slice.call(files);
+      	var id = $(this).attr("id");
+      	var previewId = id + "Pre";
+      	
+      	filesArr.forEach(function(f) {
+      		if(!f.type.match("image.*")) {
+      			alert("확장자는 이미지 확장자만 가능합니다.");
+      			return;
+      		}
+      		
+      		var sel_file = f;
+      		
+      		var reader = new FileReader();
+      		reader.onload = function(e) {
+      			$("#" + previewId).attr("src", e.target.result);
+      		}
+      		reader.readAsDataURL(f);
+      	});
+      	
+      	$(this).prev().css("display","block");
+      })
+      
     });
     
     function login(){
   		location.href="<%=request.getContextPath()%>/member/loginHaemukja.jsp";
   	}
+    
   	function logout(){
   		location.href="<%=request.getContextPath()%>/logout.me";
   	}
-  	
+  
   </script>
 
 </body>

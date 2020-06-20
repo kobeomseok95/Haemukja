@@ -177,8 +177,8 @@
         <div class="row">
           <div class="col-md-12" align="right">
           	<% if(loginMember != null && loginId.equals(recipe.getmId())) { %>
-		      <!-- <button type="button">수정</button> -->
-		      <button onclick="deleteRecipe()">삭제</button>
+		      <button type="button" onclick="updateRecipe()">수정</button>
+		      <button type="button" onclick="deleteRecipe()">삭제</button>
           	<% } %>
           </div>
         </div>
@@ -265,12 +265,14 @@
       <!-- /.col-lg-9 -->
       <div class="col-lg-1">
          <%if(loginMember != null && loginSeller == null) { %>
+         <input type="hidden" id="loginStatus" value="1">
         <div id="login">
           <br>
           <i class="fas fa-user" style="font-size: 30px;"></i>
           <br><br>
              <%=loginMember.getMnickname() %><br>반갑습니다!<br><br>
-          <a href="sellerpage_register.html" style="color: white; margin-bottom: 10px;">마이페이지</a>
+          <a href="#" style="color: white; margin-bottom: 10px;"
+          	onclick="location.href='<%=request.getContextPath()%>/mypage/mypageUpdate.jsp'">마이페이지</a>
           <br>
           <button type="button" id="loginBtn" onclick="logout();">로그아웃</button>
         </div>
@@ -290,14 +292,18 @@
           <br>
           <i class="fas fa-user" style="font-size: 30px;"></i>
           <br><br>
-             <button onclick="login();">로그인</button>
+             <button onclick="login();">로그인</button><br><br>
+             <a href="#" style="color: white; margin-bottom: 10px;"
+          	onclick="location.href='<%=request.getContextPath()%>/mypage/nmOrderSearch.jsp'">비회원 주문정보</a>
         </div>
         <%} else { %>
         <div id="login">
           <br>
           <i class="fas fa-user" style="font-size: 30px;"></i>
           <br><br>
-             <button onclick="login();">로그인</button>
+             <button onclick="login();">로그인</button><br><br>
+                <a href="#" style="color: white; margin-bottom: 10px;"
+          	onclick="location.href='<%=request.getContextPath()%>/mypage/nmOrderSearch.jsp'">비회원 주문정보</a>
         </div>   
         <%}%>
         <script> // 두 계정이 혹시나 모두 로그인 되어있다면 로그아웃 시켜주기
@@ -323,15 +329,15 @@
   <script>
     $(function(){
       $(".replyText").hide();
-      $(".image").click(function(){
-        $(this).next().toggle();
-      });
+      
       $(".replyBtn").click(function(){
         $(this).parent().parent().next().toggle();
       });
+      
       $(".image").click(function(){
     	 $(this).parent().next().toggle(); 
       });
+      
       $("#addReply").click(function(){	//데이터를 집어 넣은 다음, 쿼리문이 실행되어 여기 실행되게 끔 한다.
 			<%if(loginMember != null){ %>
 				var writer = "<%=loginMember.getMid()%>";
@@ -394,12 +400,18 @@
   		location.href="<%=request.getContextPath()%>/logout.me";
   	}
   	
+  	function updateRecipe() {
+  		location.href="<%=request.getContextPath()%>/select.re?bNo=<%=recipe.getbNo()%>&nCode=<%=recipe.getnCode()%>";
+  	}
+  	
   	function deleteRecipe() {
   		location.href="<%=request.getContextPath()%>/delete.re?bNo=<%=recipe.getbNo()%>&nCode=<%=recipe.getnCode()%>";
   	}
+  	
   	function goBack(){
    	 	history.back();
     }
+  	
   	function pleaseLogin(){
   		<%if(loginMember == null){%>
   			alert("일반회원에게만 권한이 있습니다.");

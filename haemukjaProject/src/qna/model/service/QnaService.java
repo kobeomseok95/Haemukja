@@ -88,24 +88,7 @@ public class QnaService {
 		close(conn);
 		return list;
 	}
-
-	public ArrayList<Comment> insertReply(Comment c) {
-		Connection conn = getConnection();
-		QnaDao qd = new QnaDao();
-		int result = qd.insertReply(conn, c);
-		//insert 완료
-		ArrayList<Comment> list = new ArrayList<Comment>();
-		
-		if(result > 0) {
-			commit(conn);
-			list = qd.selectReplyList(conn, c.getQid());
-		} else {
-			rollback(conn);
-		}
-		close(conn);
-		return list;
-	}
-
+	
 	public ArrayList<Comment> selectReplyList(int qid) {
 		Connection conn = getConnection();
 		ArrayList<Comment> list = new QnaDao().selectReplyList(conn, qid);
@@ -145,6 +128,70 @@ public class QnaService {
 		close(conn);
 		return result;
 	}
+
+	public int insertComment(Comment c) {
+		Connection conn = getConnection();
+		int result = new QnaDao().insertComment(conn, c);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		return result;
+	}
+
+	public void deleteComment(int qcno) {
+		Connection conn = getConnection();
+		int result = new QnaDao().deleteComment(conn, qcno);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+	}
+
+	public int selectReplyGroupNo(int qcno) {
+		Connection conn = getConnection();
+		int groupNo = new QnaDao().selectReplyGroupNo(conn, qcno);
+		close(conn);
+		return groupNo;
+	}
+
+	public int updateReplyOrderNo(int orderNo, int parentNo) {
+		Connection conn = getConnection();
+		int result = new QnaDao().updateReplyOrderNo(conn, orderNo, parentNo);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		return result;
+	}
+
+	public int selectReplyParentNo(int qcno) {
+		Connection conn = getConnection();
+		int parentNo = new QnaDao().selectReplyParentNo(conn, qcno);
+		close(conn);
+		return parentNo;
+	}
+
+	public int updateComment(int qcno, String qComment) {
+		Connection conn = getConnection();
+		int result = new QnaDao().updateComment(conn, qcno, qComment);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+
+	
 	
 }
 
