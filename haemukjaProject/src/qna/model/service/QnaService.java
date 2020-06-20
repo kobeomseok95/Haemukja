@@ -102,17 +102,6 @@ public class QnaService {
 		close(conn);
 		return notice;
 	}
-	public int answerComplete(int qid) {
-		Connection conn = getConnection();
-		int result = new QnaDao().answerComplete(conn, qid);
-		if(result > 0) {
-			commit(conn);
-		} else {
-			rollback(conn);
-		}
-		close(conn);
-		return result;
-	}
 
 	public ArrayList<Notice> selectNotice() {
 		Connection conn = getConnection();
@@ -191,8 +180,17 @@ public class QnaService {
 		return result;
 	}
 
-	
-	
+	public void updateQnaAnswer(int qid, boolean answer) {
+		Connection conn = getConnection();
+		int result = new QnaDao().updateQnaAnswer(conn, qid, answer);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+	}
 }
 
 

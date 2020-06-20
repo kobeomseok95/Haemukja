@@ -21,10 +21,11 @@ public class QnaDetailServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		QnaService qs = new QnaService();
 		int qid = Integer.valueOf(request.getParameter("qid"));
-		Qna qna = new QnaService().selectQna(qid);
+		Qna qna = qs.selectQna(qid);
 		ArrayList<Comment> commentList = new QnaService().selectReplyList(qid);
-		
+
 		if(qna != null) {
 			request.setAttribute("qna", qna);
 			request.setAttribute("comment", commentList);

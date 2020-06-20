@@ -249,6 +249,7 @@
 			$(this).remove();
 		});
 		$(document).on('click', '.changeReply', function(){	
+			console.log("작동");
 			<%if(loginMember.getMnickname().equals(qna.getMnickname()) || loginMember.getMid().equals("admin")){ %>
 				var qcno = 0;
 				var actionType= $(this).attr("class").split(" ")[1];
@@ -279,7 +280,9 @@
 						var y = $(this).parent().siblings()[0].children[0];
 						qcno = y.textContent;
 					}
-					else{return;}
+					else{
+						
+					}
 				}
 				else if(actionType === "update"){
 					var y = $(this).parent().siblings()[0].children[0];
