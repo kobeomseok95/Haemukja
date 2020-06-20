@@ -74,7 +74,6 @@ public class QnaChangeCommentServlet extends HttpServlet {
 				}
 			}
 		}
-		System.out.println("ajax Test line 77");
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
