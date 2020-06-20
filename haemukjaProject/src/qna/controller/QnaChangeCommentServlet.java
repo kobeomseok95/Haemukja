@@ -57,6 +57,11 @@ public class QnaChangeCommentServlet extends HttpServlet {
 				result = qs.updateReplyOrderNo(orderNo, parentNo);
 			}
 		}
+		else if(actionType.equals("update")) {
+			int qcno = Integer.valueOf(request.getParameter("qcno"));
+			String qComment = request.getParameter("qComment");
+			result = qs.updateComment(qcno, qComment);
+		}
 		
 		ArrayList<Comment> commentList = qs.selectReplyList(qid);
 		response.setContentType("application/json");

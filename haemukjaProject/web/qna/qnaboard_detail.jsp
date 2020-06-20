@@ -124,7 +124,10 @@
 	                		<p style="display:none;"><%=c.getQcno()%></p>		
 	                		<p><%=c.getGroupNo() %></p>
                 		</td>
-                		<td class="commentArea"><%=c.getqComment() %></td>
+                		<td class="commentArea">
+                			<p><%=c.getqComment() %></p>
+                			<textarea class="updateContent" style="display:none;" cols="50px"><%=c.getqComment() %></textarea>
+                		</td>
                 		<td><%=c.getmNickname() %></td>
                 		<td><%=c.getqDate() %></td>
                 		<td><button class="lookReplys group<%=c.getGroupNo() %>">답글</button>&nbsp;
@@ -147,7 +150,10 @@
 	                		<p style="display:none;"><%=c.getQcno()%></p>		
 	                		<p style="display:none;"><%=c.getParentNo() %></p>
 						</td>
-                		<td class="commentArea"><%=c.getqComment() %></td>
+                		<td class="commentArea">
+                			<p><%=c.getqComment() %></p>
+                			<textarea class="updateContent" style="display:none;" cols="50px"><%=c.getqComment() %></textarea>
+                		</td>
                 		<td><%=c.getmNickname() %></td>
                 		<td><%=c.getqDate() %></td>
                 		<td>
@@ -222,9 +228,26 @@
 			var lookReplys = $(this).attr("class").split(" ")[1];
 			$(".hideReplys." + lookReplys).toggle();
 		});
-		
-	
-		//udpate는 좀 더 고민 여기부터!
+		$(document).on('click', '.changeTextarea', function(){
+			$(this).addClass('update');
+			$(this).addClass('changeReply');
+			$(this).prev().toggle();
+			$(this).next().toggle();
+			var $newBtn = $("<button>");
+			$newBtn.addClass("cancel");
+			$newBtn.text("취소");
+			$(this).parent().append($newBtn);
+			$(this).parent().siblings('td.commentArea').children('p').hide();
+			$(this).parent().siblings('td.commentArea').children('textarea').show();
+		});
+		$(document).on('click', '.cancel', function(){
+			$(".changeTextarea").removeClass('update').removeClass('changeReply');
+			$(this).parent().siblings('td.commentArea').children('p').show();
+			$(this).parent().siblings('td.commentArea').children('textarea').hide();
+			$(this).prev().toggle();
+			$(this).prev().prev().prev().toggle();
+			$(this).remove();
+		});
 		$(document).on('click', '.changeReply', function(){	
 			<%if(loginMember.getMnickname().equals(qna.getMnickname()) || loginMember.getMid().equals("admin")){ %>
 				var qcno = 0;
@@ -256,8 +279,13 @@
 						var y = $(this).parent().siblings()[0].children[0];
 						qcno = y.textContent;
 					}
+					else{return;}
 				}
-
+				else if(actionType === "update"){
+					var y = $(this).parent().siblings()[0].children[0];
+					qcno = y.textContent;
+					content = $(this).parent().siblings(".commentArea").children('textarea').val();
+				}
 				$.ajax({
 					url:"changeComment.qn",
 					type:"post",
@@ -283,7 +311,8 @@
 							$commentTable.append($tr);
 						}else{
 							for(var i in data){
-								if(data[i].depth == 0){	//댓글일 경우
+								if(data[i].depth == 0){	
+									//댓글일 경우
 									var $firstTr = $("<tr>");
 									
 									var $firstTd = $("<td>");
@@ -294,7 +323,17 @@
 									$firstTd.append($p2);
 									
 									var $secondTd = $("<td>");
-									$secondTd.addClass("commentArea").text(data[i].qComment);
+									var $p = $("<p>");
+									$p.text(data[i].qComment);
+									var $textarea = $("<textarea>");
+									$textarea.addClass('updateContent');
+									$textarea.css("display", "none");
+									$textarea.attr("cols", "50px");
+									$textarea.val($p.text());
+									$secondTd.addClass("commentArea");
+									$secondTd.append($p);
+									$secondTd.append($textarea);
+									
 									
 									var $thirdTd = $("<td>");
 									$thirdTd.text(data[i].mNickname);
@@ -303,7 +342,7 @@
 									$fourthTd.text(data[i].qDate);
 									
 									var $fifthTd = $("<td>");
-									$fifthTd.html("<button class='lookReplys group" + data[i].groupNo + "'>답글</button>&nbsp;<button>수정</button>&nbsp;<button class='changeReply deleteComment'>삭제</button>");
+									$fifthTd.html("<button class='lookReplys group" + data[i].groupNo + "'>답글</button>&nbsp;<button class='changeTextarea'>수정</button>&nbsp;<button class='changeReply deleteComment'>삭제</button>");
 									
 									$firstTr.append($firstTd);
 									$firstTr.append($secondTd);
@@ -326,7 +365,8 @@
 									$commentTable.append($firstTr);
 									$commentTable.append($secondTr);
 								}	
-								else{//답글일 경우
+								else{
+									//답글일 경우
 									var $tr = $("<tr>");
 									$tr.addClass("hideReplys");
 									$tr.addClass("group" + data[i].groupNo);
@@ -339,15 +379,23 @@
 									$firstTd.append($p2);
 									
 									var $secondTd = $("<td>");
+									var $p = $("<p>");
+									$p.text(data[i].qComment);
+									var $textarea = $("<textarea>");
+									$textarea.addClass('updateContent');
+									$textarea.css("display", "none");
+									$textarea.attr("cols", "50px");
+									$textarea.val($p.text());
 									$secondTd.addClass("commentArea");
-									$secondTd.text(data[i].qComment);
+									$secondTd.append($p);
+									$secondTd.append($textarea);
 									
 									var $thirdTd = $("<td>").text(data[i].mNickname);
 									
 									var $fourthTd = $("<td>").text(data[i].qDate);
 									
 									var $fifthTd = $("<td>");
-									$fifthTd.html("<button>수정</button>&nbsp;<button class='changeReply deleteReply'>삭제</button>");
+									$fifthTd.html("<button class='changeTextarea'>수정</button>&nbsp;<button class='changeReply deleteReply'>삭제</button>");
 									$tr.append($firstTd);
 									$tr.append($secondTd);
 									$tr.append($thirdTd);
@@ -364,6 +412,7 @@
 					    console.log("error qnaboard_detail.jsp Comment ajax");
 					}
 				}); 
+				
 				
 			<%}else { %>
 				//그렇지 않을때
