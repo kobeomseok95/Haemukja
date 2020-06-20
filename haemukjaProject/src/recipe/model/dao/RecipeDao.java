@@ -901,4 +901,36 @@ public class RecipeDao {
 		return result;
 	}
 
+	public ArrayList<Tag> addPTitles(Connection conn, ArrayList<Tag> tags) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String query = "SELECT *\r\n" + 
+				"FROM (SELECT PTITLE\r\n" + 
+				"    FROM PRODUCT P\r\n" + 
+				"    JOIN SELL S ON(P.PID=S.PID)\r\n" + 
+				"    WHERE S.SBNO=?)";
+		
+		try {
+			for(int i = 0; i < tags.size(); i++) {
+				int sbNo = Integer.parseInt(tags.get(i).getTag());
+				
+				pstmt = conn.prepareStatement(query);
+				pstmt.setInt(1, sbNo);
+				
+				rset = pstmt.executeQuery();
+				while(rset.next()) {
+					tags.get(i).setpTitle(rset.getString(1));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(rset);
+		}
+		
+		return tags;
+	}
+
 }

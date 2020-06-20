@@ -8,6 +8,7 @@
 	ArrayList<String> contents = (ArrayList<String>)request.getAttribute("contents");
 	ArrayList<Attachment> files = (ArrayList<Attachment>)request.getAttribute("files");
 	ArrayList<Tag> tags = (ArrayList<Tag>)request.getAttribute("tags");
+	ArrayList<Tag> upgradeTags = (ArrayList<Tag>)request.getAttribute("upgradeTags");
 	ArrayList<RComment> comments = (ArrayList<RComment>)request.getAttribute("comments");
 	
 	int bNo = recipe.getbNo();
@@ -159,10 +160,11 @@
               	<div class="tag">
 	              	<% for(int j = 0; j < tags.size(); j++) { %>
 	              		<% if(tags.get(j).getaId() == files.get(i).getaId()) { %>
-	              			<a href="<%=request.getContextPath()%>/detail.sh?sbno=<%=tags.get(j).getTag() %>"><%=tags.get(j).getTag() %></a>
+	              			<a href="<%=request.getContextPath()%>/detail.sh?sbno=<%=tags.get(j).getTag() %>"><%=upgradeTags.get(j).getpTitle() %></a><br>
 	              	 	<% } %>
 	              	<% } %>
 	            </div>
+	            <br>
 	              <div class="content">
 	              	<%= contents.get(i) %>
 	              </div>
