@@ -1,12 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" import="common.Attachment" %>
+    pageEncoding="UTF-8" import="common.Attachment,java.util.*" %>
 <%
-	String ptitle = (String)request.getAttribute("ptitle");
-	int price = (Integer)request.getAttribute("price");
-	int amprice = (Integer)request.getAttribute("amprice");
-	int pcount = (Integer)request.getAttribute("pcount");
-	int pid = (Integer)request.getAttribute("pid");
-	Attachment thumbnail = (Attachment)request.getAttribute("thumbnail");
+	ArrayList<String> ptitle = (ArrayList<String>)request.getAttribute("ptitle");
+	ArrayList<Integer> price = (ArrayList<Integer>)request.getAttribute("price");
+	ArrayList<Integer> amprice = (ArrayList<Integer>)request.getAttribute("amprice");
+	ArrayList<Integer> pcount = (ArrayList<Integer>)request.getAttribute("pcount");
+	ArrayList<Integer> pid = (ArrayList<Integer>)request.getAttribute("pid");
+	ArrayList<Attachment> thumbnail = (ArrayList<Attachment>)request.getAttribute("thumbnail");
+	Integer allamprice = (Integer)request.getAttribute("allamprice");
+	ArrayList<Integer> sbno = (ArrayList<Integer>)request.getAttribute("sbno");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,15 +61,18 @@
             <br>
             <h3>* 주문상품</h3>
             <div class="row">
-            <input type="hidden" name="pid" value=<%=pid %>>
+            <%for(int i =0; i<ptitle.size();i++){ %>
+            <input type="hidden" name="pid" value=<%=pid.get(i) %>>
+            <input type="hidden" name="price" value=<%=price.get(i) %>>
+            <input type="hidden" name="sbno" value=<%=sbno.get(i) %>>
                 <div class="col-md-8">
                     <div class="col-md-4 sellBox" style="display: inline-block;">
                         <img class="media-object img-thumbnail user-img" style="height: 80px;" alt="User Picture"
-                            src="<%=request.getContextPath()%>/uploadFiles/<%=thumbnail.getFileName()%>">
+                            src="<%=request.getContextPath()%>/uploadFiles/<%=thumbnail.get(i).getFileName()%>">
                     </div>
                     <div class="col-md-4 sellBox" style="display: inline-block;">
                         <div>
-                            <strong name="product"><%=ptitle %></strong><br>
+                            <strong name="product"><%=ptitle.get(i) %></strong><br>
                         </div>
                     </div>
                 </div>
@@ -78,7 +83,7 @@
 
                         <div class="col-md-4">
                             가격 :
-                            <input id="price" name="price" type="text" value="<%=price %>" class="form-control" readonly>
+                            <input id="price" name="price" type="text" value="<%=amprice.get(i) %>" class="form-control" readonly>
                         </div>
                     </div>
 
@@ -86,12 +91,13 @@
 
                         <div class="col-md-4">
                             구매수량 :
-                            <input type="text" name="count" id="count" value="<%=pcount %>" class="form-control" aria-describedby="year-addon" readonly>
+                            <input type="text" name="count" id="count" value="<%=pcount.get(i) %>" class="form-control" aria-describedby="year-addon" readonly>
                                
                            
                         </div>
                     </div>
                 </div>
+                <%} %>
             </div>
             
             <div class ="row">
@@ -99,7 +105,7 @@
             		<div class= "col-md-12" >
             				
             		    총 결제금액 :
-                            <input type="text" name="allamprice" id="allamprice" style="text-align: right; width:100px;" value="<%=amprice %>" class="form-control" aria-describedby="year-addon" readonly>
+                            <input type="text" name="allamprice" id="allamprice" style="text-align: right; width:100px;" value="<%=allamprice %>" class="form-control" aria-describedby="year-addon" readonly>
             		</div>
             	</div>
             
@@ -314,7 +320,7 @@
         var payment = $('input[name="payment"]:checked').val();
       
         var amprice = $("#allamprice").val();
-        var count = $("#count").val();
+
        
         
         IMP.request_pay({
@@ -322,7 +328,7 @@
             pay_method : 'card',
             merchant_uid : 'merchant_' + new Date().getTime(),
             name : '해먹샵',
-            amount : <%=amprice%>,
+            amount : amprice,
             buyer_email : email,
             buyer_name : name,
             buyer_tel : phone,
@@ -356,12 +362,25 @@
                     }
                 });
                 //성공시 이동할 페이지
-                location.href='<%=request.getContextPath()%>/nonorder.me?payment='+payment+'&allamprice='+amprice+'&count='+count+'&pid='+<%=pid%>;
+                location.href='<%=request.getContextPath()%>/nonorder.me?payment='+payment+
+                		<%for(int i=0 ; i<pcount.size();i++){%>
+                		'&count='+<%=pcount.get(i)%>+
+                		<%}%>
+                		<%for(int i=0 ; i<pid.size();i++){%>
+                		'&pid='+<%=pid.get(i)%>+
+                		<%}%>
+                		<%for(int i=0 ; i<sbno.size();i++){%>
+                		'&sbno='+<%=sbno.get(i)%>+
+                		<%}%>
+                		<%for(int i=0 ; i<price.size();i++){%>
+                		'&price='+<%=price.get(i)%>+
+                		<%}%>
+                		'&allamprice='+amprice;
             } else {
                 msg = '결제에 실패하였습니다.';
                 msg += '에러내용 : ' + rsp.error_msg;
                 //실패시 이동할 페이지
-                location.href="<%=request.getContextPath()%>/detail.sh?sbno="+<%=thumbnail.getSbNo()%>;
+             
                 alert(msg);
             }
         });

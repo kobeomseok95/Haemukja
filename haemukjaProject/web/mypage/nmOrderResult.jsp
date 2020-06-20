@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" import="mypage.model.vo.*"%>
-<% NMOrder no = (NMOrder)request.getAttribute("no");
+    pageEncoding="UTF-8" import="mypage.model.vo.*,java.util.*"%>
+<% 
+	ArrayList<NMOrder> no = (ArrayList<NMOrder>)request.getAttribute("no");
 	String msg = (String)request.getAttribute("msg");
 %>
 <!DOCTYPE html>
@@ -54,12 +55,12 @@
               <img src="<%=request.getContextPath()%>/images/haemukjalogo.png" width="400px">
             </div>
 
-            <div class="card-body" style="height:200px">
+            <div class="card-body" >
              
               	<div class="form-group row">
                 
-                  <% if(msg==null && no !=null){ %>
-                  <div class="col-md-12">
+                  <% if(msg==null && no!=null){ %>
+                  <div class="col-md-12" >
                     <table class="table">
               			<thead>
 			                <th style="width: 50px;"></th>
@@ -70,16 +71,17 @@
 			                <th style="width: 100px;">주문상태</th>
 			                <th style="width: 100px;"></th>
             		   </thead>
-            		   
+            		      <%for(NMOrder n : no){ %>
             		   <tbody>
             		    <td style="width: 100px;"></td>
-            		    <td style="width: 300px;"><%=no.getPtitle() %></td>
-            		     <td style="width: 100px;"><%=no.getPrice() %></td>
-            		     <td style="width: 100px;"><%=no.getPcount() %></td>
-            		     <td style="width: 100px;"><%=no.getOdate() %></td>
-            		     <td style="width: 100px;"><%=no.getOname() %></td>
-            		      <td style="width: 100px;"></td>
-            		      </tbody>
+            		    <td style="width: 300px;"><%=n.getPtitle() %></td>
+            		    <td style="width: 100px;"><%=n.getPrice() %></td>
+            		    <td style="width: 100px;"><%=n.getPcount() %></td>
+            		    <td style="width: 100px;"><%=n.getOdate() %></td>
+            		    <td style="width: 100px;"><%=n.getOname() %></td>
+            		    <td style="width: 100px;"></td>
+            		   </tbody>
+            		      <%} %>
             		      </table>
                   </div>
                   
@@ -87,17 +89,23 @@
                    		<div class="col-md-12" style="text-align: center; padding-top: 35px;">
                    			<%=msg %>
                    		</div>
+                   		
                     <%} %>
                 </div> <!-- form-group row -->
-                <div class="col-md-10 offset-md-5">
-                <% if(msg==null && no !=null){ %>
+                <div class="col-md-12" align="center">
+                <% if(msg==null && no!=null){ %>
                   <button type="button" class="btn btn-primary" onclick="location.href='<%=request.getContextPath()%>/mainList.sh'" style="background-color: orange; border: none; width:150px">
                   메인으로
                   </button>&nbsp;&nbsp;
          <%}else if(msg!=null && no==null){ %>
-            <button type="button" class="btn btn-primary" onclick="location.href='<%=request.getContextPath()%>/mypage/nmOrderSearch.jsp'" style="background-color: orange; border: none; width:150px">
+        
+            <button type="button" class="btn btn-primary" onclick="location.href='<%=request.getContextPath()%>/mypage/nmOrderSearch.jsp'" style="background-color: orange; border: none; width:100px">
                  다시검색
                   </button>&nbsp;&nbsp;
+                       <button type="button" class="btn btn-primary" onclick="location.href='<%=request.getContextPath()%>/mainList.sh'" style="background-color: orange; border: none; width:100px">
+                  메인으로
+                  </button>&nbsp;&nbsp;
+                  
          <%} %>
                   <br><br>
           

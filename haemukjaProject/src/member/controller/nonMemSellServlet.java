@@ -1,6 +1,7 @@
 package member.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -32,23 +33,98 @@ public class nonMemSellServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
-		String ptitle= request.getParameter("product");
-		int price = Integer.valueOf(request.getParameter("price"));
-		int sbno = Integer.valueOf(request.getParameter("sbno"));
-		int pcount = Integer.valueOf(request.getParameter("pcount"));
-		int pid = Integer.valueOf(request.getParameter("pid"));
+		String[] ptitle= request.getParameterValues("product");
+		String[] price = request.getParameterValues("price");
+		String[] sbno = request.getParameterValues("sbno");
+		String[] pcount = request.getParameterValues("pcount");	//수량
+		String[] pid = request.getParameterValues("pid");
 		
-		int amprice = pcount*price; // 총가격
+		int [] sbno2 = new int[sbno.length];
 		
-		Attachment thumbnail = new ProductService().selectThumbnail(sbno);
+		for(int i = 0;i<sbno.length;i++){
+			sbno2[i] = Integer.parseInt(sbno[i]);	
+		}
 		
+		
+		ArrayList<String> pidList= new ArrayList<String>();
+		for(int i =0 ; i<pid.length;i++) {
+			pidList.add(pid[i]);
+		}
+		System.out.println("sellservlet에서 pid:"+ pidList);
+		
+		
+		ArrayList<String> ptitleList= new ArrayList<String>();
+		for(int i =0 ; i<pid.length;i++) {
+			ptitleList.add(ptitle[i]);
+		}
+		System.out.println("sellservlet에서 ptitle:"+ ptitleList);
+		
+
+		 
+		ArrayList<String> camountAr= new ArrayList<String>();	//수량
+		for(int i =0 ; i<pid.length;i++) {
+			camountAr.add(pcount[i]);
+		}
+		
+		System.out.println("sellservlet에서 camoutAr:"+ camountAr);
+	
+		ArrayList<Integer> sbNo = new ArrayList<Integer>();
+		for(int i = 0; i<pid.length;i++) {
+			sbNo.add(sbno2[i]);
+		}
+		System.out.println("sellservlet에서 sbno:"+ sbNo);
+		 
+		 // camount[] 형변환
+		int [] camount2 = new int[pcount.length];
+		
+		for(int i = 0;i<pcount.length;i++){
+		
+		camount2[i] = Integer.parseInt(pcount [i]);	
+		}
+		
+		
+		int [] price2 = new int[price.length];
+		
+		for(int i = 0;i<price.length;i++){
+		
+		price2[i] = Integer.parseInt(price [i]);	
+		}
+		
+		
+		int[] amprice = new int[price.length]; //총가격
+		 for(int i = 0;i<price.length;i++) {
+			amprice[i] = camount2[i]*price2[i];
+		}
+		
+		 
+		ArrayList<Integer> ampriceAr= new ArrayList<Integer>();
+		for(int i =0 ; i<pid.length;i++) {
+			ampriceAr.add(amprice[i]);
+		}
+		 
+		int allamprice = 0; // 총결제가격
+		for(int i = 0; i<pid.length; i++) {
+			allamprice += ampriceAr.get(i);
+		}
+		
+	
+		
+		ArrayList<Attachment> thumbnailList = new ArrayList<Attachment>();
+		for(int i =0 ; i<pid.length;i++) {
+			thumbnailList.add(new ProductService().selectThumbnail(sbNo.get(i)));
+		}	
+	
+	
 		RequestDispatcher view = null;
-		request.setAttribute("ptitle", ptitle);
-		request.setAttribute("price", price);
-		request.setAttribute("pcount", pcount);
-		request.setAttribute("amprice", amprice);
-		request.setAttribute("thumbnail", thumbnail);
-		request.setAttribute("pid", pid);
+		request.setAttribute("ptitle", ptitleList);
+		request.setAttribute("price", ampriceAr);
+		request.setAttribute("pcount", camountAr);
+		request.setAttribute("amprice", ampriceAr);
+		request.setAttribute("thumbnail",thumbnailList);
+		request.setAttribute("allamprice", allamprice);
+		request.setAttribute("pid", pidList);
+		request.setAttribute("sbno", sbNo);
+		
 		view = request.getRequestDispatcher("member/nonMember.jsp");
 		view.forward(request, response);
 				

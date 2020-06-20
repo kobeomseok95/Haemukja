@@ -308,18 +308,18 @@ public class MypageDao {
 	      return result;
 	   }
 
-	public NMOrder selectNmOrder(Connection conn ,String oid) {
+	public ArrayList<NMOrder> selectNmOrder(Connection conn ,String oid) {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		String query ="SELECT * FROM PRODUCT P JOIN NMORDERLIST N ON P.PID = N.PID JOIN OSTATE O ON N.OSID=O.OSID WHERE OID = ?";
-		NMOrder no=null;
+		ArrayList<NMOrder> no=new ArrayList<NMOrder>();
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, oid);
 			rset = pstmt.executeQuery();
 			
 			while(rset.next()) {
-				no=new NMOrder(
+				no.add(new NMOrder(
 						rset.getString("ptitle"),
 						rset.getInt("pprice"),
 						rset.getDate("odate"),
@@ -327,7 +327,7 @@ public class MypageDao {
 						rset.getInt("pid"),
 						rset.getInt("pcount"),
 						rset.getString("o_name")
-						);
+						));
 			}
 		} catch (SQLException e) {
 		e.printStackTrace();
