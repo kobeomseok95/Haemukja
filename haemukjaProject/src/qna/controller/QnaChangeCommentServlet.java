@@ -14,13 +14,13 @@ import com.google.gson.GsonBuilder;
 
 import qna.model.service.QnaService;
 import qna.model.vo.Comment;
+import qna.model.vo.Qna;
 
 @WebServlet("/changeComment.qn")
 public class QnaChangeCommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//updateComment, updateReply 남음
 		String actionType = request.getParameter("actionType");
 		int qid = Integer.valueOf(request.getParameter("qid"));
 		QnaService qs = new QnaService();
@@ -64,6 +64,16 @@ public class QnaChangeCommentServlet extends HttpServlet {
 		}
 		
 		ArrayList<Comment> commentList = qs.selectReplyList(qid);
+		if(commentList.isEmpty() && qs.selectQna(qid).getAnswer().equals("Y")) {
+			qs.updateQnaAnswer(qid, false);
+		}
+		else if(!commentList.isEmpty()){
+			for(Comment c : commentList) {
+				if(c.getmNickname().equals("관리자") && qs.selectQna(qid).getAnswer().equals("N")) {
+					qs.updateQnaAnswer(qid, true);
+				}
+			}
+		}
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();

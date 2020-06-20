@@ -505,6 +505,32 @@ public class QnaDao {
 		close(pstmt);
 		return result;
 	}
+
+	public int updateQnaAnswer(Connection conn, int qid, boolean answer) {	
+		//true:관리자가 답변을 달았을 경우
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = "";
+		if(answer) {
+			sql = "UPDATE QNA\r\n" + 
+					"SET ANSWER = 'Y'\r\n" + 
+					"WHERE QID = ?";
+		}
+		else {
+			sql = "UPDATE QNA\r\n" + 
+					"SET ANSWER = 'N'\r\n" + 
+					"WHERE QID = ?";
+		}
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, qid);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
 }
 
 
