@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import qna.model.service.QnaService;
-import qna.model.vo.Comment;
+import qna.model.vo.QComment;
 import qna.model.vo.Qna;
 
 /**
@@ -24,7 +24,7 @@ public class QnaDetailServlet extends HttpServlet {
 		QnaService qs = new QnaService();
 		int qid = Integer.valueOf(request.getParameter("qid"));
 		Qna qna = qs.selectQna(qid);
-		ArrayList<Comment> commentList = new QnaService().selectReplyList(qid);
+		ArrayList<QComment> commentList = new QnaService().selectReplyList(qid);
 
 		if(qna != null) {
 			request.setAttribute("qna", qna);
