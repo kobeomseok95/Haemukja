@@ -157,8 +157,13 @@
           <i class="fas fa-user" style="font-size: 30px;"></i>
           <br><br>
              <%=loginMember.getMnickname() %><br>반갑습니다!<br><br>
-          <a href="#" style="color: white; margin-bottom: 10px;"
-          	onclick="location.href='<%=request.getContextPath()%>/mypage/mypageUpdate.jsp'">마이페이지</a>
+             <% if(loginMember.getMid().equals("admin")) { %>
+             	<a href="#" style="color: white; margin-bottom: 10px;"
+	          	onclick="location.href='<%=request.getContextPath()%>/manager/managerPageReport.jsp'">관리자페이지</a> 
+             <% } else { %>
+	            <a href="#" style="color: white; margin-bottom: 10px;"
+	          	onclick="location.href='<%=request.getContextPath()%>/mypage/mypageUpdate.jsp'">마이페이지</a>             
+             <% } %>
           <br>
           <button type="button" id="loginBtn" onclick="logout();">로그아웃</button>
         </div>
@@ -211,12 +216,6 @@
   <%@ include file="static/bottom.jsp"%>
 
   <script>
-	 <%-- $(".detail").click(function(){
-	    var bNo = $(".bNo").val();
-	      
-	    location.href="<%= request.getContextPath() %>/detail2.re?bNo=" + bNo;
-	 }); --%>
-  
      function login(){
         location.href="<%=request.getContextPath()%>/member/loginHaemukja.jsp";
      }
