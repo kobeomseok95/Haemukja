@@ -1,20 +1,21 @@
 package qna.model.vo;
 
 import java.sql.Date;
+import java.util.HashMap;
 
-public class Comment {
-	private int qcno;					//qnacom의 인위적식별자
-	private int qid;						//qna게시글 번호
-	private String qComment;		//댓글내용
-	private Date qDate;				//작성날짜
-	private String mNickname;		//닉네임
-	private int parentNo;				//대댓글시 부모댓글
-	private int orderNo;				//한 그룹에서의 순서
-	private int groupNo;				//그룹넘버(댓글부모순)
-	private int depth;					//깊이(대댓글 판단)
-	public Comment() {
+public class QComment {
+	private int qcno;					//	인위적 식별자(sequence)
+	private int qid;						// qna 게시판의 게시글 번호
+	private String qComment;		//	댓글내용
+	private Date qDate;				//	작성날짜
+	private String mNickname;		//	닉네임
+	private int parentNo;				//	대댓글시 부모댓글
+	private int orderNo;				//	한 그룹에서의 순서
+	private int groupNo;				//	그룹넘버(댓글부모순)
+	private int depth;					//	깊이(대댓글 판단)
+	public QComment() {
 	}
-	public Comment(int qcno, int qid, String qComment, Date qDate, String mNickname, int parentNo, int orderNo,
+	public QComment(int qcno, int qid, String qComment, Date qDate, String mNickname, int parentNo, int orderNo,
 			int groupNo, int depth) {
 		this.qcno = qcno;
 		this.qid = qid;
@@ -82,9 +83,9 @@ public class Comment {
 	}
 	@Override
 	public String toString() {
-		return "Comment [qcno=" + qcno + ", qid=" + qid + ", qComment=" + qComment + ", qDate=" + qDate + ", mNickname="
-				+ mNickname + ", parentNo=" + parentNo + ", orderNo=" + orderNo + ", groupNo=" + groupNo + ", depth="
-				+ depth + "]";
+		return "QComment [qcno=" + qcno + ", qid=" + qid + ", qComment=" + qComment + ", qDate=" + qDate
+				+ ", mNickname=" + mNickname + ", parentNo=" + parentNo + ", orderNo=" + orderNo + ", groupNo="
+				+ groupNo + ", depth=" + depth + "]";
 	}
 	
 }

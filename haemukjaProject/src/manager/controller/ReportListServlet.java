@@ -1,4 +1,4 @@
-package product.controller;
+package manager.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,23 +10,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import common.Attachment;
 import common.PageInfo;
+import manager.model.service.ManagerService;
+import manager.model.vo.Report;
 import product.model.service.ProductService;
-import product.model.vo.Sale;
+import product.model.vo.Order;
 
 /**
- * Servlet implementation class ShopListServlet
- * @param <ShopService>
+ * Servlet implementation class ReportListServlet
  */
-@WebServlet("/list.sh")
-public class ShopListServlet<ShopService> extends HttpServlet {
+@WebServlet("/list.ro")
+public class ReportListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ShopListServlet() {
+    public ReportListServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,11 +35,9 @@ public class ShopListServlet<ShopService> extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String sbKind = request.getParameter("sbKind");
+		ManagerService ms = new ManagerService();
 		
-		ProductService ps = new ProductService();
-		
-		int listCount = ps.getListSCount(sbKind);
+		int listCount = ms.getListCount();
 		int currentPage;
 		int limit;
 		int maxPage;
@@ -62,31 +60,16 @@ public class ShopListServlet<ShopService> extends HttpServlet {
 			endPage = maxPage;
 		}
 		
-		PageInfo sp = new PageInfo(currentPage, listCount, limit, maxPage, startPage, endPage);
+		PageInfo pi = new PageInfo(currentPage, listCount, limit, maxPage, startPage, endPage);
 		
-		ArrayList<Sale> sList = ps.selectCaList(currentPage, limit, sbKind);
+		ArrayList<Report> rlist = ms.selectRlist(currentPage, limit);
 		
-		ArrayList<Attachment> files = new ArrayList<>();
-		for(int i = 0; i < sList.size(); i++) {
-			Attachment a = new ProductService().selectThumbnail(sList.get(i).getSbNo());
-			files.add(a);
-		}
+		RequestDispatcher view = null;
+		view = request.getRequestDispatcher("manager/managrPageReport.jsp");
+		request.setAttribute("rlist", rlist);
+		request.setAttribute("pi", pi);
 		
-		ArrayList<String> companies = new ArrayList<>();
-		for(int i = 0; i < sList.size(); i++) {
-			String company = ps.selectCompany(sList.get(i).getsId(), sList.get(i).getSbNo());
-			companies.add(company);
-		}
-		
-	    RequestDispatcher view = null;
-	    view = request.getRequestDispatcher("haemukshop/haemukshopList.jsp"); 	
-	    request.setAttribute("sList", sList);
-	    request.setAttribute("files", files);
-	    request.setAttribute("companies", companies);
-	    request.setAttribute("sp", sp);
-	    	
-	    view.forward(request, response);
-		
+		view.forward(request, response);
 	}
 
 	/**

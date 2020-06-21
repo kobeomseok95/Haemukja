@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 import qna.model.dao.QnaDao;
-import qna.model.vo.Comment;
+import qna.model.vo.QComment;
 import qna.model.vo.Notice;
 import qna.model.vo.Qna;
 public class QnaService {
@@ -89,9 +89,9 @@ public class QnaService {
 		return list;
 	}
 	
-	public ArrayList<Comment> selectReplyList(int qid) {
+	public ArrayList<QComment> selectReplyList(int qid) {
 		Connection conn = getConnection();
-		ArrayList<Comment> list = new QnaDao().selectReplyList(conn, qid);
+		ArrayList<QComment> list = new QnaDao().selectReplyList(conn, qid);
 		close(conn);
 		return list;
 	}
@@ -110,15 +110,15 @@ public class QnaService {
 		return noticeList;
 	}
 
-	public int deleteQnaComment(int qid) {
+	public int deleteQnaComment(int bno) {
 		Connection conn = getConnection();
-		int result = new QnaDao().deleteQnaComments(conn, qid);
+		int result = new QnaDao().deleteQnaComments(conn, bno);
 		commit(conn);
 		close(conn);
 		return result;
 	}
 
-	public int insertComment(Comment c) {
+	public int insertComment(QComment c) {
 		Connection conn = getConnection();
 		int result = new QnaDao().insertComment(conn, c);
 		if(result > 0) {
@@ -127,36 +127,40 @@ public class QnaService {
 		else {
 			rollback(conn);
 		}
+		close(conn);
 		return result;
 	}
 
-	public void deleteComment(int qcno) {
+	public int deleteComment(int qcno) {
 		Connection conn = getConnection();
-		int result = new QnaDao().deleteComment(conn, qcno);
+		int result= new QnaDao().deleteComment(conn, qcno);
 		if(result > 0) {
 			commit(conn);
 		}
 		else {
 			rollback(conn);
 		}
+		close(conn);
+		return result;
 	}
 
-	public int selectReplyGroupNo(int qcno) {
+	public int selectReplyOrderNo(int qcno) {
 		Connection conn = getConnection();
-		int groupNo = new QnaDao().selectReplyGroupNo(conn, qcno);
+		int orderNo = new QnaDao().selectReplyOrderNo(conn, qcno);
 		close(conn);
-		return groupNo;
+		return orderNo;
 	}
 
 	public int updateReplyOrderNo(int orderNo, int parentNo) {
 		Connection conn = getConnection();
 		int result = new QnaDao().updateReplyOrderNo(conn, orderNo, parentNo);
-		if(result > 0) {
+		if(result >= 0) {
 			commit(conn);
 		}
 		else {
 			rollback(conn);
 		}
+		close(conn);
 		return result;
 	}
 
@@ -190,6 +194,25 @@ public class QnaService {
 			rollback(conn);
 		}
 		close(conn);
+	}
+
+	public int selectGroupNo(int qcno) {
+		Connection conn = getConnection();
+		int groupNo = new QnaDao().selectGroupNo(conn, qcno);
+		close(conn);
+		return groupNo;
+	}
+
+	public int updateGroupNo(int groupNo) {
+		Connection conn = getConnection();
+		int result = new QnaDao().updateGroupNo(conn, groupNo);
+		if(result >= 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		return result;
 	}
 }
 
