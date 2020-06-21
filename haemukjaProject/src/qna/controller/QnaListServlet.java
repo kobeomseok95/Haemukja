@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import qna.model.service.QnaService;
+import qna.model.vo.QComment;
 import qna.model.vo.Notice;
 import qna.model.vo.PageInfo;
 import qna.model.vo.Qna;

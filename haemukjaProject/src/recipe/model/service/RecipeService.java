@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 import common.Attachment;
+import qna.model.dao.QnaDao;
 import recipe.model.dao.RecipeDao;
 import recipe.model.vo.RComment;
 import recipe.model.vo.Recipe;
@@ -188,19 +189,17 @@ public class RecipeService {
 		return comments;
 	}
 
-	public ArrayList<RComment> insertComment(RComment rc) {
+	public int insertComment(RComment rc) {
 		Connection conn = getConnection();
-		RecipeDao rd = new RecipeDao();
 		int result = new RecipeDao().insertComment(conn, rc);
-		ArrayList<RComment> list = new ArrayList<RComment>();
 		if(result > 0) {
 			commit(conn);
-			list = rd.selectComments(conn, rc.getbNo());
-		} else {
+		}
+		else {
 			rollback(conn);
 		}
 		close(conn);
-		return list;
+		return result;
 	}
 
 	public ArrayList<Recipe> selectRList() {
@@ -362,6 +361,78 @@ public class RecipeService {
 		close(conn);
 		
 		return tagsPTitles;
+	}
+
+	public int selectGroupNo(int rcno) {
+		Connection conn = getConnection();
+		int groupNo = new RecipeDao().selectGroupNo(conn, rcno);
+		close(conn);
+		return groupNo;
+	}
+
+	public int deleteComment(int rcno) {
+		Connection conn = getConnection();
+		int result= new RecipeDao().deleteComment(conn, rcno);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+
+	public int updateGroupNo(int groupNo) {
+		Connection conn = getConnection();
+		int result = new RecipeDao().updateGroupNo(conn, groupNo);
+		if(result >= 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		return result;
+	}
+
+	public int selectReplyOrderNo(int rcno) {
+		Connection conn = getConnection();
+		int orderNo = new RecipeDao().selectReplyOrderNo(conn, rcno);
+		close(conn);
+		return orderNo;
+	}
+
+	public int selectReplyParentNo(int rcno) {
+		Connection conn = getConnection();
+		int parentNo = new RecipeDao().selectReplyParentNo(conn, rcno);
+		close(conn);
+		return parentNo;
+	}
+
+	public int updateReplyOrderNo(int orderNo, int parentNo) {
+		Connection conn = getConnection();
+		int result = new RecipeDao().updateReplyOrderNo(conn, orderNo, parentNo);
+		if(result >= 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+
+	public int updateComment(int rcno, String rComment) {
+		Connection conn = getConnection();
+		int result = new RecipeDao().updateComment(conn, rcno, rComment);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
 	}
 
 }

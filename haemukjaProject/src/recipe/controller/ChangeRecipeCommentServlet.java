@@ -1,4 +1,4 @@
-package qna.controller;
+package recipe.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,62 +12,65 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import qna.model.service.QnaService;
-import qna.model.vo.Comment;
+import qna.model.vo.QComment;
+import recipe.model.service.RecipeService;
+import recipe.model.vo.RComment;
 
-@WebServlet("/changeComment.qn")
-public class QnaChangeCommentServlet extends HttpServlet {
+@WebServlet("/changeComment.re")
+public class ChangeRecipeCommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//updateComment, updateReply 남음
 		String actionType = request.getParameter("actionType");
-		int qid = Integer.valueOf(request.getParameter("qid"));
-		QnaService qs = new QnaService();
+		int bno = Integer.valueOf(request.getParameter("bno"));
+		RecipeService rs = new RecipeService();
 		int result = 0;
-		
 		if(actionType.equals("addComment") || actionType.equals("addReply")) {
-			String qComment = request.getParameter("qComment");
+			String rComment = request.getParameter("rComment");
 			String mid = request.getParameter("mid");
 			int parentNo = Integer.valueOf(request.getParameter("parentNo"));
 			int orderNo = Integer.valueOf(request.getParameter("orderNo"));
 			int groupNo = Integer.valueOf(request.getParameter("groupNo"));
 			int depth = Integer.valueOf(request.getParameter("depth"));
 			
-			Comment c = new Comment();
-			c.setQid(qid);
-			c.setqComment(qComment);
-			c.setmNickname(mid);	//아이디입니다.
-			c.setParentNo(parentNo);
-			c.setOrderNo(orderNo);
-			c.setGroupNo(groupNo);
-			c.setDepth(depth);
+			RComment rc = new RComment();
+			rc.setBno(bno);
+			rc.setrComment(rComment);
+			rc.setmNickname(mid);	//아이디입니다.
+			rc.setParentNo(parentNo);
+			rc.setOrderNo(orderNo);
+			rc.setGroupNo(groupNo);
+			rc.setDepth(depth);
 			
-			result = qs.insertComment(c);
+			result = rs.insertComment(rc);
 		} 
 		else if(actionType.equals("deleteComment") || actionType.equals("deleteReply")) {
-			int qcno = Integer.valueOf(request.getParameter("qcno"));
+			int rcno = Integer.valueOf(request.getParameter("rcno"));
 			if(actionType.equals("deleteComment")) {
-				qs.deleteComment(qcno);			
+				int groupNo = rs.selectGroupNo(rcno);
+				result = rs.deleteComment(rcno);
+				result = rs.updateGroupNo(groupNo);
 			}
 			else {	
-				int orderNo = qs.selectReplyGroupNo(qcno);
-				int parentNo = qs.selectReplyParentNo(qcno);
-				qs.deleteComment(qcno);
-				result = qs.updateReplyOrderNo(orderNo, parentNo);
+				int orderNo = rs.selectReplyOrderNo(rcno);
+				int parentNo = rs.selectReplyParentNo(rcno);
+				rs.deleteComment(rcno);
+				result = rs.updateReplyOrderNo(orderNo, parentNo);
 			}
 		}
 		else if(actionType.equals("update")) {
-			int qcno = Integer.valueOf(request.getParameter("qcno"));
-			String qComment = request.getParameter("qComment");
-			result = qs.updateComment(qcno, qComment);
+			int rcno = Integer.valueOf(request.getParameter("rcno"));
+			String rComment = request.getParameter("rComment");
+			result = rs.updateComment(rcno, rComment);
 		}
 		
-		ArrayList<Comment> commentList = qs.selectReplyList(qid);
+		
+		ArrayList<RComment> commentList = rs.selectComments(bno);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		gson.toJson(commentList, response.getWriter());
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -151,6 +151,7 @@
       <!-- /.col-lg-9 -->
       <div class="col-lg-1">
          <%if(loginMember != null && loginSeller == null) { %>
+         <input type="hidden" id="loginStatus" value="1">
         <div id="login">
           <br>
           <i class="fas fa-user" style="font-size: 30px;"></i>
@@ -183,8 +184,8 @@
           <i class="fas fa-user" style="font-size: 30px;"></i>
           <br><br>
              <button onclick="login();">로그인</button><br><br>
-             <a href="#" style="color: white; margin-bottom: 10px;"
-          	onclick="location.href='<%=request.getContextPath()%>/mypage/nmOrderSearch.jsp'">비회원 주문정보</a>
+          	 <a href="#" style="color: white; margin-bottom: 10px;"
+          	onclick="location.href='<%=request.getContextPath()%>/mypage/nMyCart.jsp'">비회원</a>
         </div>
         <%} else { %>
         <div id="login">
@@ -192,8 +193,9 @@
           <i class="fas fa-user" style="font-size: 30px;"></i>
           <br><br>
              <button onclick="login();">로그인</button><br><br>
-                <a href="#" style="color: white; margin-bottom: 10px;"
-          	onclick="location.href='<%=request.getContextPath()%>/mypage/nmOrderSearch.jsp'">비회원 주문정보</a>
+               <a href="#" style="color: white; margin-bottom: 10px;"
+          	onclick="location.href='<%=request.getContextPath()%>/mypage/nMyCart.jsp'">비회원</a>
+          	
         </div>   
         <%}%>
         <script> // 두 계정이 혹시나 모두 로그인 되어있다면 로그아웃 시켜주기

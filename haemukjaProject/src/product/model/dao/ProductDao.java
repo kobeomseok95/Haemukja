@@ -954,4 +954,73 @@ public class ProductDao {
 
 	}
 
+	public Product selectProduct(Connection conn, String pId) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		Product p = null;
+		
+		String query = "SELECT * FROM PRODUCT WHERE PID=?";
+		
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, pId);
+			
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				p = new Product(rset.getInt("PID"),
+						rset.getString("PTITLE"),
+						rset.getInt("PPRICE"),
+						rset.getInt("PAMOUNT"),
+						rset.getString("SOLDOUT"),
+						rset.getString("SID"),
+						rset.getInt("PDISCOUNT"),
+						rset.getString("PCODE"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(rset);
+		}
+		
+		return p;
+	}
+
+	public Attachment selectThumbnail(Connection conn, String sbNo) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		Attachment thumbnail = null;
+		
+		String query = "SELECT * FROM ATTACHMENT WHERE SBNO=? AND FILELEVEL=0";
+		
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, sbNo);
+			
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				thumbnail = new Attachment(rset.getInt("AID"),
+						rset.getInt("BNO"),
+						rset.getInt("SBNO"),
+						rset.getString("FILENAME"), 
+						rset.getString("FILEPATH"),
+						rset.getDate("UPLOADDATE"),
+						rset.getInt("FILELEVEL"),
+						rset.getString("STATUS"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(rset);
+		}
+		
+		return thumbnail;
+	}
+
+	
+
+	
+	
+
 }

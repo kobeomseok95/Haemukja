@@ -7,7 +7,7 @@
 <%
 	Member loginMember = (Member)session.getAttribute("loginMember");
 	Qna qna = (Qna)request.getAttribute("qna");
-	ArrayList<Comment> replys = (ArrayList<Comment>)request.getAttribute("comment");
+	ArrayList<QComment> replys = (ArrayList<QComment>)request.getAttribute("comment");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,19 +64,23 @@
               </tr>
             </thead>
             <tbody>
-              <%if (qna != null) {%>
+              <%
+              	if (qna != null) {
+              %>
               <tr>
-                <td><%=qna.getQid() %></td>
-                <td><%=qna.getQtitle() %></td>
-                <td><%=qna.getMnickname() %></td>
-                <td><%=qna.getQdate() %></td>
+                <td><%=qna.getQid()%></td>
+                <td><%=qna.getQtitle()%></td>
+                <td><%=qna.getMnickname()%></td>
+                <td><%=qna.getQdate()%></td>
               </tr>
               <tr>
                 <td colspan='4' align="left">
-                  <%=qna.getQcontent() %>
+                  <%=qna.getQcontent()%>
                 </td>
               </tr>
-              <%} %>
+              <%
+              	}
+              %>
             </tbody>
           </table>
           <br><br>
@@ -86,12 +90,18 @@
             </div>
             <div class="col-md-6" align="right">
               <!-- 업데이트 하기 전에 먼저 불러오기 로그인 확인하기-->
-				<%if(loginMember != null && loginMember.getMnickname().equals(qna.getMnickname())) {%>
+				<%
+					if(loginMember != null && loginMember.getMnickname().equals(qna.getMnickname())) {
+				%>
 	              <button onclick="location.href='<%=request.getContextPath()%>/upload.qn?qid='+qid">수정하기</button>
     	          <button onclick="deleteQna();">삭제하기</button>
-            	<%} else if(loginMember != null && loginMember.getMid().equals("admin")) {%>
+            	<%
+            		} else if(loginMember != null && loginMember.getMid().equals("admin")) {
+            	%>
             		<button onclick="deleteQna();">삭제하기</button>
-            	<%} %>
+            	<%
+            		}
+            	%>
             </div>
           </div>
           <br><br><br><br><br>
@@ -110,14 +120,20 @@
                 </tr>
               </thead>
               <tbody id="commentTable">
-                <%if(replys.isEmpty()) {%>
+                <%
+                	if(replys.isEmpty()) {
+                %>
 	                <tr>
 		                <td colspan='5'>
 		                	댓글이 없습니다.
 		                </td>
 		            </tr>
-                <%} else { %>
-                	<%for(Comment c : replys) {%>
+                <%
+                	} else {
+                %>
+                	<%
+                		for(QComment c : replys) {
+                	%>
                 		<%if(c.getDepth() == 0) {%>	<!-- 댓글 -->
                 	<tr>
                 		<td class="groupNo">
@@ -228,6 +244,7 @@
 			var lookReplys = $(this).attr("class").split(" ")[1];
 			$(".hideReplys." + lookReplys).toggle();
 		});
+		
 		$(document).on('click', '.changeTextarea', function(){
 			$(this).addClass('update');
 			$(this).addClass('changeReply');
@@ -240,6 +257,7 @@
 			$(this).parent().siblings('td.commentArea').children('p').hide();
 			$(this).parent().siblings('td.commentArea').children('textarea').show();
 		});
+		
 		$(document).on('click', '.cancel', function(){
 			$(".changeTextarea").removeClass('update').removeClass('changeReply');
 			$(this).parent().siblings('td.commentArea').children('p').show();
@@ -248,10 +266,11 @@
 			$(this).prev().prev().prev().toggle();
 			$(this).remove();
 		});
+		
 		$(document).on('click', '.changeReply', function(){	
 			<%if(loginMember.getMnickname().equals(qna.getMnickname()) || loginMember.getMid().equals("admin")){ %>
-				var qcno = 0;
 				var actionType= $(this).attr("class").split(" ")[1];
+				var qcno = 0;
 				var writer = "<%=loginMember.getMid()%>";
 				var qid = <%=qna.getQid()%>;
 				var content = "";
@@ -274,16 +293,17 @@
 					depth = 1;
 				}
 				else if(actionType === "deleteComment" || actionType === "deleteReply"){
-					var flag = confirm("해당 댓글을 삭제하시겠습니까?");
-					if(flag){
+					if(confirm("해당 댓글을 삭제하시겠습니까?")){
 						var y = $(this).parent().siblings()[0].children[0];
 						qcno = y.textContent;
 					}
-					else{return;}
+					else{
+						return false;
+					}
 				}
 				else if(actionType === "update"){
 					var y = $(this).parent().siblings()[0].children[0];
-					qcno = y.textContent;
+					qcno = y.textConte
 					content = $(this).parent().siblings(".commentArea").children('textarea').val();
 				}
 				$.ajax({

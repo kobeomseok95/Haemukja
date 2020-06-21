@@ -501,13 +501,13 @@
 			alert("수량을 입력해주세요.")
 		}else{
 		 <%if(loginMember==null){%>
-		 	alert("로그인이 필요합니다");
+		 location.href="<%=request. getContextPath()%>/ncart.sh?pid=<%=p.getpId()%>&ptitle=<%=p.getpTitle()%>&thumbnail=<%=thumbnail.getFileName()%>&price=<%=p.getPrice()%>&sbno=<%=thumbnail.getSbNo()%>&count="+count;
 		 
 		 <%}else if(loginSeller!=null){%>
 		 	alert("일반회원만 이용가능합니다.");
 		 
 		 <%}else{%>
-		location.href="<%=request. getContextPath()%>/cart.sh?pid=<%=p.getpId()%>&count="+count;
+		 location.href="<%=request. getContextPath()%>/cart.sh?pid=<%=p.getpId()%>&count="+count;
 	
 		 <%}%>
 		}

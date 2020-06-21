@@ -506,33 +506,41 @@ public class RecipeDao {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		ArrayList<RComment> comments = new ArrayList<RComment>();
-		String sql = "SELECT ROWNUM, D.*\r\n" + 
-				"FROM (SELECT R.CNO, LPAD( '�뵒', (DEPTH) * 2 ) || R.CCOMENT AS \"COMMENT\", R.CDATE, R.BNO, M.MNICKNAME, R.GROUPNO, R.PARENTNO, R.DEPTH, R.ORDERNO\r\n" + 
-				"FROM RECIPECOM R\r\n" + 
-				"    JOIN MEMBER M ON R.MID = M.MID\r\n" + 
-				"WHERE R.BNO = ?\r\n" + 
-				"ORDER BY GROUPNO ASC, ORDERNO ASC) D";
+		String sql = "SELECT\r\n" + 
+				"    RC.RCNO AS \"RCNO\",\r\n" + 
+				"    RC.BNO AS \"BNO\",\r\n" + 
+				"    RC.PARENTNO AS \"PARENTNO\",\r\n" + 
+				"    RC.ORDERNO AS \"ORDERNO\",\r\n" + 
+				"    RC.GROUPNO AS \"GROUPNO\",\r\n" + 
+				"    LPAD( '└', (DEPTH) * 2 ) || RC.RCOMMENT AS \"RCOMMENT\",\r\n" + 
+				"    M.MNICKNAME AS \"NICKNAME\",\r\n" + 
+				"    RC.RDATE AS \"RDATE\",\r\n" + 
+				"    RC.DEPTH AS \"DEPTH\"\r\n" + 
+				"FROM\r\n" + 
+				"    RECIPECOM RC\r\n" + 
+				"        JOIN MEMBER M ON RC.MID = M.MID\r\n" + 
+				"WHERE\r\n" + 
+				"    BNO = ?\r\n" + 
+				"ORDER BY\r\n" + 
+				"    GROUPNO ASC, ORDERNO ASC";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, bNo);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				RComment r = new RComment(rs.getInt("ROWNUM"),
-						rs.getInt("CNO"),
-						rs.getString("COMMENT"),
-						rs.getDate("CDATE"),
-						rs.getInt("BNO"),
-						rs.getString("MNICKNAME"),
-						rs.getInt("GROUPNO"),
-						rs.getInt("PARENTNO"),
-						rs.getInt("DEPTH"),
-						rs.getInt("ORDERNO"));
+				RComment r = new RComment();
+				r.setRcno(rs.getInt("RCNO"));
+				r.setBno(rs.getInt("BNO"));
+				r.setrComment(rs.getString("RCOMMENT"));
+				r.setrDate(rs.getDate("RDATE"));
+				r.setmNickname(rs.getString("NICKNAME"));
+				r.setParentNo(rs.getInt("PARENTNO"));
+				r.setOrderNo(rs.getInt("ORDERNO"));
+				r.setGroupNo(rs.getInt("GROUPNO"));
+				r.setDepth(rs.getInt("DEPTH"));
 				comments.add(r);
 			}
-			/*
-			 * for(RComment c : comments) { System.out.println(c); }
-			 */
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -545,22 +553,27 @@ public class RecipeDao {
 	}
 
 	public int insertComment(Connection conn, RComment rc) {
-		PreparedStatement pstmt = null;
+		String sql = 
+				"INSERT INTO RECIPECOM\r\n" + 
+				"VALUES (SEQ_RECIPECOM.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?, ?, ?)";
+		
 		int result = 0;
-		String sql = "INSERT INTO RECIPECOM\r\n" + 
-				"VALUES(SEQ_RECIPECOM.NEXTVAL, ?, SYSDATE, ?, ?, SEQ_RECIPECOM.CURRVAL, 0, 0, 1)";
+		PreparedStatement pstmt = null;
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, rc.getCcoment());
-			pstmt.setInt(2, rc.getbNo());
-			pstmt.setString(3, rc.getNickname());
+			pstmt.setInt(1, rc.getBno());
+			pstmt.setString(2, rc.getrComment());
+			pstmt.setString(3, rc.getmNickname());	//아이디가 들어갔다. 헷갈리지 말긔
+			pstmt.setInt(4, rc.getParentNo());
+			pstmt.setInt(5, rc.getOrderNo());
+			pstmt.setInt(6, rc.getGroupNo());
+			pstmt.setInt(7, rc.getDepth());
 			result = pstmt.executeUpdate();
 		} catch(Exception e) {
 			e.printStackTrace();
-		} finally {
-			close(pstmt);
 		}
+		close(pstmt);
 		return result;
 	}
 
@@ -933,4 +946,153 @@ public class RecipeDao {
 		return tags;
 	}
 
+	public int selectGroupNo(Connection conn, int rcno) {
+		String sql = "SELECT GROUPNO FROM RECIPECOM WHERE RCNO = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int groupNo = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, rcno);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				groupNo = rs.getInt(1);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		close(rs);
+		return groupNo;
+	}
+
+	public int deleteComment(Connection conn, int rcno) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = "DELETE FROM RECIPECOM WHERE RCNO = ? OR PARENTNO = ?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, rcno);
+			pstmt.setInt(2, rcno);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
+	public int updateGroupNo(Connection conn, int groupNo) {
+		String sql = "UPDATE RECIPECOM\r\n" + 
+				"SET GROUPNO = GROUPNO - 1\r\n" + 
+				"WHERE GROUPNO > ?";
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, groupNo);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
+	public int selectReplyOrderNo(Connection conn, int rcno) {
+		String sql = "SELECT ORDERNO FROM RECIPECOM WHERE RCNO = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int orderNo = 0;
+		
+		try{
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, rcno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				orderNo = rs.getInt(1);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return orderNo;
+	}
+
+	public int selectReplyParentNo(Connection conn, int rcno) {
+		String sql = "SELECT PARENTNO FROM RECIPECOM WHERE RCNO = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int parentNo = 0;
+		
+		try{
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, rcno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				parentNo = rs.getInt(1);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return parentNo;
+	}
+
+	public int updateReplyOrderNo(Connection conn, int orderNo, int parentNo) {
+		String sql = "UPDATE RECIPECOM\r\n" + 
+				"SET ORDERNO = ORDERNO - 1\r\n" + 
+				"WHERE PARENTNO = ?\r\n" + 
+				"    AND ORDERNO > ?";
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, parentNo);
+			pstmt.setInt(2, orderNo);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
+	public int updateComment(Connection conn, int rcno, String rComment) {
+		String sql = "UPDATE RECIPECOM\r\n" + 
+				"SET RCOMMENT = ?, RDATE = SYSDATE\r\n" + 
+				"WHERE RCNO = ?";
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, rComment);
+			pstmt.setInt(2, rcno);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

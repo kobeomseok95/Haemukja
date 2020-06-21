@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import common.Attachment;
-import product.model.service.ProductService;
 import qna.model.service.QnaService;
 import recipe.model.service.RecipeService;
 import recipe.model.vo.RComment;

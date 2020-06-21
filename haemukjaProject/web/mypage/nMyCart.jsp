@@ -1,18 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" import="member.model.vo.*,mypage.model.vo.*,java.util.ArrayList,common.Attachment"%>
+    pageEncoding="UTF-8" import="mypage.model.vo.*,java.util.*,javax.servlet.http.*"%>
 <%
-   Member loginMember = (Member)session.getAttribute("loginMember");
-   Seller loginSeller = (Seller)session.getAttribute("loginSeller");
-   ArrayList<MCart> list = (ArrayList<MCart>)request.getAttribute("list");
-   PageInfo pi = (PageInfo)request.getAttribute("pi");
-   ArrayList<Attachment> flist = (ArrayList<Attachment>)request.getAttribute("flist");
-   
-   int listCount = pi.getListCount();
-   int currentPage = pi.getCurrentPage();
-   int maxPage = pi.getMaxPage();
-   int startPage = pi.getStartPage();
-   int endPage = pi.getEndPage();
 
+	
+	
+	
+	ArrayList<nMyCart> OrderList = (ArrayList<nMyCart>)session.getAttribute("Order_List");
+	
+	
+	
+
+	
+	
+	
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,15 +68,16 @@
     <div class="row">
       <div class="col-lg-2">
         <div class="list-group">
-          <%@ include file="../static/mypageStatic.jsp"%>
-        </div>
+         <h4><a href="${pageContext.request.contextPath}/mypage/nMyCart.jsp">장바구니</a></h4>
+         <h4><a href="${pageContext.request.contextPath}/mypage/nmOrderSearch.jsp">비 주문/배송 검색</a></h4>
+     	</div>
       </div>
       <!-- /.col-lg-2 -->
 
       <div class="col-lg-9">
         <!-- panel -->
         <div class="panel panel-default">
-          <div class="panel-heading">&nbsp;마이페이지</div>
+          <div class="panel-heading">&nbsp;비회원 페이지</div>
         </div>
         <!-- /panel -->
         <br>
@@ -97,34 +98,27 @@
                     <th style="width: 100px">선택</th>
                   </tr>
                 </thead>
-               <%if(!list.isEmpty()){ %>
+               <%if(!OrderList.isEmpty()){ %>
                 <tbody>
              
-                <%for(int i =0; i<list.size(); i++){ 
-                MCart m = list.get(i);%>
-                <input type="hidden" name="price" value="<%=list.get(i).getPprice() %>">
-                <input type="hidden" name="pid" value=" <%=list.get(i).getPid() %>" >
-                <input type="hidden" name="cid" value="<%=list.get(i).getCid()%>">
-                <input type="hidden" name="sbno" value="<%=list.get(i).getSbno()%>">
-                <input type="hidden" name="ptitle" value="<%=list.get(i).getPtitle()%>">
+                <%for(int i =0; i<OrderList.size(); i++){ %>
+                <% nMyCart data = OrderList.get(i); %>
+                <input type="hidden" name="price" value="<%=data.getPrice()%>">
+                <input type="hidden" name="pid" value=" <%=data.getPid() %>" >
+                <input type="hidden" name="product" value="<%=data.getPtitle()%>">
+                <input type="hidden" name="sbno" value="<%=data.getSbno()%>">
                   <tr style="height: 90px;">
-                
-                    <td style="border-left: none; border-right: none;">
-                       <%for(int j = 0; j < flist.size(); j++){%>
-                       <% Attachment a = flist.get(j); %>
-                       <%if(a.getSbNo() == m.getSbno()){ %>
-                       <img src="<%= request.getContextPath()%>/uploadFiles/<%=a.getFileName() %>" width="100px" height="70px">
-                        <%} %>
-                        <%} %>
-                    </td>
+                	<td style="border-left: none; border-right: none;">
+                     <img src="<%= request.getContextPath()%>/uploadFiles/<%=data.getThumbnail() %>" width="100px" height="70px">
+           		    </td>
                     <td style="text-align: left; padding-left: 10px; border-left: none; font-weight: bold;">
-                       <%=list.get(i).getPtitle() %>
+                       <%=data.getPtitle()%>
                     </td>
                     <td style="width: 80px;">
-                      <input type="number" name="pcount" style="text-align: right; width: 43px; margin-bottom: 5px;" min="1" max="99" step="1" value="<%=list.get(i).getCamount()%>">
+                      <input type="number" name="pcount" style="text-align: right; width: 43px; margin-bottom: 5px;" min="1" max="99" step="1" value="<%=data.getCount()%>">
                     </td>
                     <td>
-                      <button type="button" onclick="location.href='<%=request.getContextPath()%>/member.me?pid=<%=list.get(i).getPid()%>&pcount=<%=list.get(i).getCamount()%>&price=<%=list.get(i).getPprice()%>&cid=<%=list.get(i).getCid()%>&sbno=<%=list.get(i).getSbno()%>&ptitle=<%=list.get(i).getPtitle()%>'">주문</button>
+                      <button type="button" onclick="location.href='<%=request.getContextPath()%>/nonmember.me?pid=<%=data.getPid()%>&pcount=<%=data.getCount()%>&price=<%=data.getPrice()%>&sbno=<%=data.getSbno()%>&product=<%=data.getPtitle()%>'">주문</button>
                       
                     </td>
                   </tr>
@@ -149,7 +143,7 @@
                 
                  <%} %>
               </table> <!-- table -->
-              <%if(!list.isEmpty()){%>
+              <%if(!OrderList.isEmpty()){%>
               <div class="row-full" align="right">
               	<button type="submit" id="countPost">수량 적용</button>
                 <button type="submit" >전체 주문</button>
@@ -165,86 +159,17 @@
       </div>
       <!-- /.col-lg-9 -->
       <div class="col-lg-1">
-         <%if(loginMember != null && loginSeller == null) { %>
-        <div id="login">
-          <br>
-          <i class="fas fa-user" style="font-size: 30px;"></i>
-          <br><br>
-             <%=loginMember.getMnickname() %><br>반갑습니다!<br>
-          <a href="#" style="color: white; margin-bottom: 10px;" 
-          onclick="location.href='<%=request.getContextPath() %>/mypage/mypageUpdate.jsp'">마이페이지</a>
-          <br>
-          <button type="button" id="loginBtn" onclick="logout();">로그아웃</button>
-        </div>
-        <%} else if (loginMember == null && loginSeller != null){ %>
-          <div id="login">
-          <br>
-          <i class="fas fa-user" style="font-size: 30px;"></i>
-          <br><br>
-             <%=loginSeller.getCompany() %><br>반갑습니다!<br>
-          <a href="#" style="color: white; margin-bottom: 10px;"
-             onclick="location.href='<%=request.getContextPath()%>/seller/sellerPageInsert.jsp'">판매관리페이지</a>
-          <br>
-          <button type="button" id="loginBtn" onclick="logout();">로그아웃</button>
-        </div>
-      <%} else if (loginMember == null && loginSeller == null) { %>
-        <div id="login">
+		<div id="login">
           <br>
           <i class="fas fa-user" style="font-size: 30px;"></i>
           <br><br>
              <button onclick="login();">로그인</button>
         </div>
-        <%} else { %>
-        <div id="login">
-          <br>
-          <i class="fas fa-user" style="font-size: 30px;"></i>
-          <br><br>
-             <button onclick="login();">로그인</button>
-        </div>   
-        <%}%>
-        <script> // 두 계정이 혹시나 모두 로그인 되어있다면 로그아웃 시켜주기
-           $(function(){
-              <%if (loginMember != null && loginSeller != null) {%>
-                 alert('두 계정이 접속되어 로그아웃 작업이 진행됩니다.');
-                 logout();
-              <%}%>              
-           });
-        </script>
-      </div>
+ 	 </div>
     </div>
     <!-- /.row -->
 
-    <div class="row">
-      <div class="col-sm-12" style="text-align: center; font-size: 25px;">
-         <!-- 맨 처음으로(<<) -->
-         <button class="paging" onclick="location.href='<%=request.getContextPath() %>/cart.my?currentPage=1'"> << </button>
-         
-         <!-- 이전 페이지로(<) -->
-         <%if(currentPage == 1){ %>
-         <button class="paging" disabled> < </button>
-         <%}else{ %>
-         <button class="paging" onclick="location.href='<%=request.getContextPath() %>/cart.my?currentPage=<%=currentPage - 1 %>'"> < </button>
-         <%} %>
-         
-         <!-- 10개의 페이지 목록 -->
-         <%for(int p = startPage ; p<=endPage ; p++){ %>
-            <%if(currentPage == p){ %>
-               <button class="paging" disabled><%=p %></button>
-            <%} else {%>
-               <button class="paging" onclick="location.href='<%=request.getContextPath() %>/cart.my?currentPage=<%=p %>'"><%=p %></button>
-            <%} %>
-         <%} %>
-         <!-- 다음 페이지로(>) -->
-         <%if(currentPage == maxPage){ %>
-         <button class="paging" disabled> > </button>
-         <%}else{ %>
-         <button class="paging" onclick="location.href='<%=request.getContextPath() %>/cart.my?currentPage=<%=currentPage + 1 %>'"> > </button>
-         <%} %>
-         
-         <!-- 맨 끝으로(>>) -->
-         <button class="paging" onclick="location.href='<%=request.getContextPath() %>/cart.my?currentPage=<%=maxPage%>'"> >> </button>
-      </div>
-    </div>
+   
   </div>
   <!-- /.container -->
   <br><br>
@@ -256,13 +181,22 @@
   <script src="<%=request.getContextPath()%>/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
    <script>
      
-     function logout(){
+   	function login(){
+   		
+   	    location.href="<%=request.getContextPath()%>/member/loginHaemukja.jsp";
+   	     
+   	}
+    
+   	function logout(){
         location.href="<%=request.getContextPath()%>/logout.me";
-     }
      
-     $("#countPost").click(function(){
-         $("form").attr("action", "<%=request.getContextPath()%>/count.me");
-      })
+   	}
+     
+    
+   	$("#countPost").click(function(){
+    	  $("form").attr("action", "<%=request.getContextPath()%>/nCount.me");
+      
+   	}) 
      
    /* $(function(){ //전체선택 체크박스 클릭 
         $("#checkAll").click(function(){

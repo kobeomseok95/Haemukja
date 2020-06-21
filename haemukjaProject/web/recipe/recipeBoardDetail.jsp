@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" import="java.util.*, member.model.vo.*, recipe.model.vo.*, common.Attachment"%>
+    pageEncoding="UTF-8" import="java.util.*, 
+    member.model.vo.*, 
+    recipe.model.vo.*, 
+    common.Attachment,qna.model.vo.QComment"%>
 <%
-
 	Member loginMember = (Member)session.getAttribute("loginMember");
 	Seller loginSeller = (Seller)session.getAttribute("loginSeller");
 	Recipe recipe = (Recipe)request.getAttribute("recipe");
@@ -9,7 +11,7 @@
 	ArrayList<Attachment> files = (ArrayList<Attachment>)request.getAttribute("files");
 	ArrayList<Tag> tags = (ArrayList<Tag>)request.getAttribute("tags");
 	ArrayList<Tag> upgradeTags = (ArrayList<Tag>)request.getAttribute("upgradeTags");
-	ArrayList<RComment> comments = (ArrayList<RComment>)request.getAttribute("comments");
+	ArrayList<RComment> replys = (ArrayList<RComment>)request.getAttribute("comments");
 	
 	int bNo = recipe.getbNo();
 	String nickname = (String)request.getAttribute("nickname");
@@ -127,7 +129,7 @@
       <div class="col-lg-9">
         <!-- panel -->
         <div class="panel panel-default">
-          <div class="panel-heading">&nbsp;<%=panelName %></div>
+          <div class="panel-heading">&nbsp;<%=panelName%></div>
         </div>
         <br>
         <!-- /panel -->
@@ -144,32 +146,44 @@
           </thead>
           <tbody>
             <tr>
-              <td style="width: 100px;"><%= recipe.getbNo() %></td>
-              <td style="width: 300px;"><%= recipe.getbTitle() %></td>
-              <td style="width: 100px;"><%= nickname %></td>
-              <td style="width: 100px;"><%= recipe.getbDate() %></td>
-              <td style="width: 70px;"><%= recipe.getbViews() %></td>
+              <td style="width: 100px;"><%=recipe.getbNo()%></td>
+              <td style="width: 300px;"><%=recipe.getbTitle()%></td>
+              <td style="width: 100px;"><%=nickname%></td>
+              <td style="width: 100px;"><%=recipe.getbDate()%></td>
+              <td style="width: 70px;"><%=recipe.getbViews()%></td>
             </tr>
             <tr>
               <td colspan='5' align="center">
-              <% for(int i = 0; i < files.size(); i++) { %>
-              	<i class="no"><%= i+1 %></i>
+              <%
+              	for(int i = 0; i < files.size(); i++) {
+              %>
+              	<i class="no"><%=i+1%></i>
               	<div class="imageArea">
-              		<img src="<%= request.getContextPath() %>/uploadFiles/<%= files.get(i).getFileName() %>" class="image">
+              		<img src="<%=request.getContextPath()%>/uploadFiles/<%=files.get(i).getFileName()%>" class="image">
               	</div>
               	<div class="tag">
-	              	<% for(int j = 0; j < tags.size(); j++) { %>
-	              		<% if(tags.get(j).getaId() == files.get(i).getaId()) { %>
-	              			<a href="<%=request.getContextPath()%>/detail.sh?sbno=<%=tags.get(j).getTag() %>"><%=upgradeTags.get(j).getpTitle() %></a><br>
-	              	 	<% } %>
-	              	<% } %>
+	              	<%
+	              		for(int j = 0; j < tags.size(); j++) {
+	              	%>
+	              		<%
+	              			if(tags.get(j).getaId() == files.get(i).getaId()) {
+	              		%>
+	              			<a href="<%=request.getContextPath()%>/detail.sh?sbno=<%=tags.get(j).getTag()%>"><%=upgradeTags.get(j).getpTitle()%></a><br>
+	              	 	<%
+	              	 		}
+	              	 	%>
+	              	<%
+	              		}
+	              	%>
 	            </div>
 	            <br>
 	              <div class="content">
-	              	<%= contents.get(i) %>
+	              	<%=contents.get(i)%>
 	              </div>
 	              <br><br>
-              <% } %>
+              <%
+              	}
+              %>
                 <br>
               </td>
             </tr>
@@ -178,20 +192,24 @@
         <br><br>
         <div class="row">
           <div class="col-md-12" align="right">
-          	<% if(loginMember != null && loginId.equals(recipe.getmId())) { %>
+          	<%
+          		if(loginMember != null && loginId.equals(recipe.getmId())) {
+          	%>
 		      <button type="button" onclick="updateRecipe()">수정</button>
 		      <button type="button" onclick="deleteRecipe()">삭제</button>
-          	<% } %>
+          	<%
+          		}
+          	%>
           </div>
         </div>
         <br><br>
         <div class="row">
           <div class="col-md-12" align="center">
-          	<input type="hidden" value="<%= recipe.getbNo() %>">
-          	<span style="font-weight: bold;"><%= recipe.getbUp() %></span>&nbsp;
+          	<input type="hidden" value="<%=recipe.getbNo()%>">
+          	<span style="font-weight: bold;"><%=recipe.getbUp()%></span>&nbsp;
             <button type="button" id="up" style="width: 100px; background-color: white; color: blue; border: 1px solid black;">추천</button>
             <button type="button" id="down" style="width: 100px; background-color: white; color: red; border: 1px solid black;">비추천</button>
-          	&nbsp;<span style="font-weight: bold;"><%= recipe.getbDown() %></span>
+          	&nbsp;<span style="font-weight: bold;"><%=recipe.getbDown()%></span>
           </div>
         </div>
         <br><br>
@@ -203,15 +221,14 @@
         <br><br>
         <div class="full-right" align="center">
           <div id="advertisement" style="width: 800px; height: 200px;">
-            <img src="<%=request.getContextPath() %>/images/ad.jpg" id="ad">
+            <img src="<%=request.getContextPath()%>/images/ad.jpg" id="ad">
           </div>
         </div>
         <br>
 
         <div class="container">
           <hr>
-          <!-- 댓글테이블 -->
-            <table class="table">
+          <table class="table">
               <thead>
                 <tr>
                   <th>번호</th>
@@ -222,45 +239,80 @@
                 </tr>
               </thead>
               <tbody id="commentTable">
-              	<%if(comments.isEmpty()){ %>
-              		<tr>
-              			<td colspan='4'>댓글이 없습니다.</td>
-              		</tr>
-              	<%} else {%>
-					<%for(RComment r : comments) {%>
-						<tr>  
-		                  <td><%=r.getrNo() %></td>
-		                  <td><%=r.getCcoment() %></td>
-		                  <td><%=r.getNickname() %></td>
-		                  <td><%=r.getcDate() %></td>
-		                  <td><button class="replyBtn">답글 작성</button></td>
-		                </tr>
-		                <tr class="replyText">
-		                  <form method="get" action="#">
-		                    <td colspan="4">
-		                      <textarea rows="2" cols="85" name="reply"></textarea>
-		                    </td>
-		                    <td>
-		                      <button type="submit">답글 등록</button>
-		                    </td>
-		                  </form>
-		                </tr> 
-					<%} %>
-				<%} %>
+                <%
+                	if(replys.isEmpty()) {
+                %>
+	                <tr>
+		                <td colspan='5'>
+		                	댓글이 없습니다.
+		                </td>
+		            </tr>
+                <%
+                	} else {
+                %>
+                	<%
+                		for(RComment c : replys) {
+                	%>
+                		<%if(c.getDepth() == 0) {%>	<!-- 댓글 -->
+                	<tr>
+                		<td class="groupNo">
+	                		<p style="display:none;"><%=c.getRcno()%></p>		
+	                		<p><%=c.getGroupNo() %></p>
+                		</td>
+                		<td class="commentArea">
+                			<p><%=c.getrComment() %></p>
+                			<textarea class="updateContent" style="display:none;" cols="50px"><%=c.getrComment() %></textarea>
+                		</td>
+                		<td><%=c.getmNickname() %></td>
+                		<td><%=c.getrDate() %></td>
+                		<td><button class="lookReplys group<%=c.getGroupNo() %>">답글</button>&nbsp;
+                		<%if(loginMember != null && loginMember.getMnickname().equals(c.getmNickname())) { %>	
+                		<button class="changeTextarea">수정</button>&nbsp;
+                		<button class="changeReply deleteComment">삭제</button></td>
+                		<%} %>
+                	</tr>
+                	<tr class="hideReplys group<%=c.getGroupNo() %>" style="display:none;">
+						<td colspan="4">
+							<textarea class="replyContent" cols="77px"></textarea>
+						</td>
+						<td>
+							<button class="changeReply addReply">답글작성</button>
+						</td>
+					</tr>
+                		<%} else{ %>	<!-- 답글 -->
+					<tr class="hideReplys group<%=c.getGroupNo() %>" style="display:none;">
+						<td>
+	                		<p style="display:none;"><%=c.getRcno()%></p>		
+	                		<p style="display:none;"><%=c.getParentNo() %></p>
+						</td>
+                		<td class="commentArea">
+                			<p><%=c.getrComment() %></p>
+                			<textarea class="updateContent" style="display:none;" cols="50px"><%=c.getrComment() %></textarea>
+                		</td>
+                		<td><%=c.getmNickname() %></td>
+                		<td><%=c.getrDate() %></td>
+                		<td>
+                		<%if(loginMember != null && loginMember.getMnickname().equals(c.getmNickname())) { %>	
+                		<button class="changeTextarea">수정</button>&nbsp;
+                		<button class="changeReply deleteReply">삭제</button>
+                		<%} %>
+                		</td>
+					</tr>
+						<%} %>
+                	<%} %>
+                <%} %>
               </tbody>
             </table>
-          <!-- /댓글테이블 -->
-
             <div class="form-horizontal">
-                <div class="form-group">
+            	<!-- 여기는 댓글 작성하는 곳 -->
+                <div class="writeGroup">
                   <label>댓글</label>
-                  <textarea class="form-control" rows="2" id="commentContent"></textarea>
-                  <br>
-                  <div align="right">
-                    <button id="addReply">등록</button>
-                  </div>
+                  <textarea id="commentContent" class="form-control" rows="2"></textarea>
                 </div>
-            </div>
+                <div id="addComDiv" align="right">
+                  <button class="changeReply addComment">등록</button>
+                </div>
+            </div> 
             
           </div>
       </div>
@@ -329,68 +381,211 @@
   <script src="<%=request.getContextPath() %>/vendor/jquery/jquery.min.js"></script>
   <script src="<%=request.getContextPath() %>/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script>
+    var bno = <%=recipe.getbNo()%>;
     $(function(){
-      $(".replyText").hide();
-      
-      $(".replyBtn").click(function(){
-        $(this).parent().parent().next().toggle();
-      });
       
       $(".image").click(function(){
     	 $(this).parent().next().toggle(); 
       });
       
-      $("#addReply").click(function(){	//데이터를 집어 넣은 다음, 쿼리문이 실행되어 여기 실행되게 끔 한다.
-			<%if(loginMember != null){ %>
+		$("table").on("click", ".lookReplys", function(){	//대댓글 보여주거나 숨기기
+			var lookReplys = $(this).attr("class").split(" ")[1];
+			$(".hideReplys." + lookReplys).toggle();
+		});
+		
+		$(document).on('click', '.changeTextarea', function(){
+			$(this).addClass('update');
+			$(this).addClass('changeReply');
+			$(this).prev().toggle();
+			$(this).next().toggle();
+			var $newBtn = $("<button>");
+			$newBtn.addClass("cancel");
+			$newBtn.text("취소");
+			$(this).parent().append($newBtn);
+			$(this).parent().siblings('td.commentArea').children('p').hide();
+			$(this).parent().siblings('td.commentArea').children('textarea').show();
+		});
+		
+		$(document).on('click', '.cancel', function(){
+			$(".changeTextarea").removeClass('update').removeClass('changeReply');
+			$(this).parent().siblings('td.commentArea').children('p').show();
+			$(this).parent().siblings('td.commentArea').children('textarea').hide();
+			$(this).prev().toggle();
+			$(this).prev().prev().prev().toggle();
+			$(this).remove();
+		});
+		
+		$(document).on('click', '.changeReply', function(){	
+			<%if(loginMember.getMnickname().equals(recipe.getmId()) || loginMember.getMid().equals("admin")){ %>
+				var actionType= $(this).attr("class").split(" ")[1];
+				var rcno = 0;
 				var writer = "<%=loginMember.getMid()%>";
-				var bid = <%=recipe.getbNo()%>;
-				var content = $("#commentContent").val();
+				var bno = <%=recipe.getbNo()%>;
+				var content = "";
+				var parentNo = 0;
+				var orderNo = 1;
+				var groupNo = 0;
+				var depth = 0;
 				
+				if(actionType === "addComment"){
+					groupNo = $(".groupNo").length + 1;
+					content = $("#commentContent").val();
+				}
+				else if(actionType === "addReply"){
+					content = $(this).parent().prev().children().val();
+					var temp = $(this).parent().parent().prev().children('td.groupNo').children()[0];
+					parentNo = temp.textContent;
+					var orderNoClass = $(this).parent().parent().attr("class").split(" ")[1];
+					orderNo = $("tr." + orderNoClass).length + 1;
+					groupNo = orderNoClass.substring(5);
+					depth = 1;
+				}
+				else if(actionType === "deleteComment" || actionType === "deleteReply"){
+					if(confirm("해당 댓글을 삭제하시겠습니까?")){
+						var y = $(this).parent().siblings()[0].children[0];
+						rcno = y.textContent;
+					}
+					else{
+						return false;
+					}
+				}
+				else if(actionType === "update"){
+					var y = $(this).parent().siblings()[0].children[0];
+					rcno = y.textContent;
+					content = $(this).parent().siblings(".commentArea").children('textarea').val();
+				}
 				$.ajax({
-					url:"insertComment.bd",
+					url:"changeComment.re",
 					type:"post",
-					data:{writer:writer, content:content, bid:bid},
-					// InsertReplyServlet 만들러 가자!!!
-					
-					//다 작성후 여기볼것
+					data:{rcno:rcno,
+							bno:bno,
+							rComment:content, 
+							mid:writer,
+							parentNo:parentNo,
+							orderNo:orderNo,
+							groupNo:groupNo,
+							depth:depth,
+							actionType:actionType},
 					success:function(data){
 						$commentTable = $("#commentTable");
-						$commentTable.html(""); // 기존 테이블 정보 초기화
+						$commentTable.html(""); 
 						
-						for(var key in data){
-							//rlistArray > rlistObj(comment 객체의 필드값들)
-							
+						if(data.length == 0){
 							var $tr = $("<tr>");
-							var $noTd = $("<td>").text(data[key].rnum);
-							var $contentTd = $("<td>").text(data[key].comment);
-							var $writerTd = $("<td>").text(data[key].nickname);
-							var $replyButton = $('<td><button class="replyBtn">답글 작성</button></td>');
-							var $dateTd = $("<td>").text(data[key].cdate);
-							
-							$tr.append($noTd);
-							$tr.append($contentTd);
-							$tr.append($writerTd);
-							$tr.append($dateTd);
-							$tr.append($replyButton);
+							var $td = $("<td>");
+							$td.attr("colspan", 5);
+							$td.text("댓글이 없습니다.");
+							$tr.append($td);
 							$commentTable.append($tr);
-							
-							var $tr2 = $("<tr class='replyText'>");
-							$tr2.append("<form method='get' action='#'><td colspan='4'><textarea rows='2' cols='85' name='reply'></textarea></td><td><button type='submit'>답글 등록</button></td></form>");
-							$commentTable.append($tr);
-							
+						}else{
+							for(var i in data){
+								if(data[i].depth == 0){	
+									//댓글일 경우
+									var $firstTr = $("<tr>");
+									
+									var $firstTd = $("<td>");
+									$firstTd.addClass("groupNo")
+									var $p1 = $("<p>").css("display", "none").text(data[i].rcno);
+									var $p2 = $("<p>").text(data[i].groupNo);
+									$firstTd.append($p1);
+									$firstTd.append($p2);
+									
+									var $secondTd = $("<td>");
+									var $p = $("<p>");
+									$p.text(data[i].rComment);
+									var $textarea = $("<textarea>");
+									$textarea.addClass('updateContent');
+									$textarea.css("display", "none");
+									$textarea.attr("cols", "50px");
+									$textarea.val($p.text());
+									$secondTd.addClass("commentArea");
+									$secondTd.append($p);
+									$secondTd.append($textarea);
+									
+									
+									var $thirdTd = $("<td>");
+									$thirdTd.text(data[i].mNickname);
+									
+									var $fourthTd = $("<td>");
+									$fourthTd.text(data[i].rDate);
+									
+									var $fifthTd = $("<td>");
+									$fifthTd.html("<button class='lookReplys group" + data[i].groupNo + "'>답글</button>&nbsp;<button class='changeTextarea'>수정</button>&nbsp;<button class='changeReply deleteComment'>삭제</button>");
+									
+									$firstTr.append($firstTd);
+									$firstTr.append($secondTd);
+									$firstTr.append($thirdTd);
+									$firstTr.append($fourthTd);
+									$firstTr.append($fifthTd);
+									
+									var $secondTr = $("<tr>");
+									$secondTr.addClass("hideReplys group" + data[i].groupNo).css("display", "none");
+									
+									var $firstTd2 = $("<td>");
+									$firstTd2.attr("colspan", 4);
+									$firstTd2.html("<textarea class='replyContent' cols='77px'></textarea>");
+									
+									var $secondTd2 = $("<td>");
+									$secondTd2.html("<button class='changeReply addReply'>답글작성</button>");
+									
+									$secondTr.append($firstTd2);
+									$secondTr.append($secondTd2);
+									$commentTable.append($firstTr);
+									$commentTable.append($secondTr);
+								}	
+								else{
+									//답글일 경우
+									var $tr = $("<tr>");
+									$tr.addClass("hideReplys");
+									$tr.addClass("group" + data[i].groupNo);
+									$tr.css("display", "none");
+									
+									var $firstTd = $("<td>");
+									var $p1 = $("<p>").css("display", "none").text(data[i].rcno);
+									var $p2 = $("<p>").css("display", "none").text(data[i].parentNo);
+									$firstTd.append($p1);
+									$firstTd.append($p2);
+									
+									var $secondTd = $("<td>");
+									var $p = $("<p>");
+									$p.text(data[i].rComment);
+									var $textarea = $("<textarea>");
+									$textarea.addClass('updateContent');
+									$textarea.css("display", "none");
+									$textarea.attr("cols", "50px");
+									$textarea.val($p.text());
+									$secondTd.addClass("commentArea");
+									$secondTd.append($p);
+									$secondTd.append($textarea);
+									
+									var $thirdTd = $("<td>").text(data[i].mNickname);
+									
+									var $fourthTd = $("<td>").text(data[i].rDate);
+									
+									var $fifthTd = $("<td>");
+									$fifthTd.html("<button class='changeTextarea'>수정</button>&nbsp;<button class='changeReply deleteReply'>삭제</button>");
+									$tr.append($firstTd);
+									$tr.append($secondTd);
+									$tr.append($thirdTd);
+									$tr.append($fourthTd);
+									$tr.append($fifthTd);
+									
+									$commentTable.append($tr);
+								}	
+							}
 						}
-						$("#commentContent").val("");
+						$("textarea").val("");
 					},
 					error:function(request,status,error){
-					    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-					   }
-				});
+					    console.log("error qnaboard_detail.jsp Comment ajax");
+					}
+				}); 
 				
-			<%} else { %>
+				
+			<%}else { %>
 				//그렇지 않을때
-				alert('로그인 후 작성하실 수 있습니다.');
-			<%}%>
-			
+				alert('해당 게시글의 글쓴이, 관리자만 작성할 수 있습니다.');
+			<%} %>
 		});
     });
     

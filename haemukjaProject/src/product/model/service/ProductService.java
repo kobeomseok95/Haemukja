@@ -383,4 +383,28 @@ public class ProductService {
 		return slist;
 	}
 
+	public Product selectProduct(String pId) {
+		Connection conn = getConnection();
+		
+		Product p = new ProductDao().selectProduct(conn, pId);
+		
+		close(conn);
+		
+		return p;
+	}
+
+	public Attachment selectThumbnail(String sbNo) {
+		Connection conn = getConnection();
+		
+		Attachment at = new ProductDao().selectThumbnail(conn, sbNo);
+		
+		close(conn);
+		
+		return at;
+	}
+
+	
+
+	
+
 }

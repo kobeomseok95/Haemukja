@@ -7,8 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import qna.model.vo.Comment;
+import qna.model.vo.QComment;
 import qna.model.vo.Notice;
 import qna.model.vo.Qna;
 
@@ -252,10 +253,10 @@ public class QnaDao {
 		}
 		return list;
 	}
-	public ArrayList<Comment> selectReplyList(Connection conn, int qid) {
+	public ArrayList<QComment> selectReplyList(Connection conn, int bno) {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		ArrayList<Comment> list = new ArrayList<Comment>();
+		ArrayList<QComment> list = new ArrayList<QComment>();
 		String sql = 
 				"SELECT\r\n" + 
 				"    QC.QCNO AS \"QCNO\",\r\n" + 
@@ -267,10 +268,10 @@ public class QnaDao {
 				"    M.MNICKNAME AS \"NICKNAME\",\r\n" + 
 				"    QC.QDATE AS \"QDATE\",\r\n" + 
 				"    QC.DEPTH AS \"DEPTH\"\r\n" + 
-				"FROM \r\n" + 
+				"FROM\r\n" + 
 				"    QNACOM QC\r\n" + 
-				"    JOIN MEMBER M ON QC.MID = M.MID\r\n" + 
-				"WHERE \r\n" + 
+				"        JOIN MEMBER M ON QC.MID = M.MID\r\n" + 
+				"WHERE\r\n" + 
 				"    QID = ?\r\n" + 
 				"ORDER BY \r\n" + 
 				"    GROUPNO ASC, ORDERNO ASC";
@@ -278,11 +279,11 @@ public class QnaDao {
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, qid);
+			pstmt.setInt(1, bno);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				Comment c = new Comment();
+				QComment c = new QComment();
 				c.setQcno(rs.getInt("QCNO"));
 				c.setQid(rs.getInt("QID"));
 				c.setParentNo(rs.getInt("PARENTNO"));
@@ -327,22 +328,6 @@ public class QnaDao {
 		}
 		return notice;
 	}
-	public int answerComplete(Connection conn, int qid) {
-		PreparedStatement pstmt = null;
-		int result = 0;
-		String sql = "UPDATE QNA SET ANSWER = 'Y' WHERE QID = ?";
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, qid);
-			result = pstmt.executeUpdate();
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(pstmt);
-		}
-		return result;
-	}
 
 	public ArrayList<Notice> selectNotice(Connection conn) {
 		Statement stmt = null;
@@ -369,14 +354,14 @@ public class QnaDao {
 		return noticeList;
 	}
 
-	public int deleteQnaComments(Connection conn, int qid) {
+	public int deleteQnaComments(Connection conn, int bno) {
 		PreparedStatement pstmt = null;
 		int result = 0;
-		String sql = "DELETE FROM QNACOM WHERE QID = ?";
+		String sql = "DELETE FROM COMMENTS WHERE BNO = ?";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, qid);
+			pstmt.setInt(1, bno);
 			result = pstmt.executeUpdate();
 			
 		} catch(Exception e) {
@@ -387,10 +372,11 @@ public class QnaDao {
 		return result;
 	}
 
-	public int insertComment(Connection conn, Comment c) {
+	public int insertComment(Connection conn, QComment c) {
 		String sql = 
 				"INSERT INTO QNACOM\r\n" + 
 				"VALUES (SEQ_QNACOM.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?, ?, ?)";
+		
 		int result = 0;
 		PreparedStatement pstmt = null;
 		
@@ -428,7 +414,7 @@ public class QnaDao {
 		return result;
 	}
 
-	public int selectReplyGroupNo(Connection conn, int qcno) {
+	public int selectReplyOrderNo(Connection conn, int qcno) {
 		String sql = "SELECT ORDERNO FROM QNACOM WHERE QCNO = ?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -484,6 +470,7 @@ public class QnaDao {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		close(pstmt);
 		return result;
 	}
 
@@ -498,6 +485,72 @@ public class QnaDao {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, qComment);
 			pstmt.setInt(2, qcno);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
+	public int updateQnaAnswer(Connection conn, int qid, boolean answer) {	
+		//true:관리자가 답변을 달았을 경우
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = "";
+		if(answer) {
+			sql = "UPDATE QNA\r\n" + 
+					"SET ANSWER = 'Y'\r\n" + 
+					"WHERE QID = ?";
+		}
+		else {
+			sql = "UPDATE QNA\r\n" + 
+					"SET ANSWER = 'N'\r\n" + 
+					"WHERE QID = ?";
+		}
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, qid);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
+	public int selectGroupNo(Connection conn, int qcno) {
+		String sql = "SELECT GROUPNO FROM QNACOM WHERE QCNO = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int groupNo = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, qcno);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				groupNo = rs.getInt(1);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		close(rs);
+		return groupNo;
+	}
+
+	public int updateGroupNo(Connection conn, int groupNo) {
+		String sql = "UPDATE QNACOM\r\n" + 
+				"SET GROUPNO = GROUPNO - 1\r\n" + 
+				"WHERE GROUPNO > ?";
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, groupNo);
 			result = pstmt.executeUpdate();
 		} catch(Exception e) {
 			e.printStackTrace();
