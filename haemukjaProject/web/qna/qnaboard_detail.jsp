@@ -303,7 +303,7 @@
 				}
 				else if(actionType === "update"){
 					var y = $(this).parent().siblings()[0].children[0];
-					qcno = y.textConte
+					qcno = y.textContent;
 					content = $(this).parent().siblings(".commentArea").children('textarea').val();
 				}
 				$.ajax({
