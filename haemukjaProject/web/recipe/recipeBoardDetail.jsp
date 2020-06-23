@@ -272,7 +272,7 @@
                 		<button class="changeReply deleteComment">삭제</button></td>
                 			<%} %>
                 		<%} else { 
-                			//없을경우 패스
+                			//로그인하지 않았을 경우 스킵
                 		}%>
                 	</tr>
                 	<tr class="hideReplys group<%=c.getGroupNo() %>" style="display:none;">
