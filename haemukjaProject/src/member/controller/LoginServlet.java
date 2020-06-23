@@ -28,7 +28,6 @@ public class LoginServlet extends HttpServlet {
        Cookie idCookie = null;
        Cookie typeCookie = null;
         
-       //주의
         HttpSession session = request.getSession(true);
         RequestDispatcher view = null;
         if(userType.equals("member")) {
@@ -51,7 +50,6 @@ public class LoginServlet extends HttpServlet {
                response.addCookie(idCookie);
                response.addCookie(typeCookie);
              }
-           //session = request.getSession() 지움
               session.setAttribute("loginMember", loginMember);
               view = request.getRequestDispatcher("/main.re");
            } else {
@@ -78,7 +76,6 @@ public class LoginServlet extends HttpServlet {
                response.addCookie(idCookie);
                response.addCookie(typeCookie);
               }
-              //session = request.getSession() 지움
               session.setAttribute("loginSeller", loginSeller);
               view = request.getRequestDispatcher("/main.re");
            } else {
