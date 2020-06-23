@@ -464,8 +464,16 @@
 					content = $(this).parent().siblings(".commentArea").children('textarea').val();
 				}
 				
-				if(content == "" && (actionType.indexOf("add") >= 0)){
+				if(content == "" && ((actionType.indexOf("add") >= 0))){
 					alert("내용을 입력해주세요.");
+					return;
+				}
+				else if(content == "" && ((actionType === "update"))){
+					alert("내용을 입력해주세요.");
+					$(".cancel").remove();
+					$(this).parent().siblings(".commentArea").children('p').toggle();
+					$(this).parent().siblings(".commentArea").children('textarea').toggle();
+					$(".changeTextarea").removeClass('update').removeClass('changeReply');
 					return;
 				}
 				
