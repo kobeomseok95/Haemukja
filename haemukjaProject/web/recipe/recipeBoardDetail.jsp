@@ -464,7 +464,7 @@
 					content = $(this).parent().siblings(".commentArea").children('textarea').val();
 				}
 				
-				if(content == ""){
+				if(content == "" && (actionType.indexOf("add") >= 0)){
 					alert("내용을 입력해주세요.");
 					return;
 				}
