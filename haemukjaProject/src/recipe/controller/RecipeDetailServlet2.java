@@ -39,7 +39,6 @@ public class RecipeDetailServlet2 extends HttpServlet {
 		int bNo = Integer.valueOf(request.getParameter("bNo"));
 		
 		RecipeService rs = new RecipeService();
-		QnaService qs = new QnaService();
 		
 		String nickname = rs.selectMNickname(bNo);
 		Recipe recipe = rs.selectRecipe(bNo);
@@ -48,7 +47,7 @@ public class RecipeDetailServlet2 extends HttpServlet {
 		ArrayList<Tag> tags = rs.selectTags(files);
 		ArrayList<Tag> upgradeTags = rs.addPTitles(tags);
 		ArrayList<RComment> comments = rs.selectComments(bNo);
-	
+		
 		RequestDispatcher view = null;
 		view = request.getRequestDispatcher("recipe/recipeBoardDetail.jsp");
 		request.setAttribute("recipe", recipe);
