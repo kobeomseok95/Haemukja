@@ -13,6 +13,11 @@
 	ArrayList<Tag> upgradeTags = (ArrayList<Tag>)request.getAttribute("upgradeTags");
 	ArrayList<RComment> replys = (ArrayList<RComment>)request.getAttribute("comments");
 	
+	String msg="";
+	if(request.getAttribute("msg") != null) {
+		msg = (String)request.getAttribute("msg");
+	}
+	
 	int bNo = recipe.getbNo();
 	String nickname = (String)request.getAttribute("nickname");
 	
@@ -214,9 +219,42 @@
         </div>
         <br><br>
         <div class="row">
-          <div class="col-md-12" align="left">
+          <div class="col-md-6" align="left">
             <button type="button" onclick="goBack();">목록으로</button>
           </div>
+          <%if(loginMember != null) { %>
+          <div class="col-md-6" align="right">
+          	<button type="button" class="modalBtn" data-target="#layerpop" data-toggle="modal">게시글 신고</button>
+                <div class="modal fade" id="layerpop" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        게시글 신고
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <form action="<%=request.getContextPath()%>/insert.ro" method="post">
+				            	<input type="hidden" value="<%=recipe.getbNo()%>" name="bNo">
+				            	<input type="hidden" value="<%=recipe.getmId()%>" name="writer">
+				            	<input type="hidden" value="<%=loginMember.getMid()%>" name="mId">
+				            	신고 내용을 입력하세요
+				            	<textarea name="reportContent" cols="60" rows="4"></textarea>
+				            	<button type="submit">신고</button>
+				            </form>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
+          </div>
+          <% } else { %>
+          <div class="col-md-6" align="right">
+          	<button type="button" onclick="location.href='<%=request.getContextPath()%>/member/loginHaemukja.jsp'">게시글 신고</button>
+          </div>
+          <%} %>
         </div>
         <br><br>
         <div class="full-right" align="center">
@@ -660,6 +698,10 @@
   			
   			alert("추천 -1");
   		});
+  		
+        <% if(!msg.equals("")) { %>
+        		alert("신고 접수가 정상 처리되었습니다.");
+        <% } %>
   	})
   	
   </script>
