@@ -19,7 +19,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>주문/배송</title>
+  <title>리뷰 관리</title>
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="//unpkg.com/bootstrap@4/dist/css/bootstrap.min.css">
@@ -84,7 +84,7 @@
         <br>
         <div class="container">
           <div class="row">
-            <h3>주문/배송</h3>
+            <h3>리뷰 관리</h3>
             <hr>
             <table class="table">
               <thead>
