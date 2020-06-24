@@ -14,6 +14,7 @@ import common.Attachment;
 import product.model.service.ProductService;
 import product.model.vo.Product;
 import product.model.vo.Review;
+import product.model.vo.SComment;
 import product.model.vo.Sale;
 
 /**
@@ -53,6 +54,8 @@ public class ShopDetailServlet extends HttpServlet {
 		
 		String company = ps.selectCompany(sale.getsId(), sbNo);
 		
+		ArrayList<SComment> comment = ps.selectCommentList(sbNo);
+		
 		RequestDispatcher view = null;
 		request.setAttribute("sale", sale);
 		request.setAttribute("p", p);
@@ -60,6 +63,7 @@ public class ShopDetailServlet extends HttpServlet {
 		request.setAttribute("detailList", detailList);
 		request.setAttribute("review", review);
 		request.setAttribute("company", company);
+		request.setAttribute("comment", comment);
 		view = request.getRequestDispatcher("haemukshop/haemukshopDetail.jsp");
 		view.forward(request, response);
 	}

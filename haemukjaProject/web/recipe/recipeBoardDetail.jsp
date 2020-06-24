@@ -13,6 +13,11 @@
 	ArrayList<Tag> upgradeTags = (ArrayList<Tag>)request.getAttribute("upgradeTags");
 	ArrayList<RComment> replys = (ArrayList<RComment>)request.getAttribute("comments");
 	
+	String msg="";
+	if(request.getAttribute("msg") != null) {
+		msg = (String)request.getAttribute("msg");
+	}
+	
 	int bNo = recipe.getbNo();
 	String nickname = (String)request.getAttribute("nickname");
 	
@@ -88,8 +93,8 @@
       display: none;
     }
     .imageArea {
-      width: 525px;
-      height: 300px;
+	     width: 525px;
+	     height: 300px;
     }
     .image {
       width: 100%;
@@ -214,9 +219,42 @@
         </div>
         <br><br>
         <div class="row">
-          <div class="col-md-12" align="left">
+          <div class="col-md-6" align="left">
             <button type="button" onclick="goBack();">목록으로</button>
           </div>
+          <%if(loginMember != null) { %>
+          <div class="col-md-6" align="right">
+          	<button type="button" class="modalBtn" data-target="#layerpop" data-toggle="modal">게시글 신고</button>
+                <div class="modal fade" id="layerpop" >
+				  <div class="modal-dialog">
+					<div class="modal-content">
+				      	<!-- header -->
+						<div class="modal-header">
+					        <!-- 닫기(x) 버튼 -->
+					        게시글 신고
+					        <button type="button" class="close" data-dismiss="modal">×</button>
+					        <!-- header title -->
+				      	</div>
+					    <!-- body -->
+					    <div class="modal-body" align="center">
+				            <form action="<%=request.getContextPath()%>/insert.ro" method="post">
+				            	<input type="hidden" value="<%=recipe.getbNo()%>" name="bNo">
+				            	<input type="hidden" value="<%=recipe.getmId()%>" name="writer">
+				            	<input type="hidden" value="<%=loginMember.getMid()%>" name="mId">
+				            	신고 내용을 입력하세요
+				            	<textarea name="reportContent" cols="60" rows="4"></textarea>
+				            	<button type="submit">신고</button>
+				            </form>
+				      	</div>
+				    </div>
+				  </div>
+				</div>
+          </div>
+          <% } else { %>
+          <div class="col-md-6" align="right">
+          	<button type="button" onclick="location.href='<%=request.getContextPath()%>/member/loginHaemukja.jsp'">게시글 신고</button>
+          </div>
+          <%} %>
         </div>
         <br><br>
         <div class="full-right" align="center">
@@ -266,14 +304,18 @@
                 		<td><%=c.getmNickname() %></td>
                 		<td><%=c.getrDate() %></td>
                 		<td><button class="lookReplys group<%=c.getGroupNo() %>">답글</button>&nbsp;
-                		<%if(loginMember != null && loginMember.getMnickname().equals(c.getmNickname())) { %>	
+                		<%if( loginMember != null ) { %>
+                			<%if( loginMember.getMnickname().equals("관리자") || loginMember.getMnickname().equals(c.getmNickname()) ) {%>
                 		<button class="changeTextarea">수정</button>&nbsp;
                 		<button class="changeReply deleteComment">삭제</button></td>
-                		<%} %>
+                			<%} %>
+                		<%} else { 
+                			//로그인하지 않았을 경우 스킵
+                		}%>
                 	</tr>
                 	<tr class="hideReplys group<%=c.getGroupNo() %>" style="display:none;">
 						<td colspan="4">
-							<textarea class="replyContent" cols="77px"></textarea>
+							<textarea class="replyContent" cols="68px"></textarea>
 						</td>
 						<td>
 							<button class="changeReply addReply">답글작성</button>
@@ -292,10 +334,14 @@
                 		<td><%=c.getmNickname() %></td>
                 		<td><%=c.getrDate() %></td>
                 		<td>
-                		<%if(loginMember != null && loginMember.getMnickname().equals(c.getmNickname())) { %>	
+                		<%if( loginMember != null ) { %>
+                			<%if( loginMember.getMnickname().equals("관리자") || loginMember.getMnickname().equals(c.getmNickname()) ) {%>
                 		<button class="changeTextarea">수정</button>&nbsp;
                 		<button class="changeReply deleteReply">삭제</button>
-                		<%} %>
+                			<%} %>
+                		<%} else { 
+                			//로그인하지 않았을 경우 스킵
+                		}%>
                 		</td>
 					</tr>
 						<%} %>
@@ -416,7 +462,7 @@
 		});
 		
 		$(document).on('click', '.changeReply', function(){	
-			<%if(loginMember.getMnickname().equals(recipe.getmId()) || loginMember.getMid().equals("admin")){ %>
+			<%if(loginMember != null){ %>
 				var actionType= $(this).attr("class").split(" ")[1];
 				var rcno = 0;
 				var writer = "<%=loginMember.getMid()%>";
@@ -426,6 +472,7 @@
 				var orderNo = 1;
 				var groupNo = 0;
 				var depth = 0;
+				
 				
 				if(actionType === "addComment"){
 					groupNo = $(".groupNo").length + 1;
@@ -454,6 +501,20 @@
 					rcno = y.textContent;
 					content = $(this).parent().siblings(".commentArea").children('textarea').val();
 				}
+				
+				if(content == "" && ((actionType.indexOf("add") >= 0))){
+					alert("내용을 입력해주세요.");
+					return;
+				}
+				else if(content == "" && ((actionType === "update"))){
+					alert("내용을 입력해주세요.");
+					$(".cancel").remove();
+					$(this).parent().siblings(".commentArea").children('p').toggle();
+					$(this).parent().siblings(".commentArea").children('textarea').toggle();
+					$(".changeTextarea").removeClass('update').removeClass('changeReply');
+					return;
+				}
+				
 				$.ajax({
 					url:"changeComment.re",
 					type:"post",
@@ -510,8 +571,13 @@
 									$fourthTd.text(data[i].rDate);
 									
 									var $fifthTd = $("<td>");
-									$fifthTd.html("<button class='lookReplys group" + data[i].groupNo + "'>답글</button>&nbsp;<button class='changeTextarea'>수정</button>&nbsp;<button class='changeReply deleteComment'>삭제</button>");
-									
+									var loginMember = "${loginMember.mnickname}";
+									if( (loginMember != null && data[i].mNickname == loginMember) || loginMember == "관리자" ){
+										$fifthTd.html("<button class='lookReplys group" + data[i].groupNo + "'>답글</button>&nbsp;<button class='changeTextarea'>수정</button>&nbsp;<button class='changeReply deleteComment'>삭제</button>");
+									}
+									else{
+										$fifthTd.html("<button class='lookReplys group" + data[i].groupNo + "'>답글</button>&nbsp;");
+									}
 									$firstTr.append($firstTd);
 									$firstTr.append($secondTd);
 									$firstTr.append($thirdTd);
@@ -563,7 +629,10 @@
 									var $fourthTd = $("<td>").text(data[i].rDate);
 									
 									var $fifthTd = $("<td>");
-									$fifthTd.html("<button class='changeTextarea'>수정</button>&nbsp;<button class='changeReply deleteReply'>삭제</button>");
+									var loginMember = "${loginMember.mnickname}";
+									if( (loginMember != null && data[i].mNickname == loginMember) || loginMember == "관리자" ){
+										$fifthTd.html("<button class='changeTextarea'>수정</button>&nbsp;<button class='changeReply deleteReply'>삭제</button>");
+									}
 									$tr.append($firstTd);
 									$tr.append($secondTd);
 									$tr.append($thirdTd);
@@ -583,8 +652,12 @@
 				
 				
 			<%}else { %>
-				//그렇지 않을때
-				alert('해당 게시글의 글쓴이, 관리자만 작성할 수 있습니다.');
+				if(confirm("해먹자 회원 로그인이 필요합니다. 로그인 하시겠어요?")){
+					login();
+				}
+				else{
+					return false;
+				}
 			<%} %>
 		});
     });
@@ -608,13 +681,7 @@
   	function goBack(){
    	 	history.back();
     }
-  	
-  	function pleaseLogin(){
-  		<%if(loginMember == null){%>
-  			alert("일반회원에게만 권한이 있습니다.");
-  			//그리고 비회원일 경우 작성 불가하게끔
-  		<%}%>
-  	}
+
   	$(function(){
   		$("#up").click(function(){
   			var bNo = $(this).parent().children("input").val();
@@ -631,6 +698,10 @@
   			
   			alert("추천 -1");
   		});
+  		
+        <% if(!msg.equals("")) { %>
+        		alert("신고 접수가 정상 처리되었습니다.");
+        <% } %>
   	})
   	
   </script>

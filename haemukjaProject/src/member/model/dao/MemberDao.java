@@ -292,7 +292,7 @@ public class MemberDao {
 		PreparedStatement pstmt = null;
 		int result = 0;
 		
-		String query = "INSERT INTO MEMBER VALUES(?,?,?,?,?,?,?,0,?,SYSDATE,'N',SYSDATE,5,?)";
+		String query = "INSERT INTO MEMBER VALUES(?,?,?,?,?,?,?,1000,?,SYSDATE,'N',SYSDATE,5,?)";
 		
 		try {
 			pstmt = conn.prepareStatement(query);

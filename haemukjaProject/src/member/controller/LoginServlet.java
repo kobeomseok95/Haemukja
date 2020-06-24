@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
        Cookie idCookie = null;
        Cookie typeCookie = null;
         
-        HttpSession session = null;
+        HttpSession session = request.getSession(true);
         RequestDispatcher view = null;
         if(userType.equals("member")) {
            Member member = new Member(id, pw);
@@ -37,9 +37,9 @@ public class LoginServlet extends HttpServlet {
            if(loginMember != null) {
              if(ch != null) {
                idCookie = new Cookie("ch", id);
-               idCookie.setMaxAge(60);
+               idCookie.setMaxAge(60 * 60 * 24 * 7);
                typeCookie = new Cookie("type", userType);
-               typeCookie.setMaxAge(60);
+               typeCookie.setMaxAge(60 * 60 * 24 * 7);
                response.addCookie(idCookie);
                response.addCookie(typeCookie);
              } else {
@@ -50,7 +50,6 @@ public class LoginServlet extends HttpServlet {
                response.addCookie(idCookie);
                response.addCookie(typeCookie);
              }
-              session = request.getSession();
               session.setAttribute("loginMember", loginMember);
               view = request.getRequestDispatcher("/main.re");
            } else {
@@ -64,9 +63,9 @@ public class LoginServlet extends HttpServlet {
            if(loginSeller != null) {
               if(ch!=null) {
                  idCookie = new Cookie("ch", id);
-               idCookie.setMaxAge(60);
+               idCookie.setMaxAge(60 * 60 * 24 * 7);
                typeCookie = new Cookie("type", userType);
-               typeCookie.setMaxAge(60);
+               typeCookie.setMaxAge(60 * 60 * 24 * 7);
                response.addCookie(idCookie);
                response.addCookie(typeCookie);
               } else {
@@ -77,7 +76,6 @@ public class LoginServlet extends HttpServlet {
                response.addCookie(idCookie);
                response.addCookie(typeCookie);
               }
-              session = request.getSession();
               session.setAttribute("loginSeller", loginSeller);
               view = request.getRequestDispatcher("/main.re");
            } else {

@@ -74,4 +74,27 @@ public class ManagerDao {
 		return rlist;
 	}
 
+	public int insertReport(Connection conn, Report r) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		String query = "INSERT INTO REPORT VALUES(SEQ_REPORT.NEXTVAL, ?, ?, ?, ?, SYSDATE, DEFAULT)";
+		
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, r.getReportMid());
+			pstmt.setString(2, r.getBadMember());
+			pstmt.setInt(3, r.getReportBNo());
+			pstmt.setString(4, r.getReportContent());
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
 }

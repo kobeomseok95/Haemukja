@@ -7,12 +7,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 
 import common.Attachment;
 import product.model.vo.Order;
 import product.model.vo.Product;
 import product.model.vo.Review;
+import product.model.vo.SComment;
 import product.model.vo.Sale;
 
 public class ProductDao {
@@ -1022,6 +1024,7 @@ public class ProductDao {
 		return thumbnail;
 	}
 
+
 	public int updateReview(Connection conn, String userId, String content,String oid) {
 		PreparedStatement pstmt =null;
 		int result=0;
@@ -1065,6 +1068,231 @@ public class ProductDao {
 			close(pstmt);
 		}
 		
+		return result;
+		}
+
+	public ArrayList<SComment> selectCommentList(Connection conn, int sbNo) {
+		String sql = "SELECT\r\n" + 
+				"    SC.SCNO AS \"SCNO\",\r\n" + 
+				"    SC.SBNO AS \"SBNO\",\r\n" + 
+				"    SC.PARENTNO AS \"PARENTNO\",\r\n" + 
+				"    SC.ORDERNO AS \"ORDERNO\",\r\n" + 
+				"    SC.GROUPNO AS \"GROUPNO\",\r\n" + 
+				"    LPAD( '└', (DEPTH) * 2 ) || SC.SCOMMENT AS \"SCOMMENT\",\r\n" + 
+				"    M.MNICKNAME AS \"MEMBER\",\r\n" + 
+				"    S.COMPANY AS \"SELLER\",\r\n" + 
+				"    SC.SDATE AS \"SDATE\",\r\n" + 
+				"    SC.DEPTH AS \"DEPTH\"\r\n" + 
+				"FROM\r\n" + 
+				"    SELLCOM SC\r\n" + 
+				"        LEFT JOIN MEMBER M ON SC.MID = M.MID\r\n" + 
+				"        LEFT JOIN SELLER S ON SC.SID = S.SID\r\n" + 
+				"WHERE\r\n" + 
+				"    SBNO = ?\r\n" + 
+				"ORDER BY\r\n" + 
+				"    GROUPNO ASC, ORDERNO ASC";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<SComment> list = new ArrayList<SComment>();
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, sbNo);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				SComment sc = new SComment();
+				sc.setScno(rs.getInt("SCNO"));
+				sc.setSbno(rs.getInt("SBNO"));
+				sc.setParentNo(rs.getInt("PARENTNO"));
+				sc.setOrderNo(rs.getInt("ORDERNO"));
+				sc.setGroupNo(rs.getInt("GROUPNO"));
+				sc.setsComment(rs.getString("SCOMMENT"));
+				if(rs.getString("MEMBER") == null) {
+					sc.setmNickname(rs.getString("SELLER"));					
+				}
+				else {
+					sc.setmNickname(rs.getString("MEMBER"));
+				}
+				sc.setsDate(rs.getDate("SDATE"));
+				sc.setDepth(rs.getInt("DEPTH"));
+				list.add(sc);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		close(pstmt);
+		return list;
+	}
+
+	public int insertComment(Connection conn, SComment sc) {
+		String userType = sc.getmNickname().split(",")[1];
+		String sql = 
+				"INSERT INTO SELLCOM\r\n" + 
+				"VALUES (SEQ_SELLCOM.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?, ?, ?, ?)";
+		
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, sc.getSbno());
+			pstmt.setString(2, sc.getsComment());
+			pstmt.setInt(4, sc.getParentNo());
+			pstmt.setInt(5, sc.getOrderNo());
+			pstmt.setInt(6, sc.getGroupNo());
+			pstmt.setInt(7, sc.getDepth());
+			if(userType.equals("seller")) {
+				pstmt.setNull(3, Types.VARCHAR);
+				pstmt.setString(8, sc.getmNickname().split(",")[0]);
+			}
+			else {
+				pstmt.setString(3, sc.getmNickname().split(",")[0]);
+				pstmt.setNull(8, Types.VARCHAR);				
+			}
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
+	public int selectGroupNo(Connection conn, int scno) {
+		String sql = "SELECT GROUPNO FROM SELLCOM WHERE SCNO = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int groupNo = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, scno);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				groupNo = rs.getInt(1);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		close(rs);
+		return groupNo;
+	}
+
+	public int deleteComment(Connection conn, int scno) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = "DELETE FROM SELLCOM WHERE SCNO = ? OR PARENTNO = ?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, scno);
+			pstmt.setInt(2, scno);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
+	public int updateGroupNo(Connection conn, int groupNo) {
+		String sql = "UPDATE SELLCOM\r\n" + 
+				"SET GROUPNO = GROUPNO - 1\r\n" + 
+				"WHERE GROUPNO > ?";
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, groupNo);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
+	public int selectReplyOrderNo(Connection conn, int scno) {
+		String sql = "SELECT ORDERNO FROM SELLCOM WHERE SCNO = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int orderNo = 0;
+		
+		try{
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, scno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				orderNo = rs.getInt(1);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return orderNo;
+	}
+
+	public int selectReplyParentNo(Connection conn, int scno) {
+		String sql = "SELECT PARENTNO FROM SELLCOM WHERE SCNO = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int parentNo = 0;
+		
+		try{
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, scno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				parentNo = rs.getInt(1);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return parentNo;
+	}
+
+	public int updateReplyOrderNo(Connection conn, int orderNo, int parentNo) {
+		String sql = "UPDATE SELLCOM\r\n" + 
+				"SET ORDERNO = ORDERNO - 1\r\n" + 
+				"WHERE PARENTNO = ?\r\n" + 
+				"    AND ORDERNO > ?";
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, parentNo);
+			pstmt.setInt(2, orderNo);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+		return result;
+	}
+
+	public int updateComment(Connection conn, int scno, String sComment) {
+		String sql = "UPDATE SELLCOM\r\n" + 
+				"SET SCOMMENT = ?, SDATE = SYSDATE\r\n" + 
+				"WHERE SCNO = ?";
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, sComment);
+			pstmt.setInt(2, scno);
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		close(pstmt);
+
 		return result;
 	}
 

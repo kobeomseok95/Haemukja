@@ -39,7 +39,6 @@ public class RecipeDetailServlet extends HttpServlet {
 		int bNo = (int) request.getAttribute("bNo");
 		
 		RecipeService rs = new RecipeService();
-		QnaService qs = new QnaService();
 		
 		String nickname = rs.selectMNickname(bNo);
 		Recipe recipe = rs.selectRecipe(bNo);
