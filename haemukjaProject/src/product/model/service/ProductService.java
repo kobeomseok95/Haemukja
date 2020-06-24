@@ -15,6 +15,7 @@ import product.model.vo.Product;
 import product.model.vo.Review;
 import product.model.vo.SComment;
 import product.model.vo.Sale;
+import qna.model.dao.QnaDao;
 
 public class ProductService {
 
@@ -410,6 +411,87 @@ public class ProductService {
 		close(conn);
 		return list;
 	}
+
+	public int insertComment(SComment sc) {
+		Connection conn = getConnection();
+		int result = new ProductDao().insertComment(conn, sc);
+		close(conn);
+		return result;
+	}
+
+	public int selectGroupNo(int scno) {
+		Connection conn = getConnection();
+		int groupNo = new ProductDao().selectGroupNo(conn, scno);
+		close(conn);
+		return groupNo;
+	}
+
+	public int deleteComment(int scno) {
+		Connection conn = getConnection();
+		int result= new ProductDao().deleteComment(conn, scno);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+
+	public int updateGroupNo(int groupNo) {
+		Connection conn = getConnection();
+		int result = new ProductDao().updateGroupNo(conn, groupNo);
+		if(result >= 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+
+	public int selectReplyOrderNo(int scno) {
+		Connection conn = getConnection();
+		int orderNo = new ProductDao().selectReplyOrderNo(conn, scno);
+		close(conn);
+		return orderNo;
+	}
+
+	public int selectReplyParentNo(int scno) {
+		Connection conn = getConnection();
+		int parentNo = new ProductDao().selectReplyParentNo(conn, scno);
+		close(conn);
+		return parentNo;
+	}
+
+	public int updateReplyOrderNo(int orderNo, int parentNo) {
+		Connection conn = getConnection();
+		int result = new ProductDao().updateReplyOrderNo(conn, orderNo, parentNo);
+		if(result >= 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+
+	public int updateComment(int scno, String sComment) {
+		Connection conn = getConnection();
+		int result = new ProductDao().updateComment(conn, scno, sComment);
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+
 
 	
 

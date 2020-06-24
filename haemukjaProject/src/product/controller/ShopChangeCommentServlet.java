@@ -42,28 +42,27 @@ public class ShopChangeCommentServlet extends HttpServlet {
 			sc.setGroupNo(groupNo);
 			sc.setDepth(depth);
 			
-//			result = ps.insertComment(sc);
+			result = ps.insertComment(sc);
 		} 
 		else if(actionType.equals("deleteComment") || actionType.equals("deleteReply")) {
-			int rcno = Integer.valueOf(request.getParameter("rcno"));
+			int scno = Integer.valueOf(request.getParameter("scno"));
 			if(actionType.equals("deleteComment")) {
-//				int groupNo = ps.selectGroupNo(rcno);
-//				result = ps.deleteComment(rcno);
-//				result = ps.updateGroupNo(groupNo);
+				int groupNo = ps.selectGroupNo(scno);
+				result = ps.deleteComment(scno);
+				result = ps.updateGroupNo(groupNo);
 			}
 			else {	
-//				int orderNo = ps.selectReplyOrderNo(rcno);
-//				int parentNo = ps.selectReplyParentNo(rcno);
-//				ps.deleteComment(rcno);
-//				result = ps.updateReplyOrderNo(orderNo, parentNo);
+				int orderNo = ps.selectReplyOrderNo(scno);
+				int parentNo = ps.selectReplyParentNo(scno);
+				ps.deleteComment(scno);
+				result = ps.updateReplyOrderNo(orderNo, parentNo);
 			}
 		}
 		else if(actionType.equals("update")) {
-			int rcno = Integer.valueOf(request.getParameter("rcno"));
-			String rComment = request.getParameter("rComment");
-//			result = ps.updateComment(scno, sComment);
+			int scno = Integer.valueOf(request.getParameter("rcno"));
+			String sComment = request.getParameter("rComment");
+			result = ps.updateComment(scno, sComment);
 		}
-		
 		
 		ArrayList<SComment> commentList = ps.selectCommentList(sbno);
 		response.setContentType("application/json");

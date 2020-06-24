@@ -12,6 +12,7 @@ public class SComment {
 	private int orderNo;				//	한 그룹에서의 순서
 	private int groupNo;				//	그룹넘버(댓글부모순)
 	private int depth;					//	깊이(대댓글 판단)
+	
 	public SComment() {
 	}
 	public SComment(int scno, int sbno, String sComment, Date sDate, String mNickname, int parentNo, int orderNo,

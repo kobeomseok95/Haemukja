@@ -436,9 +436,12 @@
                 		<button class="changeTextarea">수정</button>&nbsp;
                 		<button class="changeReply deleteComment">삭제</button></td>
                 			<%} %>
-                		<%} else { 
-                			//로그인하지 않았을 경우 스킵
-                		}%>
+                		<%} else if( loginSeller != null ){ %>
+                			<% if( loginSeller.getCompany().equals(c.getmNickname()) ){ %>
+                		<button class="changeTextarea">수정</button>&nbsp;
+                		<button class="changeReply deleteComment">삭제</button></td>	
+                			<%} %>
+                		<%}%>
                 	</tr>
                 	<tr class="hideReplys group<%=c.getGroupNo() %>" style="display:none;">
 						<td colspan="4">
@@ -462,13 +465,17 @@
                 		<td><%=c.getsDate() %></td>
                 		<td>
                 		<%if( loginMember != null ) { %>
-                			<%if( loginMember.getMnickname().equals("관리자") || loginMember.getMnickname().equals(c.getmNickname()) ) {%>
+                			<%if( loginMember.getMnickname().equals("관리자") || loginMember.getMnickname().equals(c.getmNickname()) 
+                					|| loginSeller.getCompany().equals(c.getmNickname()) ) {%>
                 		<button class="changeTextarea">수정</button>&nbsp;
                 		<button class="changeReply deleteReply">삭제</button>
                 			<%} %>
-                		<%} else { 
-                			//로그인하지 않았을 경우 스킵
-                		}%>
+                		<%} else if( loginSeller != null ){ %>
+                			<% if( loginSeller.getCompany().equals(c.getmNickname()) ){ %>
+                		<button class="changeTextarea">수정</button>&nbsp;
+                		<button class="changeReply deleteReply">삭제</button>			
+                			<%} %>
+                		<%}%>
                 		</td>
 					</tr>
 						<%} %>
@@ -557,17 +564,21 @@
 			});
 			
 			$(document).on('click', '.changeReply', function(){	
-				<%if(loginMember != null){ %>
+				<%if( loginMember != null || ( loginSeller != null && loginSeller.getSid().equals(s.getsId())) ){ %>
 					var actionType= $(this).attr("class").split(" ")[1];
 					var scno = 0;
-					var writer = "<%=loginMember.getMid()%>";
+					var writer = "";
+					<% if(loginMember != null && loginSeller == null){ %>
+						writer = "<%=loginMember.getMid()%>" + ",member";
+					<% } else if(loginMember == null && loginSeller != null){ %>
+						writer = "<%=loginSeller.getSid()%>" + ",seller";
+					<% } %>
 					var sbno = <%=s.getSbNo()%>;
 					var content = "";
 					var parentNo = 0;
 					var orderNo = 1;
 					var groupNo = 0;
 					var depth = 0;
-					
 					
 					if(actionType === "addComment"){
 						groupNo = $(".groupNo").length + 1;
@@ -648,7 +659,7 @@
 										
 										var $secondTd = $("<td>");
 										var $p = $("<p>");
-										$p.text(data[i].rComment);
+										$p.text(data[i].sComment);
 										var $textarea = $("<textarea>");
 										$textarea.addClass('updateContent');
 										$textarea.css("display", "none");
@@ -667,7 +678,9 @@
 										
 										var $fifthTd = $("<td>");
 										var loginMember = "${loginMember.mnickname}";
-										if( (loginMember != null && data[i].mNickname == loginMember) || loginMember == "관리자" ){
+										var loginSeller = "${loginSeller.company}"
+										if( (loginMember != null && data[i].mNickname == loginMember) || loginMember == "관리자" 
+												|| (loginSeller != null && data[i].mNickname == loginSeller) ){
 											$fifthTd.html("<button class='lookReplys group" + data[i].groupNo + "'>답글</button>&nbsp;<button class='changeTextarea'>수정</button>&nbsp;<button class='changeReply deleteComment'>삭제</button>");
 										}
 										else{
@@ -709,7 +722,7 @@
 										
 										var $secondTd = $("<td>");
 										var $p = $("<p>");
-										$p.text(data[i].rComment);
+										$p.text(data[i].sComment);
 										var $textarea = $("<textarea>");
 										$textarea.addClass('updateContent');
 										$textarea.css("display", "none");
@@ -725,7 +738,8 @@
 										
 										var $fifthTd = $("<td>");
 										var loginMember = "${loginMember.mnickname}";
-										if( (loginMember != null && data[i].mNickname == loginMember) || loginMember == "관리자" ){
+										if( (loginMember != null && data[i].mNickname == loginMember) || loginMember == "관리자" 
+											|| (loginSeller != null && data[i].mNickname == loginSeller) ){
 											$fifthTd.html("<button class='changeTextarea'>수정</button>&nbsp;<button class='changeReply deleteReply'>삭제</button>");
 										}
 										$tr.append($firstTd);
@@ -746,14 +760,16 @@
 					}); 
 					
 					
-				<%}else { %>
+				<%}else if (loginSeller == null && loginMember == null) { %>
 					if(confirm("해먹자 회원 로그인이 필요합니다. 로그인 하시겠어요?")){
 						location.href="<%=request.getContextPath()%>/member/loginHaemukja.jsp";
 					}
 					else{
 						return false;
 					}
-				<%} %>
+				<%}else if (loginSeller != null && !loginSeller.getSid().equals(s.getsId())) {%>
+					alert("해당 게시판의 작성자가 아닙니다.");
+				<%}%>
 			});
 	    });
    
@@ -833,7 +849,7 @@
                location.href="<%=request. getContextPath()%>/member.me?product=<%=p.getpTitle()%>&price=<%=p.getPrice()%>&sbno=<%=s.getSbNo()%>&pcount="+count;
                <%}%>
             }
-         <%}%>
+            <%}%>
          
          }
    }
