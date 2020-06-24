@@ -16,6 +16,7 @@ import member.model.vo.Member;
 import mypage.model.service.MypageService;
 import mypage.model.vo.MyOrder;
 import mypage.model.vo.PageInfo;
+import product.model.vo.Review;
 
 /**
  * Servlet implementation class MypageOrderServlet
@@ -100,13 +101,18 @@ public class MypageOrderServlet extends HttpServlet {
 		
 		ArrayList<MyOrder> list = mService.selectOrderList(currentPage,limit,userId);
 		ArrayList<Attachment> flist = mService.selectThumbnail();
-		 
+		
+	
+		
+		
+		
 		RequestDispatcher view = null;
 	
 		request.setAttribute("list", list);
 		request.setAttribute("flist", flist);
 		request.setAttribute("pi", pi);
 		request.setAttribute("msg", msg);
+		
 		view = request.getRequestDispatcher("mypage/mypageOrder.jsp");
 	
 		

@@ -13,6 +13,7 @@ import common.Attachment;
 import mypage.model.vo.MCart;
 import mypage.model.vo.MyOrder;
 import mypage.model.vo.NMOrder;
+import product.model.vo.Review;
 import product.model.vo.Sale;
 
 public class MypageDao {
@@ -337,6 +338,38 @@ public class MypageDao {
 		
 		
 		return no;
+	}
+
+	public ArrayList<Review> selectReview(String userId, Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		ArrayList<Review> review = new ArrayList<Review>();
+		String query = "SELECT R.RNO, R.SBNO,M.MID,R.CONTENT,R.ODATE,M.MNAME,M.MNICKNAME,R.OID,R.PID\r\n" + 
+				"FROM REVIEW R\r\n" + 
+				"JOIN MEMBER M ON(R.MID=M.MID)\r\n" + 
+				"WHERE R.MID=?";
+		
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, userId);
+			rset = pstmt.executeQuery();
+			
+			while(rset.next()) {
+				review.add(new Review(rset.getInt("RNO"),
+								rset.getInt("SBNO"),
+								rset.getString("MID"),
+								rset.getString("CONTENT"),
+								rset.getDate("ODATE"),
+								rset.getString("MNAME"),
+								rset.getString("MNICKNAME"),
+								rset.getInt("oid"),
+								rset.getInt("pid")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return review;
 	}
 
 

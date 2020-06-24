@@ -10,67 +10,199 @@ public class Review {
 	private Date odate;      // 주문날짜
 	private String name;   
 	private String nickname;
+	private int oid;
+	private int pid;;
 	
 	public Review() {
 	}
+
 	
-	public Review(int rno, int sbno, String mid, String content, Date odate, String name, String nickname) {
+	
+	
+
+	public Review(int rno, int sbno, String mid, String content, Date odate, String name, String nickname, int oid,
+			int pid) {
 		this.rno = rno;
-	    this.sbno = sbno;
-	    this.mid = mid;
-	    this.content = content;
-	    this.odate = odate;
-	    this.name = name;
-	    this.nickname = nickname;
+		this.sbno = sbno;
+		this.mid = mid;
+		this.content = content;
+		this.odate = odate;
+		this.name = name;
+		this.nickname = nickname;
+		this.oid = oid;
+		this.pid = pid;
 	}
-	
+
+
+
+
+
+	public Review(int rno, int sbno, String mid, String content, Date odate, String name, String nickname) {
+		super();
+		this.rno = rno;
+		this.sbno = sbno;
+		this.mid = mid;
+		this.content = content;
+		this.odate = odate;
+		this.name = name;
+		this.nickname = nickname;
+	}
+
+
+
+
+
 	public int getRno() {
-	    return rno;
+		return rno;
 	}
+
+
+
+
+
 	public void setRno(int rno) {
-	    this.rno = rno;
+		this.rno = rno;
 	}
+
+
+
+
+
 	public int getSbno() {
-	    return sbno;
+		return sbno;
 	}
+
+
+
+
+
 	public void setSbno(int sbno) {
-	    this.sbno = sbno;
+		this.sbno = sbno;
 	}
+
+
+
+
+
 	public String getMid() {
-	    return mid;
+		return mid;
 	}
+
+
+
+
+
 	public void setMid(String mid) {
-	    this.mid = mid;
+		this.mid = mid;
 	}
+
+
+
+
+
 	public String getContent() {
-	    return content;
+		return content;
 	}
-   public void setContent(String content) {
-      this.content = content;
-   }
-   public Date getOdate() {
-      return odate;
-   }
-   public void setOdate(Date odate) {
-      this.odate = odate;
-   }
-   public String getName() {
-      return name;
-   }
-   public void setName(String name) {
-      this.name = name;
-   }
-   public String getNickname() {
-      return nickname;
-   }
-   public void setNickname(String nickname) {
-      this.nickname = nickname;
-   }
-   
-   @Override
-   public String toString() {
-      return "Review [rno=" + rno + ", sbno=" + sbno + ", mid=" + mid + ", content=" + content + ", odate=" + odate
-            + ", name=" + name + ", nickname=" + nickname + "]";
-   }
+
+
+
+
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+
+
+
+
+	public Date getOdate() {
+		return odate;
+	}
+
+
+
+
+
+	public void setOdate(Date odate) {
+		this.odate = odate;
+	}
+
+
+
+
+
+	public String getName() {
+		return name;
+	}
+
+
+
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+
+
+
+	public String getNickname() {
+		return nickname;
+	}
+
+
+
+
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+
+
+
+
+	public int getOid() {
+		return oid;
+	}
+
+
+
+
+
+	public void setOid(int oid) {
+		this.oid = oid;
+	}
+
+
+
+
+
+	public int getPid() {
+		return pid;
+	}
+
+
+
+
+
+	public void setPid(int pid) {
+		this.pid = pid;
+	}
+
+
+
+
+
+	@Override
+	public String toString() {
+		return "Review [rno=" + rno + ", sbno=" + sbno + ", mid=" + mid + ", content=" + content + ", odate=" + odate
+				+ ", name=" + name + ", nickname=" + nickname + ", oid=" + oid + ", pid=" + pid + "]";
+	}
+
+	
+	
 
 }

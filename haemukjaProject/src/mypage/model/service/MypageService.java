@@ -9,6 +9,7 @@ import mypage.model.dao.MypageDao;
 import mypage.model.vo.MCart;
 import mypage.model.vo.MyOrder;
 import mypage.model.vo.NMOrder;
+import product.model.vo.Review;
 import product.model.vo.Sale;
 
 import static common.JDBCTemplate.*;
@@ -138,6 +139,16 @@ public class MypageService {
 		ArrayList<NMOrder> no = new MypageDao().selectNmOrder(conn,oid);
 		close(conn);
 		return no;
+	}
+
+
+
+	public ArrayList<Review> selectReview(String userId) {
+		Connection conn = getConnection();
+		
+		ArrayList<Review> r = new MypageDao().selectReview(userId,conn);
+		close(conn);
+		return r;
 	}
 
 }

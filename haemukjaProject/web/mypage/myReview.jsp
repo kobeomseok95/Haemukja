@@ -3,18 +3,11 @@
 <% 
 	Member loginMember = (Member)session.getAttribute("loginMember");
     Seller loginSeller = (Seller)session.getAttribute("loginSeller");
-    ArrayList<MyOrder> list = (ArrayList<MyOrder>)request.getAttribute("list");
-    PageInfo pi = (PageInfo)request.getAttribute("pi");
     ArrayList<Attachment> flist = (ArrayList<Attachment>)request.getAttribute("flist");
     String msg = (String)request.getAttribute("msg");
 	ArrayList<Review> review = (ArrayList<Review>)request.getAttribute("review");
     
 	
-	int listCount = pi.getListCount();
-	int currentPage = pi.getCurrentPage();
-	int maxPage = pi.getMaxPage();
-	int startPage = pi.getStartPage();
-	int endPage = pi.getEndPage();
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -96,69 +89,49 @@
             <table class="table">
               <thead>
                 <th style="width: 50px;"></th>
-                <th style="width: 300px;">제품명</th>
-                <th style="width: 100px;">구매일자</th>
-                <th style="width: 100px;">배송정보</th>
-                <th style="width: 100px;">주문상태</th>
-                <th style="width: 100px;"></th>
+                <th style="width: 100px;">번호</th>
+                <th style="width: 100px;">작성자</th>
+                <th style="width: 300px;">리뷰내용</th>
+                <th style="width: 100px;">구매날짜</th>
+                <th style="width: 100px;">리뷰수정</th>
               </thead>
-              <%if(!list.isEmpty()){ %>
+              <%if(!review.isEmpty()){ %>
               <tbody>
               
-              <%for(MyOrder mo : list){ %>
-  
-                <tr>
+              <%int z=0; %>
+              <%for(Review r : review){ %>
+  				<%z++; %>
+              <tr>
                   <td style="width: 50px;">
                   <%for(int i =0; i<flist.size();i++){ %>
                   <%Attachment a = flist.get(i); %>
-                  <%if(mo.getSbno()== a.getSbNo()){ %>
+                  <%if(r.getSbno()== a.getSbNo()){ %>
                      <img src="<%=request.getContextPath()%>/uploadFiles/<%=a.getFileName()%>" style="width:100px; height:80px;" >
                   <%} %>
                   <%} %>
                  
                   </td>
-                  <td style="width: 300px;"><%=mo.getPtitle() %></td>
+                  <td style="width: 100px;"><%=z %></td>
                   <%-- <input type="hidden" name="oid" value=<%=mo.getOid()%>>
                   <input type="hidden" name="pid" value=<%=mo.getPid()%>> --%>
-                  <td style="width: 100px;"><%=mo.getOdate() %></td>
-                  
-                  <%if(mo.getOsid()==4 || mo.getOsid()==5 ){%>
-                  <td style="width: 100px;"><button type="button" class="shipInfoBtn">배송정보<br>확인</button></td>
-                  <%}else if(mo.getOsid()>=1 & mo.getOsid()<=3){ %>
-                   <td style="width: 100px;"><button type="button" class="shipInfoBtn">주문정보<br>확인</button></td>
-                  <%} %>
-                  <td style="width: 100px;"><%=mo.getOname() %></td>
-                  <%if(mo.getOsid()==4 || mo.getOsid()==5){ %>
-            	
-                  <td style="width: 100px;"><button type="button" class="reviewBtn">리뷰작성</button><br>
-              	  <button type="button" id="reBuy" onclick="location.href='<%=request.getContextPath()%>/detail.sh?pid=<%=mo.getPid()%>&sbno=<%=mo.getSbno()%>'">재구매</button></td>
-                 	
-                  <%}else if(mo.getOsid()>=1 & mo.getOsid()<=3){ %>
-                  <td style="width: 100px;"><button type="button" onclick="location.href='<%=request.getContextPath()%>/cancel.my?oid=<%=mo.getOid()%>&pid=<%=mo.getPid()%>'">주문취소</button></td>
-                  <%} %>
-                 
-                </tr>
-                <tr class="shipInfo">
-                  <%if(mo.getOsid()==4 || mo.getOsid()==5 ){%>
-                  <td colspan="5">택배사 : <span><%=mo.getShipcom() %></span><br>운송장번호 : <span><%=mo.getShipno() %></span></td>
-                  <%}else if(mo.getOsid()>=1 & mo.getOsid()<=3){ %>
-                  <td colspan="5"><span>주문번호 : </span><span><%=mo.getOid() %></span><br>구매물품 : <span><%=mo.getPtitle() %></span><br>구매수량 : <span><%=mo.getPamount() %></span></td>
-                   <%} %>
-                </tr>
-                <%if((mo.getOsid()==4 || mo.getOsid()==5)){ %>
-                <tr class="reviewBox" style="display: none">
-                <form action = "<%=request.getContextPath()%>/review.sh" method="post" id="reviewForm">
-                <input type="hidden" name="odate" value="<%=mo.getOdate()%>">
-                <input type="hidden" name="sbno" value="<%=mo.getSbno()%>">
-                <input type="hidden" name="oid" value="<%=mo.getOid() %>">
-                <input type="hidden" name="pid" value="<%=mo.getPid() %>">
-          		 <td colspan="5"><textarea cols="80" rows="5" name="review" style="resize: none"></textarea></td>
-                 <td colspan="5"><button type="submit">등록하기</button></td>
+                  <td style="width: 100px;"><%=r.getName() %></td>
+                  <td style="width: 300px;"><%=r.getContent() %></td>
+                  <td style="width: 100px;"><%=r.getOdate() %></td>
+                  <td style="width: 100px;"><button type="button" class="reviewBtn">리뷰수정</button><br>
+              	  <button type="button" id="reBuy" onclick="location.href='<%=request.getContextPath()%>/detail.sh?pid=<%=r.getPid()%>&sbno=<%=r.getSbno()%>'">재구매</button></td>
+              </tr>
+              <tr class="reviewBox" style="display: none">
+                <form action = "<%=request.getContextPath()%>/updateReview.sh" method="post" id="reviewForm">
+                <input type="hidden" name="odate" value="<%=r.getOdate()%>">
+                <input type="hidden" name="sbno" value="<%=r.getSbno()%>">
+                <input type="hidden" name="oid" value="<%=r.getOid() %>">
+                <input type="hidden" name="pid" value="<%=r.getPid() %>">
+          		 <td colspan="5"><textarea cols="80" rows="5" name="review" style="resize: none"><%=r.getContent() %></textarea></td>
+                 <td colspan="5"><button type="submit">수정하기</button></td>
                 </form>
-                </tr>
-                <%} %>
-               <%} %>
-             
+              </tr>
+              
+           	  <%} %>
               </tbody>
               <%}else{ %>
               <tbody>
@@ -221,38 +194,7 @@
         </script>
       </div>
     </div>
-    <!-- /.row -->
-    <div class="row">
-      <div class="col-sm-12" style="text-align: center; font-size: 25px;">
-         <!-- 맨 처음으로(<<) -->
-         <button class="paging" onclick="location.href='<%=request.getContextPath() %>/order.my?currentPage=1'"> << </button>
-         
-         <!-- 이전 페이지로(<) -->
-         <%if(currentPage == 1){ %>
-         <button class="paging" disabled> < </button>
-         <%}else{ %>
-         <button class="paging" onclick="location.href='<%=request.getContextPath() %>/order.my?currentPage=<%=currentPage - 1 %>'"> < </button>
-         <%} %>
-         
-         <!-- 10개의 페이지 목록 -->
-         <%for(int p = startPage ; p<=endPage ; p++){ %>
-            <%if(currentPage == p){ %>
-               <button class="paging" disabled><%=p %></button>
-            <%} else {%>
-               <button class="paging" onclick="location.href='<%=request.getContextPath() %>/order.my?currentPage=<%=p %>'"><%=p %></button>
-            <%} %>
-         <%} %>
-         <!-- 다음 페이지로(>) -->
-         <%if(currentPage == maxPage){ %>
-         <button class="paging" disabled> > </button>
-         <%}else{ %>
-         <button class="paging" onclick="location.href='<%=request.getContextPath() %>/order.my?currentPage=<%=currentPage + 1 %>'"> > </button>
-         <%} %>
-         
-         <!-- 맨 끝으로(>>) -->
-         <button class="paging" onclick="location.href='<%=request.getContextPath() %>/order.my?currentPage=<%=maxPage%>'"> >> </button>
-      </div>
-    </div>
+  
   </div>
   <!-- /.container -->
   <br><br><br><br>
@@ -265,20 +207,16 @@
 
   <script>
      <%if(msg!=null){%>
-        alert("리뷰작성이 완료되었습니다.");
+        alert("리뷰 수정이 완료 되었습니다");
      <%}%>
   
     $(function(){
-      $(".shipInfoBtn").click(function(){
+      $(".reviewBtn").click(function(){
         console.log($(this).parent().parent().next().toggle());
       });
     });
     
-    $(".reviewBtn").click(function(){
-       console.log($(this).parent().parent().next().next().toggle());
-       
-       
-    });
+  
     
     
     function logout(){

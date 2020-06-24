@@ -284,15 +284,15 @@ public class ProductService {
 	      Connection conn = getConnection();
 	      
 	      ArrayList<Review> review = new ProductDao().getReview(conn,sbNo);
-	      System.out.println("service 리뷰 :" + review);
+	    
 	      close(conn);
 	      
 	      return review;
 	}
 	
-	public int review(String odate, int sbno, String review, String userId) {
+	public int review(String odate, int sbno, String review, String userId,int oid, int pid) {
 	      Connection conn = getConnection();
-	      int result = new ProductDao().review(conn,odate,sbno,review,userId);
+	      int result = new ProductDao().review(conn,odate,sbno,review,userId,oid,pid);
 	      if(result > 0) {
 	         commit(conn);
 	      } else {
@@ -401,6 +401,31 @@ public class ProductService {
 		close(conn);
 		
 		return at;
+	}
+
+	public int updateReview(String userId, String content, String oid) {
+      Connection conn = getConnection();
+      int result = new ProductDao().updateReview(conn,userId,content,oid);
+      if(result > 0) {
+         commit(conn);
+      } else {
+         rollback(conn);
+      }
+      close(conn);
+      return result;
+		
+	}
+
+	public int deleteOrderList(String userId, int oid, int pid) {
+	  Connection conn = getConnection();
+      int result = new ProductDao().deleteOrderList(conn,userId,oid,pid);
+      if(result > 0) {
+         commit(conn);
+      } else {
+         rollback(conn);
+      }
+      close(conn);
+      return result;
 	}
 
 	

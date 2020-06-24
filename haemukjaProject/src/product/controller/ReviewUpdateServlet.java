@@ -14,16 +14,16 @@ import member.model.vo.Member;
 import product.model.service.ProductService;
 
 /**
- * Servlet implementation class ReviewInsertServlet
+ * Servlet implementation class ReviewUpdateServlet
  */
-@WebServlet("/review.sh")
-public class ReviewInsertServlet extends HttpServlet {
+@WebServlet("/updateReview.sh")
+public class ReviewUpdateServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ReviewInsertServlet() {
+    public ReviewUpdateServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,28 +32,23 @@ public class ReviewInsertServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
-	      
-		String odate = request.getParameter("odate");
-		int sbno = Integer.valueOf(request.getParameter("sbno"));
-		String review= request.getParameter("review");
-		int oid = Integer.valueOf(request.getParameter("oid"));
-		int pid = Integer.valueOf(request.getParameter("pid"));
-
-		HttpSession session = request.getSession();
-		Member member = (Member)(session.getAttribute("loginMember"));
-		String userId = member.getMid();
-		ProductService pService = new ProductService();
-		int result = pService.review(odate,sbno,review,userId,oid,pid);
-		RequestDispatcher view = null;      
-		if(result>0) {
-			int result2=pService.deleteOrderList(userId,oid,pid); 
-			if(result2>0) {
-				request.setAttribute("msg", "리뷰작성이 완료되었습니다.");
-				view=request.getRequestDispatcher("order.my");
-			}
-		}
 		
+		HttpSession session = request.getSession();
+		Member member = (Member)session.getAttribute("loginMember");
+		String userId = member.getMid();
+		String content = request.getParameter("review");
+		String odate = request.getParameter("odate");
+		String sbno = request.getParameter("sbno");
+		String oid = request.getParameter("oid");
+		
+		int result = new ProductService().updateReview(userId,content,oid);
+		
+		RequestDispatcher view = null;
+		if(result>0) {
+			request.setAttribute("msg", "리뷰 수정이 완료되었습니다.");
+			view= request.getRequestDispatcher("myreview.my");
+			
+		}
 		view.forward(request, response);
 	}
 

@@ -5,4 +5,5 @@
 <h4><a href="${pageContext.request.contextPath}/refund.my">교환/환불</a></h4>
 <h4><a href="${pageContext.request.contextPath}/cart.my">장바구니</a></h4>
 <h4><a href="${pageContext.request.contextPath}/mypage/mypagePoint.jsp">포인트 내역</a></h4>
+<h4><a href="${pageContext.request.contextPath}/myreview.my">리뷰 관리</a></h4>
 

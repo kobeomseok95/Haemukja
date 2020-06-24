@@ -4,8 +4,8 @@
 
 	
 	
-	
-	ArrayList<nMyCart> OrderList = (ArrayList<nMyCart>)session.getAttribute("Order_List");
+	ArrayList<nMyCart> OrderList =null;
+	OrderList = (ArrayList<nMyCart>)session.getAttribute("Order_List");
 	
 	
 	
@@ -69,7 +69,7 @@
       <div class="col-lg-2">
         <div class="list-group">
          <h4><a href="${pageContext.request.contextPath}/mypage/nMyCart.jsp">장바구니</a></h4>
-         <h4><a href="${pageContext.request.contextPath}/mypage/nmOrderSearch.jsp">비 주문/배송 검색</a></h4>
+         <h4><a href="${pageContext.request.contextPath}/mypage/nmOrderSearch.jsp">주문/배송 검색</a></h4>
      	</div>
       </div>
       <!-- /.col-lg-2 -->
@@ -98,7 +98,7 @@
                     <th style="width: 100px">선택</th>
                   </tr>
                 </thead>
-               <%if(!OrderList.isEmpty()){ %>
+               <%if(OrderList!=null){ %>
                 <tbody>
              
                 <%for(int i =0; i<OrderList.size(); i++){ %>
@@ -143,7 +143,7 @@
                 
                  <%} %>
               </table> <!-- table -->
-              <%if(!OrderList.isEmpty()){%>
+              <%if(OrderList!=null){%>
               <div class="row-full" align="right">
               	<button type="submit" id="countPost">수량 적용</button>
                 <button type="submit" >전체 주문</button>

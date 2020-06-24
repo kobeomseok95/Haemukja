@@ -691,16 +691,20 @@ public class ProductDao {
 	      return review;
 	 }
 
-	public int review(Connection conn, String odate, int sbno, String review, String userId) {
+	public int review(Connection conn, String odate, int sbno, String review, String userId, int oid, int pid) {
 	      PreparedStatement pstmt = null;
 	      int result = 0;
-	      String query = "INSERT INTO REVIEW VALUES(SEQ_RNO.NEXTVAL,?,?,?,?)";
+	      String query = "INSERT INTO REVIEW VALUES(SEQ_RNO.NEXTVAL,?,?,?,?,?,?)";
 	      try {
 	         pstmt = conn.prepareStatement(query);
-	         pstmt.setInt(1, sbno);
+	         pstmt.setInt(1, pid);
 	         pstmt.setString(2, userId);
 	         pstmt.setString(3, review);
 	         pstmt.setString(4, odate);
+	         pstmt.setInt(5, sbno);
+	         pstmt.setInt(6, oid);
+	         
+	         
 	         result=pstmt.executeUpdate();
 	      } catch (SQLException e) {
 	         e.printStackTrace();
@@ -1016,6 +1020,52 @@ public class ProductDao {
 		}
 		
 		return thumbnail;
+	}
+
+	public int updateReview(Connection conn, String userId, String content,String oid) {
+		PreparedStatement pstmt =null;
+		int result=0;
+		
+		String query = "UPDATE REVIEW SET CONTENT=? WHERE MID=? AND OID =? ";
+		
+		try {
+			pstmt=conn.prepareStatement(query);
+			pstmt.setString(1, content);
+			pstmt.setString(2, userId);
+			pstmt.setString(3, oid);
+			
+			result=pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+		e.printStackTrace();
+		}finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
+	public int deleteOrderList(Connection conn, String userId, int oid, int pid) {
+		PreparedStatement pstmt =null;
+		int result=0;
+		
+		String query = "DELETE MORDERLIST WHERE PID =? AND  MID=? AND OID=? ";
+		
+		try {
+			pstmt=conn.prepareStatement(query);
+			pstmt.setInt(1, pid);
+			pstmt.setString(2, userId);
+			pstmt.setInt(3, oid);
+			
+			result=pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+		e.printStackTrace();
+		}finally {
+			close(pstmt);
+		}
+		
+		return result;
 	}
 
 	

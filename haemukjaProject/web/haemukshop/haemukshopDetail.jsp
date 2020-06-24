@@ -353,7 +353,7 @@
   <div class="container" id="button-box"> 
     <div align="right">
       <button type="button" id="detail" name="detail">상세내용</button>
-      <button type="button" id="review" nmae="review">리뷰확인</button>
+      <button type="button" id="review" name="review">리뷰확인</button>
       <button type="button" id="qna" name="qna">문의하기</button>
     </div>
     <hr>

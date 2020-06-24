@@ -50,14 +50,13 @@ public class nonMemSellServlet extends HttpServlet {
 		for(int i =0 ; i<pid.length;i++) {
 			pidList.add(pid[i]);
 		}
-		System.out.println("sellservlet에서 pid:"+ pidList);
 		
 		
 		ArrayList<String> ptitleList= new ArrayList<String>();
 		for(int i =0 ; i<pid.length;i++) {
 			ptitleList.add(ptitle[i]);
 		}
-		System.out.println("sellservlet에서 ptitle:"+ ptitleList);
+		
 		
 
 		 
@@ -66,13 +65,13 @@ public class nonMemSellServlet extends HttpServlet {
 			camountAr.add(pcount[i]);
 		}
 		
-		System.out.println("sellservlet에서 camoutAr:"+ camountAr);
+		
 	
 		ArrayList<Integer> sbNo = new ArrayList<Integer>();
 		for(int i = 0; i<pid.length;i++) {
 			sbNo.add(sbno2[i]);
 		}
-		System.out.println("sellservlet에서 sbno:"+ sbNo);
+		
 		 
 		 // camount[] 형변환
 		int [] camount2 = new int[pcount.length];

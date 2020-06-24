@@ -84,7 +84,7 @@
           <div class="row">
             <h3>장바구니</h3>
             <hr>
-            <form class="table" id="productRegisterForm" action="<%=request.getContextPath()%>/nonmember.me" method="post">
+            <form class="table" id="productRegisterForm" action="<%=request.getContextPath()%>/member.me" method="post">
               <table class="table">
                 <thead>
                   <tr align="center">
