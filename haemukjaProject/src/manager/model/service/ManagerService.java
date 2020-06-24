@@ -31,5 +31,21 @@ public class ManagerService {
 		
 		return rlist;
 	}
+
+	public int insertReport(Report r) {
+		Connection conn = getConnection();
+		
+		int result = new ManagerDao().insertReport(conn, r);
+		
+		if(result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		
+		close(conn);
+		
+		return result;
+	}
 	
 }
