@@ -13,6 +13,7 @@ import product.model.dao.ProductDao;
 import product.model.vo.Order;
 import product.model.vo.Product;
 import product.model.vo.Review;
+import product.model.vo.SComment;
 import product.model.vo.Sale;
 
 public class ProductService {
@@ -401,6 +402,13 @@ public class ProductService {
 		close(conn);
 		
 		return at;
+	}
+
+	public ArrayList<SComment> selectCommentList(int sbNo) {
+		Connection conn = getConnection();
+		ArrayList<SComment> list = new ProductDao().selectCommentList(conn, sbNo);
+		close(conn);
+		return list;
 	}
 
 	

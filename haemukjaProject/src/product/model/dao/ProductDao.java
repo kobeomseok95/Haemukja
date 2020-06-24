@@ -13,6 +13,7 @@ import common.Attachment;
 import product.model.vo.Order;
 import product.model.vo.Product;
 import product.model.vo.Review;
+import product.model.vo.SComment;
 import product.model.vo.Sale;
 
 public class ProductDao {
@@ -1016,6 +1017,54 @@ public class ProductDao {
 		}
 		
 		return thumbnail;
+	}
+
+	public ArrayList<SComment> selectCommentList(Connection conn, int sbNo) {
+		String sql = "SELECT\r\n" + 
+				"    SC.SCNO AS \"SCNO\",\r\n" + 
+				"    SC.SBNO AS \"SBNO\",\r\n" + 
+				"    SC.PARENTNO AS \"PARENTNO\",\r\n" + 
+				"    SC.ORDERNO AS \"ORDERNO\",\r\n" + 
+				"    SC.GROUPNO AS \"GROUPNO\",\r\n" + 
+				"    LPAD( '└', (DEPTH) * 2 ) || SC.SCOMMENT AS \"SCOMMENT\",\r\n" + 
+				"    M.MNICKNAME AS \"NICKNAME\",\r\n" + 
+				"    SC.SDATE AS \"SDATE\",\r\n" + 
+				"    SC.DEPTH AS \"DEPTH\"\r\n" + 
+				"FROM\r\n" + 
+				"    SELLCOM SC\r\n" + 
+				"        JOIN MEMBER M ON SC.MID = M.MID\r\n" + 
+				"WHERE\r\n" + 
+				"    SBNO = ?\r\n" + 
+				"ORDER BY\r\n" + 
+				"    GROUPNO ASC, ORDERNO ASC";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<SComment> list = new ArrayList<SComment>();
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, sbNo);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				SComment sc = new SComment();
+				sc.setScno(rs.getInt("SCNO"));
+				sc.setSbno(rs.getInt("SBNO"));
+				sc.setParentNo(rs.getInt("PARENTNO"));
+				sc.setOrderNo(rs.getInt("ORDERNO"));
+				sc.setGroupNo(rs.getInt("GROUPNO"));
+				sc.setsComment(rs.getString("SCOMMENT"));
+				sc.setmNickname(rs.getString("NICKNAME"));
+				sc.setsDate(rs.getDate("SDATE"));
+				sc.setDepth(rs.getInt("DEPTH"));
+				list.add(sc);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		close(pstmt);
+		return list;
 	}
 
 	
